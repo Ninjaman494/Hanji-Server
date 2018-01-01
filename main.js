@@ -9,8 +9,13 @@ app.get('/', function(req, res){
     });
 });
 
+// Works for both conjugated and infinitive forms
 app.get('/search=:term', function (req, res) {
-    var term = req.params.term; // Works for both infinitives and conjugated
+    var term = stemmer.stem(req.params.term);
+    if(term == undefined || term.substr(term.length-2,term.length) == '드다'){ // Ending only appears for infinitive forms
+            term = req.params.term;
+    }
+
     var regular = true;
     for (irregular_name in conjugator.verb_types) {
         var func = conjugator.verb_types[irregular_name];
@@ -27,7 +32,7 @@ app.get('/search=:term', function (req, res) {
 
 app.get('/stem=:term', function(req, res) {
     var infin = stemmer.stem(req.params.term);
-    res.redirect('/search='+infin);
+    res.send(infin);
 });
 
 app.listen(3000, function() {
