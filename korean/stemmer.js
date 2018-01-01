@@ -67,7 +67,7 @@ stemmer.stem = function(verb) {
                 if (!conjugator[f].conjugation || (f in ignored_conjugations && original)) {
                     continue;
                 }
-                if (conjugator[f](possible_stem) == verb) {
+                if (conjugator[f](possible_stem) == verb) {  // This line causes 듣다 bug, solution is to return multiple verbs.
                     return possible_stem + '다';
                 }
             }

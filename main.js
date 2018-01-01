@@ -1,4 +1,5 @@
 var conjugator = require('./korean/conjugator');
+var stemmer = require('./korean/stemmer');
 const express = require('express');
 const app = express();
 
@@ -9,8 +10,8 @@ app.get('/', function(req, res){
 });
 
 app.get('/search=:term', function (req, res) {
+    var term = req.params.term; // Works for both infinitives and conjugated
     var regular = true;
-    var term = req.params.term;
     for (irregular_name in conjugator.verb_types) {
         var func = conjugator.verb_types[irregular_name];
         if (func(conjugator.base(term))) {
@@ -20,8 +21,13 @@ app.get('/search=:term', function (req, res) {
     }
 
     conjugator.conjugate(term,regular, function (conjugations) {
-        res.send(conjugations[1]);
+        res.json(conjugations);
     })
+});
+
+app.get('/stem=:term', function(req, res) {
+    var infin = stemmer.stem(req.params.term);
+    res.redirect('/search='+infin);
 });
 
 app.listen(3000, function() {
