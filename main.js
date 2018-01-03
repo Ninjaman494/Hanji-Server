@@ -5,12 +5,8 @@ const express = require('express');
 const app = express();
 
 app.get('/', function(req, res){
-    dic.search('go',function(value){
-        if(value == ""){
-            res.send("Not found")
-        }else {
-            res.send(value);
-        }
+    dic.searchGlosbeKor('듣다',function(translation){
+        res.send(translation);
     });
 });
 
@@ -40,13 +36,15 @@ app.get('/stem=:term', function(req, res) {
     res.send(infin);
 });
 
-app.get('/definition=:term', function(req, res){
-    dic.search(req.params.term,function(value){
-        if(value == ""){
-            res.send("Not found")
-        }else {
-            res.send(value);
-        }
+app.get('/defineKor=:term', function(req, res){
+    dic.searchGlosbeKor(req.params.term,function(value){
+        res.send(value);
+    });
+});
+
+app.get('/defineEng=:term', function(req, res){
+    dic.searchGlosbeEng(req.params.term,function(value){
+        res.send(value);
     });
 });
 
@@ -54,3 +52,15 @@ app.listen(3000, function() {
     console.log('Listening on port 3000!')
 });
 
+// Implment String.format. First, check if it isn't implemented already.
+if (!String.prototype.format) {
+    String.prototype.format = function() {
+        var args = arguments;
+        return this.replace(/{(\d+)}/g, function(match, number) {
+            return typeof args[number] != 'undefined'
+                ? args[number]
+                : match
+                ;
+        });
+    };
+}
