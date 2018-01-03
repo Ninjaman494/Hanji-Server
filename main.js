@@ -4,6 +4,9 @@ var dic = require('./dictionary');
 const express = require('express');
 const app = express();
 
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 3000;
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '192.168.1.9';
+
 app.get('/', function(req, res){
     dic.searchGlosbeKor('듣다',function(translation){
         res.send(translation);
@@ -48,7 +51,7 @@ app.get('/defineEng=:term', function(req, res){
     });
 });
 
-app.listen(3000, function() {
+app.listen(server_port,server_ip_address, function() {
     console.log('Listening on port 3000!')
 });
 
