@@ -5,6 +5,10 @@
   "main": "main.js",
   "author": "Akash Eldo",
   "license": "ISC",
+  "repository" : { 
+    "type" : "git",
+    "url" : "https://github.com/Ninjaman494/KoreanConjugator.git"
+  },
   "dependencies": {
     "express": "^4.16.2",
     "x-ray": "^2.3.2"
