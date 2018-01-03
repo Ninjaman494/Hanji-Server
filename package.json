@@ -6,6 +6,7 @@
   "author": "Akash Eldo",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "x-ray": "^2.3.2"
   }
 }

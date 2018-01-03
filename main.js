@@ -1,11 +1,16 @@
 var conjugator = require('./korean/conjugator');
 var stemmer = require('./korean/stemmer');
+var dic = require('./dictionary');
 const express = require('express');
 const app = express();
 
 app.get('/', function(req, res){
-    conjugator.conjugate("가다",true,function(conjugations){
-        res.json(conjugations[0]);
+    dic.search('go',function(value){
+        if(value == ""){
+            res.send("Not found")
+        }else {
+            res.send(value);
+        }
     });
 });
 
@@ -33,6 +38,16 @@ app.get('/search=:term', function (req, res) {
 app.get('/stem=:term', function(req, res) {
     var infin = stemmer.stem(req.params.term);
     res.send(infin);
+});
+
+app.get('/definition=:term', function(req, res){
+    dic.search(req.params.term,function(value){
+        if(value == ""){
+            res.send("Not found")
+        }else {
+            res.send(value);
+        }
+    });
 });
 
 app.listen(3000, function() {
