@@ -52,7 +52,7 @@ app.get('/defineEng=:term', function(req, res){
 });
 
 app.listen(server_port,server_ip_address, function() {
-    console.log('Listening on port 3000!')
+    console.log('Listening on:'+server_ip_address+':'+server_port);
 });
 
 // Implment String.format. First, check if it isn't implemented already.
