@@ -15,11 +15,7 @@ app.get('/', function(req, res){
 
 // Works for both conjugated and infinitive forms
 app.get('/search=:term', function (req, res) {
-    var term = stemmer.stem(req.params.term);
-    if(term == undefined || term.substr(term.length-2,term.length) == '드다'){ // Ending only appears for infinitive forms
-            term = req.params.term;
-    }
-
+    var term = req.params.term;
     var regular = true;
     for (irregular_name in conjugator.verb_types) {
         var func = conjugator.verb_types[irregular_name];
@@ -35,8 +31,23 @@ app.get('/search=:term', function (req, res) {
 });
 
 app.get('/stem=:term', function(req, res) {
-    var infin = stemmer.stem(req.params.term);
-    res.send(infin);
+    var stemList = stemmer.stem(req.params.term);
+    if(stemList.length == 1){
+        var stem = stemList[0].key;
+        if(stem.substr(stem.length-2,stem.length) == '드다'){
+            stem = req.params.term;
+        }
+        res.redirect('/search='+stem);
+    }else {
+        stemList.forEach(function(item, index, array) {
+            dic.searchGlosbeKor(item.key,function(value){
+               stemList[index].def = value;
+               if(index == array.length-1){
+                   res.json(stemList);
+               }
+            });
+        });
+    }
 });
 
 app.get('/defineKor=:term', function(req, res){

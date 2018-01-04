@@ -51,6 +51,8 @@ stemmer.generate_stems = function(verb) {
 stemmer.stem = function(verb) {
     // remove all conjugators that return what was passed in
     var ignored_conjugations = {};
+    var returnlist = [];
+    var possConjugations = [];
     for (var f in conjugator) {
         if (conjugator[f].conjugation && conjugator[f]('test') == 'test') {
             ignored_conjugations[f] = true;
@@ -67,12 +69,17 @@ stemmer.stem = function(verb) {
                 if (!conjugator[f].conjugation || (f in ignored_conjugations && original)) {
                     continue;
                 }
-                if (conjugator[f](possible_stem) == verb) {  // This line causes 듣다 bug, solution is to return multiple verbs.
-                    return possible_stem + '다';
+                if (conjugator[f](possible_stem) == verb) {
+                    var infin = {'key': possible_stem + '다'};
+                    if(possConjugations.indexOf(infin.key) == -1 && infin.key.indexOf(' ') == -1) {
+                        returnlist.push(infin);
+                        possConjugations.push(infin.key);
+                    }
                 }
             }
         }
     }
+    return returnlist;
 };
 
 stemmer.stem_lookup = function(phrase, select_by_stem, callback) {
@@ -145,7 +152,7 @@ stemmer.base_forms = function(infinitive) {
     });
 
     return base_forms;
-}
+};
 
 // Export functions to node
 try {
