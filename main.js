@@ -39,10 +39,12 @@ app.get('/stem=:term', function(req, res) {
         }
         res.redirect('/search='+stem);
     }else {
+        var defCount = 0;
         stemList.forEach(function(item, index, array) {
             dic.searchGlosbeKor(item.key,function(value){
                stemList[index].def = value;
-               if(index == array.length-1){
+               defCount++;
+               if(defCount == array.length){
                    res.json(stemList);
                }
             });
