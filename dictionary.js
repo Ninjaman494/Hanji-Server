@@ -17,28 +17,38 @@ this.searchNaver = function (term, callback) {
 };
 
 this.searchGlosbeEng = function(term,verbOnly, callback) {
-    var url = GLOSBE_URL.format('eng','kor',term);
+    let url = GLOSBE_URL.format('eng', 'kor', term);
     console.log(url);
-    var stream = request({url: url}).pipe(JSONStream.parse('tuc.*.phrase.text'));
-    var dataReceived = [];
+    let stream = request({url: url}).pipe(JSONStream.parse('tuc.*.phrase.text'));
+    let dataReceived = [];
+    let dataSent = false;
     stream.on('data', function(data) {
         console.log('received:', data);
         if(verbOnly){
             if(data.charAt(data.length-1) == '다' && data.regexIndexOf(/[\u1100-\u11ff]|[!"'?.\/]/g) == -1){
-                dataReceived.push(data);
+                if(dataReceived.length < 5) {
+                    dataReceived.push(data);
+                }if(dataReceived.length == 5 && !dataSent){
+                    dataSent = true;
+                    callback(dataReceived);
+                }
             }
         }else{
             dataReceived.push(data);
         }
     });
     stream.on('end', function(){
-        if(dataReceived.length == 0) {
+        if(!dataSent) {
             console.log('Not found');
             callback('Not found');
-        }else{
+        }else if(!verbOnly){
             callback(dataReceived);
         }
     });
+
+    stream.on('error', function () {
+        callback('Error occurred');
+    })
 };
 
 this.searchGlosbeKor = function(term, callback) {
