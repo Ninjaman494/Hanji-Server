@@ -16,20 +16,27 @@ this.searchNaver = function (term, callback) {
     });
 };
 
-this.searchGlosbeEng = function(term, callback) {
+this.searchGlosbeEng = function(term,verbOnly, callback) {
     var url = GLOSBE_URL.format('eng','kor',term);
     console.log(url);
-    var stream = request({url: url}).pipe(JSONStream.parse('tuc.0.phrase.text'));
-    var dataReceived = false;
+    var stream = request({url: url}).pipe(JSONStream.parse('tuc.*.phrase.text'));
+    var dataReceived = [];
     stream.on('data', function(data) {
-        dataReceived = true;
         console.log('received:', data);
-        callback(data);
+        if(verbOnly){
+            if(data.charAt(data.length-1) == '다' && data.regexIndexOf(/[\u1100-\u11ff]|[!"'?.\/]/g) == -1){
+                dataReceived.push(data);
+            }
+        }else{
+            dataReceived.push(data);
+        }
     });
     stream.on('end', function(){
-        if(!dataReceived) {
+        if(dataReceived.length == 0) {
             console.log('Not found');
             callback('Not found');
+        }else{
+            callback(dataReceived);
         }
     });
 };
@@ -37,7 +44,12 @@ this.searchGlosbeEng = function(term, callback) {
 this.searchGlosbeKor = function(term, callback) {
     var url = GLOSBE_URL.format('kor','eng',encodeURIComponent(term));
     console.log(url);
-    var stream = request({url: url}).pipe(JSONStream.parse('tuc.*.phrase.text'));
+    try{
+        var stream = request({url: url}).pipe(JSONStream.parse('tuc.*.phrase.text'));
+    }catch(e){
+        console.log(e);
+        callback("Error occurred");
+    }
 
     var dataReceived = 0;
     var string = '';
@@ -64,4 +76,7 @@ this.searchGlosbeKor = function(term, callback) {
             callback(string);
         }
     });
+    stream.on('error', function(){
+        callback('Error occurred');
+    })
 };

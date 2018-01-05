@@ -38,30 +38,29 @@ public class Conjugator {
         //return null;
     }
 
+    public static boolean isHangul(String korean){
+        korean = korean.replace(" ","");
+        for(int i=0;i<korean.length();i++){
+            char c = korean.charAt(i);
+            //System.out.println("char:"+c);
+            if(!((int)c >= '가' && (int)c <= '힣')){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static void main(String[] args){
-        Syllable syllable = new Syllable("해");
-        String s = Normalizer.normalize(syllable.toString(), Normalizer.Form.NFD);
-        System.out.println(syllable+": "+s.charAt(1)+"("+(int)s.charAt(1)+")");
+        System.out.println("하다: "+isHangul("하다"));
+        System.out.println("어울리다: "+isHangul("어울리다"));
+        System.out.println("나쁘다: "+isHangul("나쁘다"));
+        System.out.println("학 거예요: " +isHangul("학 거예요"));
+        System.out.println("가:"+isHangul("가"));
+        System.out.println("힣: "+isHangul("힣"));
+        System.out.println("Hi: "+isHangul("Hi"));
+        System.out.println("I like big butts: "+isHangul("I like big butts"));
+        System.out.println("supercalifragilisticexpialidocious: "+isHangul("supercalifragilisticexpialidocious"));
+        System.out.println("おはようございます:"+isHangul("おはようございます"));
 
-        char i = s.charAt(0);
-        char m = s.charAt(1);
-        char e = s.charAt(2);
-        System.out.println(""+i+m+e); // idk it just works
-
-        String word ="없다";
-        Syllable[] syllables = deconstructWord(word);
-
-        System.out.print(word+": ");
-        for(Syllable j: syllables) {
-            System.out.print(j + " ");
-        }
-        for(Syllable j: syllables){
-            System.out.print("\n"+j+": "+j.getInitial()+" "+j.getMiddle()+" "+j.getEnd());
-        }
-        System.out.println("");
-        Syllable[] conjugated = conjugateToYo(syllables);
-        for(Syllable j: conjugated) {
-            System.out.print(j);
-        }
     }
 }

@@ -67,7 +67,7 @@ app.get('/defineKor=:term', function(req, res){
 });
 
 app.get('/defineEng=:term', function(req, res){
-    dic.searchGlosbeEng(req.params.term,function(value){
+    dic.searchGlosbeEng(req.params.term,true,function(value){
         res.send(value);
     });
 });
@@ -88,3 +88,8 @@ if (!String.prototype.format) {
         });
     };
 }
+
+String.prototype.regexIndexOf = function(regex, startpos) {
+    var indexOf = this.substring(startpos || 0).search(regex);
+    return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
+};
