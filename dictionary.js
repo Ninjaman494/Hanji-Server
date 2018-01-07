@@ -20,29 +20,33 @@ this.searchGlosbeEng = function(term,verbOnly, callback) {
     let url = GLOSBE_URL.format('eng', 'kor', term);
     console.log(url);
     let stream = request({url: url}).pipe(JSONStream.parse('tuc.*.phrase.text'));
-    let dataReceived = [];
+    let termsList = [];
     let dataSent = false;
     stream.on('data', function(data) {
         console.log('received:', data);
         if(verbOnly){
             if(data.charAt(data.length-1) == '다' && data.regexIndexOf(/[\u1100-\u11ff]|[!"'?.\/]/g) == -1){
-                if(dataReceived.length < 5) {
-                    dataReceived.push(data);
-                }if(dataReceived.length == 5 && !dataSent){
+                if(termsList.length < 5) {
+                    termsList.push(data);
+                }if(termsList.length == 5 && !dataSent){
                     dataSent = true;
-                    callback(dataReceived);
+                    callback(termsList);
                 }
             }
         }else{
-            dataReceived.push(data);
+            termsList.push(data);
         }
     });
     stream.on('end', function(){
         if(!dataSent) {
-            console.log('Not found');
-            callback('Not found');
+            if (termsList.length == 0) {
+                console.log('sent: Not found');
+                callback('Not found');
+            }else{
+                callback(termsList);
+            }
         }else if(!verbOnly){
-            callback(dataReceived);
+            callback(termsList);
         }
     });
 
