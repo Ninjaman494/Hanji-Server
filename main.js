@@ -4,8 +4,8 @@ var dic = require('./dictionary');
 const express = require('express');
 const app = express();
 
-var server_port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
-var server_ip_address = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
+const server_port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
+const server_ip_address = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 const CONJUGATE_ROUTE = '/conjugate=';
 
 app.get('/', function(req, res){
@@ -16,10 +16,10 @@ app.get('/', function(req, res){
 
 // Works for both conjugated and infinitive forms
 app.get(CONJUGATE_ROUTE+':term', function (req, res) {
-    var term = req.params.term;
-    var regular = true;
+    let term = req.params.term;
+    let regular = true;
     for (irregular_name in conjugator.verb_types) {
-        var func = conjugator.verb_types[irregular_name];
+        let func = conjugator.verb_types[irregular_name];
         if (func(conjugator.base(term))) {
             regular = false;
             break;
@@ -36,7 +36,7 @@ app.get('/searchKor=:term', function(req, res) {
     if(stemList.length == 0){
         res.redirect(CONJUGATE_ROUTE+req.params.term);
     }if(stemList.length == 1){
-        var stem = stemList[0].key;
+        let stem = stemList[0].key;
         if(stem == undefined || stem.substr(stem.length-2,stem.length) == '드다'){
             stem = req.params.term;
         }
@@ -56,8 +56,7 @@ app.get('/searchKor=:term', function(req, res) {
 });
 
 app.get('/stem=:term', function(req, res) {
-    var stemList = stemmer.stem(req.params.term);
-    res.send(stemList);
+    res.send(stemmer.stem(req.params.term));
 });
 
 app.get('/defineKor=:term', function(req, res){
@@ -90,6 +89,6 @@ if (!String.prototype.format) {
 }
 
 String.prototype.regexIndexOf = function(regex, startpos) {
-    var indexOf = this.substring(startpos || 0).search(regex);
+    let indexOf = this.substring(startpos || 0).search(regex);
     return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
 };

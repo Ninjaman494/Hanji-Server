@@ -7,7 +7,7 @@ const NAVER_ENDIC_URL = "http://endic.naver.com/search.nhn?sLn=kr&searchOption=a
 const GLOSBE_URL = "https://glosbe.com/gapi/translate?from={0}&dest={1}&format=json&phrase={2}";
 
 this.searchNaver = function (term, callback) {
-    var url = NAVER_ENDIC_URL+encodeURIComponent(term);
+    const url = NAVER_ENDIC_URL + encodeURIComponent(term);
     console.log(url);
     x(url,".fnt_k05")(function(err,value){
         value = value.replace(/ *\([^)]*\) */, "");
@@ -17,7 +17,7 @@ this.searchNaver = function (term, callback) {
 };
 
 this.searchGlosbeEng = function(term,verbOnly, callback) {
-    let url = GLOSBE_URL.format('eng', 'kor', term);
+    const url = GLOSBE_URL.format('eng', 'kor', term);
     console.log(url);
     let stream = request({url: url}).pipe(JSONStream.parse('tuc.*.phrase.text'));
     let termsList = [];
@@ -56,7 +56,7 @@ this.searchGlosbeEng = function(term,verbOnly, callback) {
 };
 
 this.searchGlosbeKor = function(term, callback) {
-    var url = GLOSBE_URL.format('kor','eng',encodeURIComponent(term));
+    const url = GLOSBE_URL.format('kor', 'eng', encodeURIComponent(term));
     console.log(url);
     try{
         var stream = request({url: url}).pipe(JSONStream.parse('tuc.*.phrase.text'));
