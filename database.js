@@ -2,8 +2,8 @@ let pg = require("pg");
 const conString = "postgresql://postgres:password@127.0.0.1:5432/kengdic";
 
 const SEP = "; ";
-const SEARCH_KOR = "SELECT def FROM korean_english WHERE word LIKE '%다' and word LIKE $1";
-const SEARCH_ENG = "SELECT word FROM korean_english WHERE word LIKE '%다' and UPPER(def) LIKE UPPER($1)";
+const SEARCH_KOR = "SELECT DISTINCT def FROM korean_english WHERE word LIKE '%다' and word LIKE $1";
+const SEARCH_ENG = "SELECT word FROM korean_english WHERE word LIKE '%다' and (UPPER(def) LIKE UPPER($1) OR UPPER(def) LIKE UPPER($2))";
 
 this.searchKor = function (term, callback) {
     let client = new pg.Client(conString);
@@ -30,7 +30,7 @@ this.searchKor = function (term, callback) {
 this.searchEng = function (term,callback) {
     let client = new pg.Client(conString);
     client.connect();
-    client.query(SEARCH_ENG,['%'+term],(err, res) => {
+    client.query(SEARCH_ENG,['% '+term,term],(err, res) => {
         let results = [];
         console.log(err ? err.stack : res.rows);
         res.rows.forEach(function(element){
