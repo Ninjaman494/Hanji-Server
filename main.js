@@ -81,7 +81,13 @@ app.listen(server_port,server_ip_address, function() {
 // Start Google Cloud proxy
 const string = FILE_ROUTE +"./cloud_sql_proxy -instances=hanji-191819:us-central1:hanji-1=tcp:5432 -credential_file="+FILE_ROUTE+"Hanji-d0f99eaccaf4.json";
 console.log("cmd string: "+string);
-cmd.run(string);
+cmd.get("wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy",function(value){
+   console.log("wget response: "+value);
+   cmd.get("chmod +x cloud_sql_proxy",function(value){
+       console.log("chmod response: "+value);
+       cmd.run(string);
+    });
+});
 
 // Implment String.format. First, check if it isn't implemented already.
 if (!String.prototype.format) {
