@@ -47,13 +47,13 @@ app.get('/searchKor=:term', function(req, res) {
     }else {
         var defCount = 0;
         stemList.forEach(function(item, index, array) {
-            dic.searchGlosbeKor(item.key,function(value){
-               stemList[index].def = value;
-               defCount++;
-               if(defCount == array.length){
-                   res.json(stemList);
-               }
-            });
+            database.searchKor(item.key,function(value){
+                stemList[index].def = value;
+                defCount++;
+                if(defCount == array.length){
+                    res.json(stemList);
+                }
+            })
         });
     }
 });
