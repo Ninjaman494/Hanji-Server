@@ -1,16 +1,19 @@
 var conjugator = require('./korean/conjugator');
 var stemmer = require('./korean/stemmer');
 var dic = require('./dictionary');
+var cmd=require('node-cmd');
+let database = require('./database');
 const express = require('express');
 const app = express();
 
 const server_port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
 const server_ip_address = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
+const FILE_ROUTE = "";
 const CONJUGATE_ROUTE = '/conjugate=';
 
 app.get('/', function(req, res){
-    dic.searchGlosbeKor('듣다',function(translation){
-        res.send(translation);
+    database.searchKor('하다',function(results){
+        res.send(results)
     });
 });
 
@@ -60,20 +63,25 @@ app.get('/stem=:term', function(req, res) {
 });
 
 app.get('/defineKor=:term', function(req, res){
-    dic.searchGlosbeKor(req.params.term,function(value){
-        res.send(value);
+    database.searchKor(req.params.term , function(value){
+        res.send(value)
     });
 });
 
 app.get('/defineEng=:term', function(req, res){
-    dic.searchGlosbeEng(req.params.term,true,function(value){
-        res.send(value);
-    });
+   database.searchEng(req.params.term,function(value){
+       res.send(value);
+   })
 });
 
 app.listen(server_port,server_ip_address, function() {
     console.log('Listening on:'+server_ip_address+':'+server_port);
 });
+
+// Start Google Cloud proxy
+const string = FILE_ROUTE +"./cloud_sql_proxy -instances=hanji-191819:us-central1:hanji-1=tcp:5432 -credential_file="+FILE_ROUTE+"Hanji-d0f99eaccaf4.json";
+console.log("cmd string: "+string);
+cmd.run(string);
 
 // Implment String.format. First, check if it isn't implemented already.
 if (!String.prototype.format) {

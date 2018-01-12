@@ -5,14 +5,27 @@ var x = Xray();
 
 const NAVER_ENDIC_URL = "http://endic.naver.com/search.nhn?sLn=kr&searchOption=all&query=";
 const GLOSBE_URL = "https://glosbe.com/gapi/translate?from={0}&dest={1}&format=json&phrase={2}";
+const BAB_ENG_URL = "https://en.bab.la/dictionary/english-korean/inexpensive";
 
 this.searchNaver = function (term, callback) {
     const url = NAVER_ENDIC_URL + encodeURIComponent(term);
     console.log(url);
     x(url,".fnt_k05")(function(err,value){
         value = value.replace(/ *\([^)]*\) */, "");
-        console.log(value.trim());
+
         callback(value.trim())
+    });
+};
+
+this.searchBabEng = function (term, callback) {
+    const url = BAB_ENG_URL;
+    console.log(url);
+    x(url,".sense-group-results")(function(err,value){
+        console.log(value);
+        value = value.replace(/\n/g, ",");
+        value = value.replace(/,/, "");
+        value = value.substr(0,value.length-5);
+        callback(value);
     });
 };
 
