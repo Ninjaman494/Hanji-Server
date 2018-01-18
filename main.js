@@ -89,10 +89,10 @@ console.log("cmd string: "+string);
     });
 });*/
 
-cmd.get("chmod +x cloud_sql_proxy",function(value){
+/*cmd.get("chmod +x cloud_sql_proxy",function(value){
     console.log("chmod response: "+value);
     cmd.run(string);
-});
+});*/
 
 // Implment String.format. First, check if it isn't implemented already.
 if (!String.prototype.format) {
