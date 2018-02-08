@@ -603,6 +603,19 @@ conjugator.inquisitive_present_formal_high = function(infinitive, regular) {
 };
 conjugator.inquisitive_present_formal_high.conjugation = true;
 
+conjugator.inquisitive_present_honorific_low = function(infinitive, regular) {
+    return conjugator.imperative_present_informal_high(infinitive,regular);
+};
+conjugator.inquisitive_present_honorific_low.conjugation = true;
+
+conjugator.inquisitive_present_honorific_high = function(infinitive, regular) {
+    if (conjugator.is_l_irregular(conjugator.base(infinitive, regular))) {
+        return conjugator.drop_l(conjugator.base3(infinitive, regular), '십니까');
+    }
+    return conjugator.merge(conjugator.base3(infinitive, regular), '십니까');
+};
+conjugator.inquisitive_present_honorific_high.conjugation = true;
+
 conjugator.inquisitive_past_informal_low = function(infinitive, regular) {
     return conjugator.declarative_past_informal_low(infinitive, regular) + '?';
 };
@@ -622,6 +635,19 @@ conjugator.inquisitive_past_formal_high = function(infinitive, regular) {
     return conjugator.merge(conjugator.past_base(infinitive, regular), '습니까?');
 };
 conjugator.inquisitive_past_formal_high.conjugation = true;
+
+conjugator.inquisitive_past_honorific_low = function(infinitive, regular) {
+    return conjugator.declarative_past_honorific_low(infinitive,regular);
+};
+conjugator.inquisitive_past_honorific_low.conjugation = true;
+
+conjugator.inquisitive_past_honorific_high = function(infinitive, regular) {
+    if (conjugator.is_l_irregular(conjugator.base(infinitive, regular))) {
+        return conjugator.drop_l(conjugator.base3(infinitive, regular), '셨습니까');
+    }
+    return conjugator.merge(conjugator.base3(infinitive, regular), '셨습니까');
+};
+conjugator.inquisitive_past_honorific_high.conjugation = true;
 
 conjugator.imperative_present_informal_low = function(infinitive, regular) {
     return conjugator.declarative_present_informal_low(infinitive, regular);
