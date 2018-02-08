@@ -118,7 +118,7 @@ conjugator.merge_rules = [
     conjugator.vowel_contraction('ㅖ', 'ㅓ', 'ㅖ'),
     conjugator.vowel_contraction('ㅞ', 'ㅓ', 'ㅞ'),
     conjugator.dont_insert_eh,
-    conjugator.insert_eh({'면': true, '세': true, '십': true, '셨': true, '실': true}),
+    conjugator.insert_eh({'면': true, '세': true, '십': true, '셨': true, '실': true, '시': true}),
     // default rule
     function (x, y) {
         return ['join', x + y];
@@ -575,6 +575,22 @@ conjugator.declarative_future_conditional_formal_high = function(infinitive, reg
 };
 conjugator.declarative_future_conditional_formal_high.conjugation = true;
 
+conjugator.declarative_future_conditional_honorific_low = function(infinitive, regular) {
+    if (conjugator.is_l_irregular(conjugator.base(infinitive, regular))) {
+        return conjugator.drop_l(conjugator.base3(infinitive, regular), '시겠어요');
+    }
+    return conjugator.merge(conjugator.base3(infinitive, regular), '시겠어요');
+};
+conjugator.declarative_future_conditional_honorific_low.conjugation = true;
+
+conjugator.declarative_future_conditional_honorific_high = function(infinitive, regular) {
+    if (conjugator.is_l_irregular(conjugator.base(infinitive, regular))) {
+        return conjugator.drop_l(conjugator.base3(infinitive, regular), '시겠습니다');
+    }
+    return conjugator.merge(conjugator.base3(infinitive, regular), '시겠습니다');
+};
+conjugator.declarative_future_conditional_honorific_high.conjugation = true;
+
 conjugator.inquisitive_present_informal_low = function(infinitive, regular) {
     return conjugator.merge(conjugator.declarative_present_informal_low(infinitive, regular), '?');
 };
@@ -698,6 +714,16 @@ conjugator.propositive_present_formal_high = function(infinitive, regular) {
     return conjugator.merge(conjugator.base3(infinitive, regular), '읍시다');
 };
 conjugator.propositive_present_formal_high.conjugation = true;
+
+conjugator.propositive_present_honorific_low = function(infinitive, regular) {
+    return conjugator.declarative_present_honorific_low(infinitive,regular)
+};
+conjugator.propositive_present_honorific_low.conjugation = true;
+
+conjugator.propositive_present_honorific_high = function(infinitive, regular) {
+    return conjugator.declarative_present_honorific_high(infinitive,regular);
+};
+conjugator.propositive_present_honorific_high.conjugation = true;
 
 conjugator.connective_if = function(infinitive, regular) {
     return conjugator.merge(conjugator.base3(infinitive, regular), '면');
