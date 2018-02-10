@@ -691,6 +691,16 @@ conjugator.imperative_present_formal_high = function(infinitive, regular) {
 };
 conjugator.imperative_present_formal_high.conjugation = true;
 
+conjugator.imperative_present_honorific_low = function(infinitive, regular) {
+    return conjugator.imperative_present_informal_high(infinitive,regular);
+};
+conjugator.imperative_present_honorific_low.conjugation = true;
+
+conjugator.imperative_present_honorific_high = function(infinitive, regular) {
+    return conjugator.imperative_present_formal_high(infinitive,regular);
+};
+conjugator.imperative_present_honorific_high.conjugation = true;
+
 conjugator.propositive_present_informal_low = function(infinitive, regular) {
     return conjugator.declarative_present_informal_low(infinitive, regular);
 };
