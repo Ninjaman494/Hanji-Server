@@ -736,6 +736,12 @@ conjugator.connective_and = function(infinitive, regular) {
 };
 conjugator.connective_and.conjugation = true;
 
+conjugator.connective_but = function(infinitive, regular) {
+    infinitive = conjugator.base(infinitive, regular);
+    return conjugator.merge(conjugator.base(infinitive, regular), '지만');
+};
+conjugator.connective_but.conjugation = true;
+
 conjugator.nominal_ing = function(infinitive, regular) {
     return conjugator.merge(conjugator.base3(infinitive, regular), '음');
 };
