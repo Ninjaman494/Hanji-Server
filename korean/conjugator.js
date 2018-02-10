@@ -531,50 +531,50 @@ conjugator.declarative_future_conditional_formal_high = function(infinitive, reg
 conjugator.declarative_future_conditional_formal_high.conjugation = true;
 
 conjugator.inquisitive_present_informal_low = function(infinitive, regular) {
-    return conjugator.merge(conjugator.declarative_present_informal_low(infinitive, regular), '?');
+    return conjugator.declarative_present_informal_low(infinitive, regular);
 };
 conjugator.inquisitive_present_informal_low.conjugation = true;
 
 conjugator.inquisitive_present_informal_high = function(infinitive, regular) {
-    return conjugator.merge(conjugator.declarative_present_informal_high(infinitive, regular), '?');
+    return conjugator.declarative_present_informal_high(infinitive, regular);
 };
 conjugator.inquisitive_present_informal_high.conjugation = true;
 
 conjugator.inquisitive_present_formal_low = function(infinitive, regular) {
     infinitive = conjugator.base(infinitive, regular);
     if (conjugator.is_l_irregular(infinitive, regular)) {
-        return conjugator.drop_l(infinitive, '니?');
+        return conjugator.drop_l(infinitive, '니');
     }
-    return conjugator.merge(infinitive, '니?');
+    return conjugator.merge(infinitive, '니');
 };
 conjugator.inquisitive_present_formal_low.conjugation = true;
 
 conjugator.inquisitive_present_formal_high = function(infinitive, regular) {
     infinitive = conjugator.base(infinitive, regular);
     if (conjugator.is_l_irregular(infinitive, regular)) {
-        return conjugator.drop_l_and_borrow_padchim(infinitive, '습니까?');
+        return conjugator.drop_l_and_borrow_padchim(infinitive, '습니까');
     }
-    return conjugator.merge(infinitive, '습니까?');
+    return conjugator.merge(infinitive, '습니까');
 };
 conjugator.inquisitive_present_formal_high.conjugation = true;
 
 conjugator.inquisitive_past_informal_low = function(infinitive, regular) {
-    return conjugator.declarative_past_informal_low(infinitive, regular) + '?';
+    return conjugator.declarative_past_informal_low(infinitive, regular);
 };
 conjugator.inquisitive_past_informal_low.conjugation = true;
 
 conjugator.inquisitive_past_informal_high = function(infinitive, regular) {
-    return conjugator.merge(conjugator.declarative_past_informal_high(infinitive, regular), '?');
+    return conjugator.declarative_past_informal_high(infinitive, regular);
 };
 conjugator.inquisitive_past_informal_high.conjugation = true;
 
 conjugator.inquisitive_past_formal_low = function(infinitive, regular) {
-    return conjugator.merge(conjugator.past_base(infinitive, regular), '니?');
+    return conjugator.merge(conjugator.past_base(infinitive, regular), '니');
 };
 conjugator.inquisitive_past_formal_low.conjugation = true;
 
 conjugator.inquisitive_past_formal_high = function(infinitive, regular) {
-    return conjugator.merge(conjugator.past_base(infinitive, regular), '습니까?');
+    return conjugator.merge(conjugator.past_base(infinitive, regular), '습니까');
 };
 conjugator.inquisitive_past_formal_high.conjugation = true;
 
