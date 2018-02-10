@@ -94,7 +94,7 @@ conjugator.lm_merge = function(x, y) {
 */
 
 conjugator.merge_rules = [
-    conjugator.no_padchim_rule({'을': true, '습': true, '읍': true, '는': true, '음': true}),
+    conjugator.no_padchim_rule({'을': true, '습': true, '읍': true, '는': true, '음': true, '은':true}),
     conjugator.lm_merge,
     conjugator.vowel_contraction('ㅐ', 'ㅓ', 'ㅐ'),
     conjugator.vowel_contraction('ㅡ', 'ㅓ', 'ㅓ'),
@@ -756,6 +756,11 @@ conjugator.nominal_ing = function(infinitive, regular) {
     return conjugator.merge(conjugator.base3(infinitive, regular), '음');
 };
 conjugator.nominal_ing.conjugation = true;
+
+conjugator.adjective = function(infinitive, regular) {
+    return conjugator.merge(conjugator.base3(infinitive, regular), '은');
+};
+conjugator.adjective.conjugation = true;
 
 conjugator.conjugations = [];
 
