@@ -758,7 +758,12 @@ conjugator.nominal_ing = function(infinitive, regular) {
 conjugator.nominal_ing.conjugation = true;
 
 conjugator.adjective = function(infinitive, regular) {
-    return conjugator.merge(conjugator.base3(infinitive, regular), '은');
+    let stem = conjugator.base3(infinitive, regular);
+    if(stem.charAt(stem.length-1) == '있' || stem.charAt(stem.length-1) == '없' ){ // special conjugations for these forms
+        return conjugator.merge(stem, '는');
+    }else {
+        return conjugator.merge(stem, '은');
+    }
 };
 conjugator.adjective.conjugation = true;
 
