@@ -12,9 +12,9 @@ const FILE_ROUTE = "";
 const CONJUGATE_ROUTE = '/conjugate=';
 
 app.get('/', function(req, res){
-    conjugator.conjugate('이다', true, true, function(results){
-        res.send(results)
-    });
+    database.searchKor('달다',function(data){
+        res.send(data);
+    })
 });
 
 // Works for both conjugated and infinitive forms

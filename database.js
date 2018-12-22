@@ -1,15 +1,23 @@
-let pg = require("pg");
-const conString = "postgresql://postgres:password@postgresql:5432/db";
-
-const SEP = "; ";
-const SEARCH_KOR = "SELECT DISTINCT def FROM korean_english WHERE word LIKE '%다' and word LIKE $1";
-const SEARCH_ENG = "SELECT word,def FROM korean_english WHERE word LIKE '%다' and (UPPER(def) LIKE UPPER($1) " +
-    "OR UPPER(def) LIKE UPPER($2) " +
-    "OR UPPER(def) like UPPER($3) " +
-    "OR UPPER(def) LIKE upper($4)) LIMIT 10";
+const admin = require('firebase-admin');
+let serviceAccount = 'hanji-bd63d-849ae0babd80.json';
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
+const db = admin.firestore();
 
 
 this.searchKor = function (term, callback) {
+    db.collection('words').where('term','==',term).get()
+        .then(docs => {
+            let results = "";
+            docs.forEach(doc =>{
+                doc.data().definitions.forEach(def =>{
+                    results += '</br>' + def;
+                })
+            });
+            callback(results);
+        });
+/*
     let client = new pg.Client(conString);
     client.connect();
     client.query(SEARCH_KOR,[term],(err, res) => {
@@ -28,11 +36,11 @@ this.searchKor = function (term, callback) {
         }
         callback(results);
         client.end()
-    });
+    });*/
 };
 
 this.searchEng = function (term,callback) {
-    let client = new pg.Client(conString);
+    /*let client = new pg.Client(conString);
     client.connect();
     let terms = ['% '+term, term, term+",%",'% '+term+",%"];
     client.query(SEARCH_ENG,terms,(err, res) => {
@@ -44,5 +52,5 @@ this.searchEng = function (term,callback) {
         });
         callback(results);
         client.end()
-    });
+    });*/
 };
