@@ -13,12 +13,7 @@
     "url": "https://github.com/Ninjaman494/KoreanConjugator.git"
   },
   "dependencies": {
-    "JSONStream": "^1.3.2",
     "express": "^4.16.2",
-    "firebase-admin": "^6.4.0",
-    "node-cmd": "^3.0.0",
-    "pg": "^7.4.1",
-    "request": "^2.88.0",
-    "x-ray": "^2.3.3"
+    "firebase-admin": "^6.4.0"
   }
 }
