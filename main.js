@@ -12,7 +12,7 @@ const FILE_ROUTE = "";
 const CONJUGATE_ROUTE = '/conjugate=';
 
 app.get('/', function(req, res){
-    database.searchKor('하다',function(results){
+    conjugator.conjugate('이다', true, true, function(results){
         res.send(results)
     });
 });

@@ -757,10 +757,10 @@ conjugator.nominal_ing = function(infinitive, regular) {
 };
 conjugator.nominal_ing.conjugation = true;
 
-conjugator.adjective = function(infinitive, regular) {
+conjugator.adjective = function(infinitive, regular, isAdj) {
     let stem = conjugator.base3(infinitive, regular);
-    if(stem.charAt(stem.length-1) == '있' || stem.charAt(stem.length-1) == '없' ){ // special conjugations for these forms
-        return conjugator.merge(stem, '는');
+    if(stem.charAt(stem.length-1) == '있' || stem.charAt(stem.length-1) == '없' || !isAdj){ // special conjugations for these forms
+        return stem + '는';
     }else {
         return conjugator.merge(stem, '은');
     }
@@ -809,7 +809,7 @@ conjugator.display_conjugations = function(infinitive, regular, callback) {
     callback(out);
 };
 
-conjugator.each_conjugation = function(infinitive, regular, callback) {
+conjugator.each_conjugation = function(infinitive, regular, isAdj, callback) {
     infinitive = conjugator.base(infinitive, regular);
     for (conjugation in conjugator) {
         conjugator.reasons = [];
@@ -818,7 +818,7 @@ conjugator.each_conjugation = function(infinitive, regular, callback) {
             r.type = 'conjugation';
             r.infinitive = infinitive + '다';
             r.conjugation_name = conjugation.replace(/_/g, ' ');
-            r.conjugated = conjugator[conjugation](infinitive, regular);
+            r.conjugated = conjugator[conjugation](infinitive, regular, isAdj);
             r.pronunciation = pronunciation.get_pronunciation(r.conjugated);
             r.romanized = romanization.romanize(r.pronunciation);
             r.reasons = [];
@@ -830,9 +830,9 @@ conjugator.each_conjugation = function(infinitive, regular, callback) {
     }
 };
 
-conjugator.conjugate = function(infinitive, regular, callback) {
+conjugator.conjugate = function(infinitive, regular, isAdj, callback) {
     var conjugations = [];
-    conjugator.each_conjugation(infinitive, regular, function(result) {
+    conjugator.each_conjugation(infinitive, regular, isAdj, function(result) {
         conjugations.push(result);
     });
     callback(conjugations);
