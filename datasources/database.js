@@ -28,7 +28,7 @@ class DatabaseAPI extends DataSource {
 
     async fetchEntry(id) {
         let doc = await this.db.collection('words').doc(id).get();
-        return doc ? this.entryReducer(doc) : null;
+        return doc.exists ? this.entryReducer(doc) : null;
     }
 
     async fetchExamples(id) {
