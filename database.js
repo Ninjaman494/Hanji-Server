@@ -8,14 +8,8 @@ const db = admin.firestore();
 
 this.searchKor = function (term, callback) {
     db.collection('words').where('term','==',term).get()
-        .then(docs => {
-            let results = "";
-            docs.forEach(doc =>{
-                doc.data().definitions.forEach(def =>{
-                    results += '</br>' + def;
-                })
-            });
-            callback(results);
+        .then(snapshot => {
+            callback(snapshot.docs[0].data());
         });
 /*
     let client = new pg.Client(conString);

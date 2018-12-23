@@ -26,8 +26,11 @@ app.get(CONJUGATE_ROUTE+':term', function (req, res) {
         }
     }
 
-    conjugator.conjugate(term,regular, function (conjugations) {
-        res.json(conjugations);
+    // Assumes term is either an Adjective of Verb - CHANGE FOR PRODUCTION
+    database.searchKor(term,function(data){
+        conjugator.conjugate(term, regular, data.pos == 'Adjective', function (conjugations) {
+            res.json(conjugations);
+        })
     })
 });
 
