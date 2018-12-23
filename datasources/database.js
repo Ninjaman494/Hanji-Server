@@ -31,13 +31,29 @@ class DatabaseAPI extends DataSource {
         return doc ? this.entryReducer(doc) : null;
     }
 
+    async fetchExamples(id) {
+        let snapshot = await this.db.collection('words').doc(id).collection('examples').get();
+        let examples = [];
+        snapshot.forEach(doc =>{
+            examples.push(this.exampleReducer(doc,id));
+        });
+        return examples;
+    }
+
+    exampleReducer(example,id){
+        return {
+            id: id,
+            sentence: example.data().sentence,
+            translation: example.data().translation
+        };
+    }
+
     entryReducer(entry){
         return {
             id: entry.id,
             term: entry.data().term,
             pos: entry.data().pos,
             definitions: entry.data().definitions,
-            examples: undefined,
             antonyms: entry.data().antonyms,
             synonyms: entry.data().synonyms
         }

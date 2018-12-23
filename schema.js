@@ -1,8 +1,9 @@
 const { gql } = require('apollo-server');
 const typeDefs = gql`
     type Query {
-        entries(term: ID!): [Entry]!
-        entry(id: String!): Entry
+        entries(term: String!): [Entry]!
+        entry(id: ID!): Entry
+        examples(id: ID!): [Example]!
     }
     
     type Entry {
@@ -10,13 +11,13 @@ const typeDefs = gql`
         term: String!
         pos: String!
         definitions: [String]!
-        examples: [Example]
         antonyms: [String]
         synonyms: [String]
     }
     
     type Example {
-        example: String!
+        id: ID!,
+        sentence: String!
         translation: String!
     }
 `;
