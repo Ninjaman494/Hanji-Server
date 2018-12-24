@@ -4,7 +4,7 @@ const typeDefs = gql`
         entries(term: String!): [Entry]!
         entry(id: ID!): Entry
         examples(id: ID!): [Example]!
-        conjugation(stem: String!, regular: Boolean!, isAdj: Boolean!): [Conjugation]!
+        conjugation(stem: String!, isAdj: Boolean!): [Conjugation]!
     }
     
     type Entry {

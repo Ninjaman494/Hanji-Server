@@ -6,8 +6,8 @@ module.exports = {
             dataSources.databaseAPI.fetchEntry(id),
         examples:(_, { id }, { dataSources }) =>
             dataSources.databaseAPI.fetchExamples(id),
-        conjugation:(_, {stem, regular, isAdj }, { dataSources }) =>
-            dataSources.conjugationAPI.fetchConjugations(stem,regular,isAdj),
+        conjugation:(_, {stem, isAdj }, { dataSources }) =>
+            dataSources.conjugationAPI.fetchConjugations(stem,isAdj),
     },
     Tense: {
         PRESENT: 'present',
