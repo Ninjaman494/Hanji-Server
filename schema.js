@@ -4,6 +4,7 @@ const typeDefs = gql`
         entries(term: String!): [Entry]!
         entry(id: ID!): Entry
         examples(id: ID!): [Example]!
+        conjugation(stem: String!, regular: Boolean!, isAdj: Boolean!): [Conjugation]!
     }
     
     type Entry {
@@ -19,6 +20,30 @@ const typeDefs = gql`
         id: ID!,
         sentence: String!
         translation: String!
+    }
+    
+    enum Tense {
+        PRESENT,
+        PAST,
+        FUTURE,
+        NONE
+    }
+    
+    enum SpeechLevel {
+        FORMAL_NON_POLITE,
+        INFORMAL_NON_POLITE,
+        INFORMAL_POLITE,
+        FORMAL_POLITE,
+        NONE
+    }
+    
+    type Conjugation {
+        name: String!
+        conjugation: String!
+        type: String!
+        tense: Tense!
+        speechLevel: SpeechLevel!
+        honorific: Boolean!
     }
 `;
 

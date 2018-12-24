@@ -1,4 +1,5 @@
 const DatabaseAPI = require('./datasources/database');
+const ConjugationAPI = require('./datasources/conjugation');
 const resolvers = require('./resolvers');
 
 const admin = require('firebase-admin');
@@ -14,6 +15,7 @@ const server = new ApolloServer({
     resolvers,
     dataSources: () => ({
         databaseAPI: new DatabaseAPI(db),
+        conjugationAPI: new ConjugationAPI(),
     })
 });
 
