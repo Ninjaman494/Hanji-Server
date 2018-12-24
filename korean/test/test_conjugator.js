@@ -285,33 +285,33 @@ assert.equal(conjugator.declarative_future_formal_high('가다'), '갈 겁니다
 assert.equal(conjugator.declarative_future_formal_high('앉다'), '앉을 겁니다');
 assert.equal(conjugator.declarative_future_formal_high('알다'), '알 겁니다');
 
-assert.equal(conjugator.declarative_future_conditional_informal_low('가다'), '가겠어');
+assert.equal(conjugator.suppositive_informal_low('가다'), '가겠어');
 
-assert.equal(conjugator.declarative_future_conditional_informal_high('가다'), '가겠어요');
+assert.equal(conjugator.suppositive_informal_high('가다'), '가겠어요');
 
-assert.equal(conjugator.declarative_future_conditional_formal_low('가다'), '가겠다');
+assert.equal(conjugator.suppositive_formal_low('가다'), '가겠다');
 
-assert.equal(conjugator.declarative_future_conditional_formal_high('가다'), '가겠습니다');
+assert.equal(conjugator.suppositive_formal_high('가다'), '가겠습니다');
 
-assert.equal(conjugator.inquisitive_present_informal_low('가다'), '가');
-assert.equal(conjugator.inquisitive_present_informal_low('하다'), '해');
+assert.equal(conjugator.interrogative_present_informal_low('가다'), '가');
+assert.equal(conjugator.interrogative_present_informal_low('하다'), '해');
 
-assert.equal(conjugator.inquisitive_present_informal_high('가다'), '가요');
-assert.equal(conjugator.inquisitive_present_informal_high('걷다'), '걸어요');
+assert.equal(conjugator.interrogative_present_informal_high('가다'), '가요');
+assert.equal(conjugator.interrogative_present_informal_high('걷다'), '걸어요');
 
-assert.equal(conjugator.inquisitive_present_formal_low('가다'), '가니');
-assert.equal(conjugator.inquisitive_present_formal_low('알다'), '아니');
+assert.equal(conjugator.interrogative_present_formal_low('가다'), '가니');
+assert.equal(conjugator.interrogative_present_formal_low('알다'), '아니');
 
-assert.equal(conjugator.inquisitive_present_formal_high('가다'), '갑니까');
-assert.equal(conjugator.inquisitive_present_formal_high('까맣다'), '까맣습니까');
+assert.equal(conjugator.interrogative_present_formal_high('가다'), '갑니까');
+assert.equal(conjugator.interrogative_present_formal_high('까맣다'), '까맣습니까');
 
-assert.equal(conjugator.inquisitive_past_informal_low('가다'), '갔어');
+assert.equal(conjugator.interrogative_past_informal_low('가다'), '갔어');
 
-assert.equal(conjugator.inquisitive_past_informal_high('가다'), '갔어요');
+assert.equal(conjugator.interrogative_past_informal_high('가다'), '갔어요');
 
-assert.equal(conjugator.inquisitive_past_formal_low('가다'), '갔니');
+assert.equal(conjugator.interrogative_past_formal_low('가다'), '갔니');
 
-assert.equal(conjugator.inquisitive_past_formal_high('가다'), '갔습니까');
+assert.equal(conjugator.interrogative_past_formal_high('가다'), '갔습니까');
 
 assert.equal(conjugator.imperative_present_informal_low('가다'), '가');
 
