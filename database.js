@@ -1,6 +1,5 @@
 let pg = require("pg");
-const conString = "postgresql://user:pass@postgres:5432/db";
-
+const conString = process.env.DB_URL || "postgresql://user:pass@localhost:5432/db";
 const SEP = "; ";
 const SEARCH_KOR = "SELECT DISTINCT def FROM korean_english WHERE word LIKE '%다' and word LIKE $1";
 const SEARCH_ENG = "SELECT word,def FROM korean_english WHERE word LIKE '%다' and (UPPER(def) LIKE UPPER($1) " +
@@ -11,6 +10,7 @@ const SEARCH_ENG = "SELECT word,def FROM korean_english WHERE word LIKE '%다' a
 
 this.searchKor = function (term, callback) {
     let client = new pg.Client(conString);
+    console.log('using: '+conString);
     client.connect();
     client.query(SEARCH_KOR,[term],(err, res) => {
         let results = "";
@@ -47,6 +47,7 @@ this.searchEng = function (term,callback) {
     });
 };
 
+/*
 this.searchKor('하다', results => {
     console.log(results)
-});
+});*/
