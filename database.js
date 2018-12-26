@@ -1,5 +1,5 @@
 let pg = require("pg");
-const conString = "postgresql://postgres:password@postgresql:5432/db";
+const conString = "postgresql://user:pass@localhost:5432/db";
 
 const SEP = "; ";
 const SEARCH_KOR = "SELECT DISTINCT def FROM korean_english WHERE word LIKE '%다' and word LIKE $1";
