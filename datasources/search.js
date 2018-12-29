@@ -1,6 +1,7 @@
 const { DataSource } = require('apollo-datasource');
 const rp = require('request-promise');
 const hangeul = require('../korean/hangeul');
+const stemmer = require('../korean/stemmer');
 
 class SearchAPI extends DataSource {
 
@@ -32,9 +33,26 @@ class SearchAPI extends DataSource {
         return await Promise.all(promises); // wait for promises to resolve, then return resulting documents
     }
 
+    async searchKorean(stems){
+        let promises = [];
+        stems.forEach(stem => {
+            promises.push(this.databaseAPI.fetchEntries(stem));
+        });
+
+        // Remove empty arrays from fetchEntries' result
+        let results = [];
+        let entries = await Promise.all(promises);
+        entries.forEach(array => {
+            if(array.length > 0){
+                results = results.concat(array);
+            }
+        });
+        return results;
+    }
+
     async search(query){
         if(hangeul.is_hangeul_string(query)){
-            return await this.databaseAPI.fetchEntries(query);
+            return await this.searchKorean(stemmer.stem(query).map(element => { return element.key; }));
         } else {
             return await this.searchEnglish(query);
         }
