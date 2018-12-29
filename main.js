@@ -1,5 +1,7 @@
+require('dotenv').config()
 const DatabaseAPI = require('./datasources/database');
 const ConjugationAPI = require('./datasources/conjugation');
+const SearchAPI = require('./datasources/search');
 const resolvers = require('./resolvers');
 
 const admin = require('firebase-admin');
@@ -10,12 +12,14 @@ const db = admin.firestore();
 
 const { ApolloServer } = require('apollo-server');
 const typeDefs = require('./schema');
+let dbAPI = new DatabaseAPI(db);
 const server = new ApolloServer({
     typeDefs,
     resolvers,
     dataSources: () => ({
-        databaseAPI: new DatabaseAPI(db),
+        databaseAPI: dbAPI,
         conjugationAPI: new ConjugationAPI(),
+        searchAPI: new SearchAPI(dbAPI)
     })
 });
 
