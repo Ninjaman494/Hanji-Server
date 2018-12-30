@@ -7,7 +7,6 @@ const romanization  = require('./romanization');
 const glob = require( 'glob' );
 const path = require( 'path' );
 
-
 // import and add conjugations
 let conjugator = {};
 let arr = glob.sync( __dirname + '/conjugations/*.js' );
@@ -410,14 +409,6 @@ conjugator.future_base = function(infinitive, regular) {
     return conjugator.merge(conjugator.base3(infinitive, regular), '을');
 };
 conjugator.future_base.conjugation = false;
-
-conjugator.conjugations = [];
-
-for (f in conjugator) {
-    if (f && conjugator[f].conjugation) {
-        conjugator.conjugations.push(f);
-    }
-}
 
 conjugator.display_conjugations = function(infinitive, regular, callback) {
     var both_regular_and_irregular = false;
