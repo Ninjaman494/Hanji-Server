@@ -413,53 +413,6 @@ conjugator.future_base = function(infinitive, regular) {
 };
 conjugator.future_base.conjugation = false;
 
-conjugator.connective_if = function(infinitive, regular) {
-    return conjugator.merge(conjugator.base3(infinitive, regular), '면');
-};
-conjugator.connective_if.conjugation = true;
-conjugator.connective_if.type = 'condition';
-conjugator.connective_if.tense = 'none';
-conjugator.connective_if.speechLevel = 'none';
-
-conjugator.connective_and = function(infinitive, regular) {
-    infinitive = conjugator.base(infinitive, regular);
-    return conjugator.merge(conjugator.base(infinitive, regular), '고');
-};
-conjugator.connective_and.conjugation = true;
-conjugator.connective_and.type = 'conjunction';
-conjugator.connective_and.tense = 'none';
-conjugator.connective_and.speechLevel = 'none';
-
-conjugator.connective_but = function(infinitive, regular) {
-    infinitive = conjugator.base(infinitive, regular);
-    return conjugator.merge(conjugator.base(infinitive, regular), '지만');
-};
-conjugator.connective_but.conjugation = true;
-conjugator.connective_but.type = 'contrast';
-conjugator.connective_but.tense = 'none';
-conjugator.connective_but.speechLevel = 'none';
-
-conjugator.nominal_ing = function(infinitive, regular) {
-    return conjugator.merge(conjugator.base3(infinitive, regular), '음');
-};
-conjugator.nominal_ing.conjugation = true;
-conjugator.nominal_ing.type = 'verbal noun';
-conjugator.nominal_ing.tense = 'none';
-conjugator.nominal_ing.speechLevel = 'none';
-
-conjugator.determiner_present = function(infinitive, regular, isAdj) {
-    let stem = conjugator.base3(infinitive, regular);
-    if(stem.charAt(stem.length-1) == '있' || stem.charAt(stem.length-1) == '없' || !isAdj){ // special conjugations for these forms
-        return stem + '는';
-    }else {
-        return conjugator.merge(stem, '은');
-    }
-};
-conjugator.determiner_present.conjugation = true;
-conjugator.determiner_present.type = 'determiner';
-conjugator.determiner_present.tense = 'present';
-conjugator.determiner_present.speechLevel = 'none';
-
 conjugator.conjugations = [];
 
 for (f in conjugator) {
