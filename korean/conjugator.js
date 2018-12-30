@@ -287,6 +287,11 @@ conjugator.is_d_irregular = function(infinitive, regular) {
            !(conjugator.after_last_space(infinitive) in conjugator.not_d_irregular);
 };
 
+conjugator.join = function(x, y){
+    conjugator.reasons.push(`join (${x} + ${y} -> ${x + y})`);
+    return x + y;
+};
+
 conjugator.verb_types = {
     'ㅅ 불규칙 동사 (irregular verb)': conjugator.is_s_irregular,
     'ㄹ 불규칙 동사 (irregular verb)': conjugator.is_l_irregular,

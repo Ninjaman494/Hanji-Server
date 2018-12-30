@@ -35,7 +35,10 @@ class ConjugationAPI extends DataSource {
             type: conjugation.type,
             tense: conjugation.tense,
             speechLevel: conjugation.speechLevel,
-            honorific: conjugation.honorific
+            honorific: conjugation.honorific,
+            pronunciation: conjugation.pronunciation,
+            romanization: conjugation.romanized,
+            reasons: conjugation.reasons
         }
     }
 }

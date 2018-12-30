@@ -45,6 +45,9 @@ const typeDefs = gql`
         tense: Tense!
         speechLevel: SpeechLevel!
         honorific: Boolean!
+        pronunciation: String!
+        romanization: String!
+        reasons: [String]!
     }
 `;
 
