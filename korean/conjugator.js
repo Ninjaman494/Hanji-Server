@@ -1,13 +1,11 @@
 // vim: set ts=4 sw=4 expandtab
 // (C) 2010 Dan Bravender - licensed under the AGPL 3.0
 
-try {
-    var hangeul       = require('./hangeul'),
-        pronunciation = require('./pronunciation'),
-        romanization  = require('./romanization');
-} catch(e) {}
-let glob = require( 'glob' );
-let path = require( 'path' );
+const hangeul       = require('./hangeul');
+const pronunciation = require('./pronunciation');
+const romanization  = require('./romanization');
+const glob = require( 'glob' );
+const path = require( 'path' );
 
 
 // import and add conjugations
@@ -502,10 +500,6 @@ conjugator.conjugate_json = function(infinitive, regular, callback) {
         callback(JSON.stringify(result));
     });
 };
-
-// This will be incremented when the algorithm is modified so clients
-// that have cached API calls will know that their cache is invalid
-conjugator.version = 1;
 
 // Export functions to node
 try {
