@@ -356,6 +356,14 @@ assert.equal(conjugator.connective_if('푸르다'), '푸르면');
 assert.equal(conjugator.connective_if('돕다'), '도우면');
 
 assert.equal(conjugator.connective_and('가다'), '가고');
+assert.equal(conjugator.connective_and('듣다'),'듣고');
+assert.equal(conjugator.connective_and('배우다'),'배우고');
+
+assert.equal(conjugator.connective_but('가다'), '가지만');
+assert.equal(conjugator.connective_but('듣다'),'듣지만');
+assert.equal(conjugator.connective_but('배우다'),'배우지만');
+assert.equal(conjugator.connective_but('받다'),'받지만');
+
 
 assert.equal(conjugator.nominal_ing('살다'), '삶');
 assert.equal(conjugator.nominal_ing('걷다'), '걸음');
@@ -364,3 +372,23 @@ assert.equal(conjugator.nominal_ing('걷다'), '걸음');
 assert.equal(conjugator.nominal_ing('그렇다'), '그럼');
 assert.equal(conjugator.nominal_ing('까맣다'), '까맘');
 assert.equal(conjugator.nominal_ing('돕다'), '도움');
+
+// verbs
+assert.equal(conjugator.determiner_present('차다',true,false), '차는');
+assert.equal(conjugator.determiner_present('받다',true,false),'받는');
+assert.equal(conjugator.determiner_present('다녀가다',true,false),'다녀가는');
+assert.equal(conjugator.determiner_present('듣다',false,false),'듣는');
+assert.equal(conjugator.determiner_present('부르다',false,false),'부르는');
+// these two are actually adjectives, but good tests anyway
+assert.equal(conjugator.determiner_present('아니다',false,false),'아니는');
+assert.equal(conjugator.determiner_present('이다',false,false),'이는');
+
+// adjectives
+assert.equal(conjugator.determiner_present('차다',true,true), '찬');
+assert.equal(conjugator.determiner_present('같다',true,true),'같은');
+assert.equal(conjugator.determiner_present('멋있다',true,true),'멋있는'); // 있다 exception
+assert.equal(conjugator.determiner_present('재미없다',true,true),'재미없는'); // 없다 exception
+assert.equal(conjugator.determiner_present('가깝다',false,true),'가까운');
+assert.equal(conjugator.determiner_present('부르다',false,true),'부른');
+assert.equal(conjugator.determiner_present('아니다',false,true),'아닌');
+assert.equal(conjugator.determiner_present('이다',false,true),'인');
