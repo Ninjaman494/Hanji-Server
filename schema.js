@@ -4,7 +4,7 @@ const typeDefs = gql`
         entries(term: String!): [Entry]!
         entry(id: ID!): Entry
         examples(id: ID!): [Example]!
-        conjugation(stem: String!, isAdj: Boolean!): [Conjugation]!
+        conjugation(stem: String!, isAdj: Boolean!, regular: Boolean): [Conjugation]!
         search(query: String!): [Entry]!
     }
     
@@ -15,6 +15,7 @@ const typeDefs = gql`
         definitions: [String]!
         antonyms: [String]
         synonyms: [String]
+        regular: Boolean
     }
     
     type Example {

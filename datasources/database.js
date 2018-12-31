@@ -55,7 +55,8 @@ class DatabaseAPI extends DataSource {
             pos: entry.data().pos,
             definitions: entry.data().definitions,
             antonyms: entry.data().antonyms,
-            synonyms: entry.data().synonyms
+            synonyms: entry.data().synonyms,
+            regular: entry.data().regular
         }
     }
 }

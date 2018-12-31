@@ -17,8 +17,12 @@ class ConjugationAPI extends DataSource {
         this.context = config.context;
     }
 
-    fetchConjugations(stem, isAdj){
-        let regular = conjugator.verb_type(stem, false) == 'regular verb'; // returns either 'regular verb' or type of irregular
+    fetchConjugations(stem, isAdj, regular){
+        if(!regular) {
+            // returns either 'regular verb' or type of irregular
+            regular = conjugator.verb_type(stem, false) == 'regular verb';
+        }
+
         let  data = [];
         conjugator.conjugate(stem,regular,isAdj, conjugations => {
             conjugations.forEach( c =>{

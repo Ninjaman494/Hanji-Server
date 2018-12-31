@@ -6,8 +6,8 @@ module.exports = {
             dataSources.databaseAPI.fetchEntry(id),
         examples:(_, { id }, { dataSources }) =>
             dataSources.databaseAPI.fetchExamples(id),
-        conjugation:(_, {stem, isAdj }, { dataSources }) =>
-            dataSources.conjugationAPI.fetchConjugations(stem,isAdj),
+        conjugation:(_, {stem, isAdj, regular }, { dataSources }) =>
+            dataSources.conjugationAPI.fetchConjugations(stem,isAdj, regular),
         search:(_, { query }, { dataSources }) =>
             dataSources.searchAPI.search(query)
     },
