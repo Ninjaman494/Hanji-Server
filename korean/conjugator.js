@@ -153,7 +153,7 @@ conjugator.merge = function(x, y) {
 };
 
 conjugator.both_regular_and_irregular = {
-    '일': true, '곱': true, '파묻': true, '누르': true, '묻': true, '이르': true,
+    '일': true, '곱': true, '파묻': false, '누르': true, '묻': true, '이르': true,
     '되묻': true, '썰': true, '붓': true, '들까불': true, '굽': true, '걷': true,
     '뒤까불': true, '까불': true
 };

@@ -392,3 +392,22 @@ assert.equal(conjugator.determiner_present('가깝다',false,true),'가까운');
 assert.equal(conjugator.determiner_present('부르다',false,true),'부른');
 assert.equal(conjugator.determiner_present('아니다',false,true),'아닌');
 assert.equal(conjugator.determiner_present('이다',false,true),'인');
+
+// words that can be both regular and irregular
+assert.equal(conjugator.declarative_present_informal_low('이르다', true), '일러');
+assert.equal(conjugator.declarative_present_informal_low('이르다', false), '이르러');
+assert.equal(conjugator.declarative_present_informal_low('곱다', true), '곱아');
+assert.equal(conjugator.declarative_present_informal_low('곱다', false), '고와');
+assert.equal(conjugator.declarative_present_informal_low('누르다', true), '누러');
+assert.equal(conjugator.declarative_present_informal_low('누르다', false), '눌러');
+assert.equal(conjugator.declarative_present_informal_low('묻다', true), '묻어');
+assert.equal(conjugator.declarative_present_informal_low('묻다', false), '물어');
+assert.equal(conjugator.declarative_present_informal_low('굽다', true), '굽어');
+assert.equal(conjugator.declarative_present_informal_low('굽다', false), '구워');
+assert.equal(conjugator.declarative_present_informal_low('걷다', true), '걷어');
+assert.equal(conjugator.declarative_present_informal_low('걷다', false), '걸어');
+
+assert.equal(conjugator.determiner_present('이르다', true, true), '이른'); // regular adj
+assert.equal(conjugator.determiner_present('이르다', false, true), '이른'); // irregular adj
+assert.equal(conjugator.determiner_present('이르다', true, false), '이르는'); // regular verb
+assert.equal(conjugator.determiner_present('이르다', false, false), '이르는'); // irregular verb

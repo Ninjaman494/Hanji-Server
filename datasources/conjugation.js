@@ -18,7 +18,7 @@ class ConjugationAPI extends DataSource {
     }
 
     fetchConjugations(stem, isAdj, regular){
-        if(!regular) {
+        if(regular == undefined) {
             // returns either 'regular verb' or type of irregular
             regular = conjugator.verb_type(stem, false) == 'regular verb';
         }
