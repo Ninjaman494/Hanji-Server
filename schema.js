@@ -16,6 +16,7 @@ const typeDefs = gql`
         antonyms: [String]
         synonyms: [String]
         regular: Boolean
+        note: String
     }
     
     type Example {
