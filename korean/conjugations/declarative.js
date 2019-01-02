@@ -60,7 +60,11 @@ conjugations.declarative_present_informal_high.type =  'declarative';
 conjugations.declarative_present_informal_high.tense = 'present';
 conjugations.declarative_present_informal_high.speechLevel = 'informal high';
 
-conjugations.declarative_present_formal_low = function(infinitive, regular) {
+conjugations.declarative_present_formal_low = function(infinitive, regular, isAdj) {
+    if(isAdj){
+        return conjugator.join(conjugator.base(infinitive,regular),'다');
+    }
+
     if (conjugator.is_l_irregular(conjugator.base(infinitive), regular)) {
         return conjugator.drop_l_and_borrow_padchim(conjugator.base(infinitive, regular), '는다');
     }

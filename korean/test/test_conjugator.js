@@ -222,8 +222,11 @@ assert.equal(conjugator.declarative_present_formal_low('믿다'), '믿는다');
 assert.equal(conjugator.declarative_present_formal_low('걷다'), '걷는다');
 assert.equal(conjugator.declarative_present_formal_low('짓다'), '짓는다');
 assert.equal(conjugator.declarative_present_formal_low('부르다'), '부른다');
+assert.equal(conjugator.declarative_present_formal_low('부르다',true,true), '부르다'); // adjective form
 assert.equal(conjugator.declarative_present_formal_low('살다'), '산다');
 assert.equal(conjugator.declarative_present_formal_low('오르다'), '오른다');
+assert.equal(conjugator.declarative_present_formal_low('가늘다', true, true), '가늘다');
+assert.equal(conjugator.declarative_present_formal_low('춥다', true, true), '춥다');
 
 assert.equal(conjugator.declarative_present_formal_high('가다'), '갑니다');
 assert.equal(conjugator.declarative_present_formal_high('좋다'), '좋습니다');
