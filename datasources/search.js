@@ -52,7 +52,9 @@ class SearchAPI extends DataSource {
 
     async search(query){
         if(hangeul.is_hangeul_string(query)){
-            return await this.searchKorean(stemmer.stem(query).map(element => { return element.key; }));
+            let stems = stemmer.stem(query).map(element => { return element.key; });
+            stems.push(query); // in case query is already in infinitive form
+            return await this.searchKorean(stems);
         } else {
             return await this.searchEnglish(query);
         }
