@@ -455,9 +455,13 @@ conjugator.each_conjugation = function(infinitive, regular, isAdj, callback) {
         conjugator.reasons = [];
         if (conjugator[conjugation].conjugation) {
             var r = {};
+            r.conjugated = conjugator[conjugation](infinitive, regular, isAdj);
+            if(r.conjugated == undefined){ // this conjugation doesn't exist for this word (ex. determiner past for adj.)
+                continue;
+            }
+
             r.infinitive = infinitive + '다';
             r.conjugation_name = conjugation.replace(/_/g, ' ');
-            r.conjugated = conjugator[conjugation](infinitive, regular, isAdj);
             r.pronunciation = pronunciation.get_pronunciation(r.conjugated);
             r.romanized = romanization.romanize(r.pronunciation);
             r.reasons = [];
