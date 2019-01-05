@@ -376,7 +376,7 @@ assert.equal(conjugator.nominal_ing('그렇다'), '그럼');
 assert.equal(conjugator.nominal_ing('까맣다'), '까맘');
 assert.equal(conjugator.nominal_ing('돕다'), '도움');
 
-// verbs
+// determiner present - verbs
 assert.equal(conjugator.determiner_present('차다',true,false), '차는');
 assert.equal(conjugator.determiner_present('받다',true,false),'받는');
 assert.equal(conjugator.determiner_present('다녀가다',true,false),'다녀가는');
@@ -386,7 +386,7 @@ assert.equal(conjugator.determiner_present('부르다',false,false),'부르는')
 assert.equal(conjugator.determiner_present('아니다',false,false),'아니는');
 assert.equal(conjugator.determiner_present('이다',false,false),'이는');
 
-// adjectives
+// determiner present - adjectives
 assert.equal(conjugator.determiner_present('차다',true,true), '찬');
 assert.equal(conjugator.determiner_present('같다',true,true),'같은');
 assert.equal(conjugator.determiner_present('멋있다',true,true),'멋있는'); // 있다 exception
@@ -395,6 +395,47 @@ assert.equal(conjugator.determiner_present('가깝다',false,true),'가까운');
 assert.equal(conjugator.determiner_present('부르다',false,true),'부른');
 assert.equal(conjugator.determiner_present('아니다',false,true),'아닌');
 assert.equal(conjugator.determiner_present('이다',false,true),'인');
+
+// determiner past - verbs
+assert.equal(conjugator.determiner_past('차다',true,false), '찬');
+assert.equal(conjugator.determiner_past('받다',true,false),'받은');
+assert.equal(conjugator.determiner_past('다녀가다',true,false),'다녀간');
+assert.equal(conjugator.determiner_past('듣다',false,false),'들은');
+assert.equal(conjugator.determiner_past('부르다',false,false),'부른');
+assert.equal(conjugator.determiner_past('굽다',false,false),'구운');
+assert.equal(conjugator.determiner_past('굽다',true,false),'굽은');
+// these two are actually adjectives, but good tests anyway
+assert.equal(conjugator.determiner_past('아니다',false,false),'아닌');
+assert.equal(conjugator.determiner_past('이다',false,false),'인');
+
+// determiner past - adjectives
+assert.equal(conjugator.determiner_past('차다',true,true), undefined);
+assert.equal(conjugator.determiner_past('같다',true,true), undefined);
+assert.equal(conjugator.determiner_past('멋있다',true,false), undefined); // 있다 exception
+assert.equal(conjugator.determiner_past('재미없다',true,false), undefined); // 없다 exception
+
+// determiner future - verbs
+assert.equal(conjugator.determiner_future('차다',true,false), '찰');
+assert.equal(conjugator.determiner_future('받다',true,false),'받을');
+assert.equal(conjugator.determiner_future('다녀가다',true,false),'다녀갈');
+assert.equal(conjugator.determiner_future('듣다',false,false),'들을');
+assert.equal(conjugator.determiner_future('부르다',false,false),'부를');
+assert.equal(conjugator.determiner_future('굽다',false,false),'구울');
+assert.equal(conjugator.determiner_future('굽다',true,false),'굽을');
+// these two are actually adjectives, but good tests anyway
+assert.equal(conjugator.determiner_future('아니다',false,false),'아닐');
+assert.equal(conjugator.determiner_future('이다',false,false),'일');
+
+// determiner future - adjectives
+assert.equal(conjugator.determiner_future('차다',true,true), '찰');
+assert.equal(conjugator.determiner_future('같다',true,true),'같을');
+assert.equal(conjugator.determiner_future('멋있다',true,true),'멋있을'); // 있다 exception
+assert.equal(conjugator.determiner_future('재미없다',true,true),'재미없을'); // 없다 exception
+assert.equal(conjugator.determiner_future('가깝다',false,true),'가까울');
+assert.equal(conjugator.determiner_future('부르다',false,true),'부를');
+assert.equal(conjugator.determiner_future('아니다',false,true),'아닐');
+assert.equal(conjugator.determiner_future('이다',false,true),'일');
+
 
 // words that can be both regular and irregular
 assert.equal(conjugator.declarative_present_informal_low('이르다', true), '일러');
