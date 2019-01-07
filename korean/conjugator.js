@@ -16,6 +16,14 @@ arr.forEach( function( file ) {
         conjugator[c] = conjugations[c];
     }
 });
+arr = glob.sync( __dirname + '/conjugations/honorifics/*.js' );
+arr.forEach( function( file ) {
+    let conjugations = require( path.resolve( file ) );
+    for(let c in conjugations){
+        conjugator[c] = conjugations[c];
+    }
+});
+
 
 conjugator.no_padchim_rule = function(characters) {
     /* no_padchim_rule is a helper function for defining merges where a
@@ -449,19 +457,19 @@ conjugator.display_conjugations = function(infinitive, regular, callback) {
     callback(out);
 };
 
-conjugator.each_conjugation = function(infinitive, regular, isAdj, callback) {
+conjugator.each_conjugation = function(infinitive, regular, isAdj, honorific, callback) {
     infinitive = conjugator.base(infinitive, regular);
     for (conjugation in conjugator) {
         conjugator.reasons = [];
-        if (conjugator[conjugation].conjugation) {
+        if (conjugator[conjugation].conjugation && (!honorific || honorific == conjugator[conjugation].honorific)) {
             var r = {};
-            r.conjugated = conjugator[conjugation](infinitive, regular, isAdj);
+            r.conjugated = conjugator[conjugation](infinitive, regular, isAdj,honorific);
             if(r.conjugated == undefined){ // this conjugation doesn't exist for this word (ex. determiner past for adj.)
                 continue;
             }
 
             r.infinitive = infinitive + '다';
-            r.conjugation_name = conjugation.replace(/_/g, ' ');
+            r.conjugation_name = conjugation.replace(/_/g, ' ').replace(' honorific','');
             r.pronunciation = pronunciation.get_pronunciation(r.conjugated);
             r.romanized = romanization.romanize(r.pronunciation);
             r.reasons = [];
@@ -479,9 +487,9 @@ conjugator.each_conjugation = function(infinitive, regular, isAdj, callback) {
     }
 };
 
-conjugator.conjugate = function(infinitive, regular, isAdj, callback) {
+conjugator.conjugate = function(infinitive, regular, isAdj, honorific, callback) {
     var conjugations = [];
-    conjugator.each_conjugation(infinitive, regular, isAdj, function(result) {
+    conjugator.each_conjugation(infinitive, regular, isAdj, honorific, function(result) {
         conjugations.push(result);
     });
     callback(conjugations);

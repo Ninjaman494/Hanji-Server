@@ -17,14 +17,14 @@ class ConjugationAPI extends DataSource {
         this.context = config.context;
     }
 
-    fetchConjugations(stem, isAdj, regular){
+    fetchConjugations(stem, isAdj,honorific, regular){
         if(regular == undefined) {
             // returns either 'regular verb' or type of irregular
             regular = conjugator.verb_type(stem, false) == 'regular verb';
         }
 
         let  data = [];
-        conjugator.conjugate(stem,regular,isAdj, conjugations => {
+        conjugator.conjugate(stem,regular,isAdj,honorific, conjugations => {
             conjugations.forEach( c =>{
                 data.push(this.conjugationReducer(c));
             });
