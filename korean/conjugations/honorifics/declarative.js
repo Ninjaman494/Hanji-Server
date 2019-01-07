@@ -98,38 +98,45 @@ conjugations.declarative_past_formal_high.tense = 'past';
 conjugations.declarative_past_formal_high.speechLevel = 'formal high';
 conjugations.declarative_past_formal_high.honorific = true;
 
-/*
 conjugations.declarative_future_informal_low = function(infinitive, regular) {
-    return conjugator.merge(conjugator.future_base(infinitive, regular), ' 거야');
+    let stem = conjugations.add_honorific(infinitive,regular);
+    return conjugator.merge(conjugator.future_base(stem, regular), ' 거야');
 };
 conjugations.declarative_future_informal_low.conjugation = true;
 conjugations.declarative_future_informal_low.type = 'declarative';
 conjugations.declarative_future_informal_low.tense = 'future';
 conjugations.declarative_future_informal_low.speechLevel = 'informal low';
+conjugations.declarative_future_informal_low.honorific = true;
 
 conjugations.declarative_future_informal_high = function(infinitive, regular) {
-    return conjugator.merge(conjugator.future_base(infinitive, regular), ' 거예요');
+    let stem = conjugations.add_honorific(infinitive,regular);
+    return conjugator.merge(conjugator.future_base(stem, regular), ' 거예요');
 };
 conjugations.declarative_future_informal_high.conjugation = true;
 conjugations.declarative_future_informal_high.type = 'declarative';
 conjugations.declarative_future_informal_high.tense = 'future';
 conjugations.declarative_future_informal_high.speechLevel = 'informal high';
+conjugations.declarative_future_informal_high.honorific = true;
 
 conjugations.declarative_future_formal_low = function(infinitive, regular) {
-    return conjugator.merge(conjugator.future_base(infinitive, regular), ' 거다');
+    let stem = conjugations.add_honorific(infinitive,regular);
+    return conjugator.merge(conjugator.future_base(stem, regular), ' 거다');
 };
 conjugations.declarative_future_formal_low.conjugation = true;
 conjugations.declarative_future_formal_low.type = 'declarative';
 conjugations.declarative_future_formal_low.tense = 'future';
 conjugations.declarative_future_formal_low.speechLevel = 'formal low';
+conjugations.declarative_future_formal_low.honorific = true;
 
 conjugations.declarative_future_formal_high = function(infinitive, regular) {
-    return conjugator.merge(conjugator.future_base(infinitive, regular), ' 겁니다');
+    let stem = conjugations.add_honorific(infinitive,regular);
+    return conjugator.merge(conjugator.future_base(stem, regular), ' 겁니다');
 };
 conjugations.declarative_future_formal_high.conjugation = true;
 conjugations.declarative_future_formal_high.type = 'declarative';
 conjugations.declarative_future_formal_high.tense = 'future';
-conjugations.declarative_future_formal_high.speechLevel = 'formal high';*/
+conjugations.declarative_future_formal_high.speechLevel = 'formal high';
+conjugations.declarative_future_formal_high.honorific = true;
 
 // export conjugations
 for(let conjugation in conjugations){

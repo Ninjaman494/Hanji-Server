@@ -462,12 +462,14 @@ assert.equal(conjugator.declarative_present_informal_low_honorific('굽다', fal
 assert.equal(conjugator.declarative_present_informal_low_honorific('듣다'), '들으셔');
 assert.equal(conjugator.declarative_present_informal_low_honorific('가다'), '가셔');
 assert.equal(conjugator.declarative_present_informal_low_honorific('살다'), '사셔');
+assert.equal(conjugator.declarative_present_informal_low_honorific('쓰다'), '쓰셔');
 
 assert.equal(conjugator.declarative_present_informal_high_honorific('굽다', true), '굽으세요');
 assert.equal(conjugator.declarative_present_informal_high_honorific('굽다', false), '구우세요');
 assert.equal(conjugator.declarative_present_informal_high_honorific('듣다'), '들으세요');
 assert.equal(conjugator.declarative_present_informal_high_honorific('가다'), '가세요');
 assert.equal(conjugator.declarative_present_informal_high_honorific('살다'), '사세요');
+assert.equal(conjugator.declarative_present_informal_high_honorific('쓰다'), '쓰세요');
 
 assert.equal(conjugator.declarative_present_formal_low_honorific('부르다',true,true), '부르시다'); // adjective form
 assert.equal(conjugator.declarative_present_formal_low_honorific('부르다',true,false), '부르신다'); // verb form
@@ -475,12 +477,14 @@ assert.equal(conjugator.declarative_present_formal_low_honorific('살다'), '사
 assert.equal(conjugator.declarative_present_formal_low_honorific('오르다'), '오르신다');
 assert.equal(conjugator.declarative_present_formal_low_honorific('가늘다', true, true), '가느시다');
 assert.equal(conjugator.declarative_present_formal_low_honorific('춥다', false, true), '추우시다');
+assert.equal(conjugator.declarative_present_formal_low_honorific('쓰다', false, true), '쓰시다');
 
 assert.equal(conjugator.declarative_present_formal_high_honorific('살다'), '사십니다');
 assert.equal(conjugator.declarative_present_formal_high_honorific('오르다'), '오르십니다');
 assert.equal(conjugator.declarative_present_formal_high_honorific('굽다', true), '굽으십니다');
 assert.equal(conjugator.declarative_present_formal_high_honorific('굽다', false), '구우십니다');
 assert.equal(conjugator.declarative_present_formal_high_honorific('먹다'), '먹으십니다');
+assert.equal(conjugator.declarative_present_formal_high_honorific('쓰다'), '쓰십니다');
 
 // Declarative Past
 assert.equal(conjugator.declarative_past_informal_low_honorific('굽다', true), '굽으셨어');
@@ -488,20 +492,32 @@ assert.equal(conjugator.declarative_past_informal_low_honorific('굽다', false)
 assert.equal(conjugator.declarative_past_informal_low_honorific('듣다'), '들으셨어');
 assert.equal(conjugator.declarative_past_informal_low_honorific('가다'), '가셨어');
 assert.equal(conjugator.declarative_past_informal_low_honorific('살다'), '사셨어');
+assert.equal(conjugator.declarative_past_informal_low_honorific('쓰다'), '쓰셨어');
 
 assert.equal(conjugator.declarative_past_informal_high_honorific('굽다', true), '굽으셨어요');
 assert.equal(conjugator.declarative_past_informal_high_honorific('굽다', false), '구우셨어요');
 assert.equal(conjugator.declarative_past_informal_high_honorific('듣다'), '들으셨어요');
 assert.equal(conjugator.declarative_past_informal_high_honorific('가다'), '가셨어요');
 assert.equal(conjugator.declarative_past_informal_high_honorific('살다'), '사셨어요');
+assert.equal(conjugator.declarative_past_informal_high_honorific('쓰다'), '쓰셨어요');
 
 assert.equal(conjugator.declarative_past_formal_low_honorific('살다'), '사셨다');
 assert.equal(conjugator.declarative_past_formal_low_honorific('오르다'), '오르셨다');
 assert.equal(conjugator.declarative_past_formal_low_honorific('가늘다', true, true), '가느셨다');
 assert.equal(conjugator.declarative_past_formal_low_honorific('춥다', false, true), '추우셨다');
+assert.equal(conjugator.declarative_past_formal_low_honorific('쓰다', false, true), '쓰셨다');
 
 assert.equal(conjugator.declarative_past_formal_high_honorific('살다'), '사셨습니다');
 assert.equal(conjugator.declarative_past_formal_high_honorific('오르다'), '오르셨습니다');
 assert.equal(conjugator.declarative_past_formal_high_honorific('굽다', true), '굽으셨습니다');
 assert.equal(conjugator.declarative_past_formal_high_honorific('굽다', false), '구우셨습니다');
 assert.equal(conjugator.declarative_past_formal_high_honorific('먹다'), '먹으셨습니다');
+assert.equal(conjugator.declarative_past_formal_high_honorific('쓰다'), '쓰셨습니다');
+
+// Declarative Future
+assert.equal(conjugator.declarative_future_informal_low_honorific('굽다', true), '굽으실 거야');
+assert.equal(conjugator.declarative_future_informal_low_honorific('굽다', false), '구우실 거야');
+assert.equal(conjugator.declarative_future_informal_low_honorific('듣다'), '들으실 거야');
+assert.equal(conjugator.declarative_future_informal_low_honorific('가다'), '가실 거야');
+assert.equal(conjugator.declarative_future_informal_low_honorific('살다'), '사실 거야');
+assert.equal(conjugator.declarative_future_informal_low_honorific('쓰다'), '쓰실 거야');
