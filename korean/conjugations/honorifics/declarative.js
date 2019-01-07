@@ -4,11 +4,11 @@ const declarative = require('../declarative');
 let conjugations = {};
 
 conjugations.add_honorific =  function(infinitive,regular){
-    let stem = conjugator.merge(conjugator.base3(infinitive,regular),'시');
     if (conjugator.is_l_irregular(conjugator.base(infinitive, regular))) {
-        stem = conjugator.drop_l(conjugator.base3(infinitive, regular), '시');
+        return conjugator.drop_l(conjugator.base3(infinitive, regular), '시');
+    }else{
+        return conjugator.merge(conjugator.base3(infinitive,regular),'시');
     }
-    return stem;
 };
 
 conjugations.declarative_present_informal_low = function(infinitive, regular, further_use) {

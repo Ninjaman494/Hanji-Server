@@ -61,11 +61,11 @@ conjugator.vowel_contraction = function(vowel1, vowel2, new_vowel, trace) {
 
 conjugator.drop_l = function(x, y) {
     if (hangeul.padchim(x[x.length-1]) == 'ᆯ') {
-        conjugator.reasons.push('drop ㄹ')
-        return x.substring(0, x.length-1) +
-               hangeul.join(hangeul.lead(x[x.length-1]),
-                            hangeul.vowel(x[x.length-1])) +
-               y;
+        let stem = hangeul.join(hangeul.lead(x[x.length - 1]), hangeul.vowel(x[x.length - 1]));
+        let conjugation = x.substring(0, x.length-1) + stem + y;
+        conjugator.reasons.push(`drop ㄹ (${x} -> ${stem})`);
+        conjugator.reasons.push(`join (${stem} + ${y} -> ${conjugation})`);
+        return conjugation;
     }
 };
 
