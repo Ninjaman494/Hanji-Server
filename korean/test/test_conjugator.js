@@ -613,3 +613,19 @@ assert.equal(conjugator.nominal_ing_honorific('가져오다'), '가져오심');
 assert.equal(conjugator.nominal_ing_honorific('그렇다'), '그러심');
 assert.equal(conjugator.nominal_ing_honorific('까맣다'), '까마심');
 assert.equal(conjugator.nominal_ing_honorific('돕다'), '도우심');
+
+// Connective
+assert.equal(conjugator.connective_if_honorific('낫'), '나으시면');
+assert.equal(conjugator.connective_if_honorific('가'), '가시면');
+assert.equal(conjugator.connective_if_honorific('살'), '사시면');
+assert.equal(conjugator.connective_if_honorific('푸르다'), '푸르시면');
+assert.equal(conjugator.connective_if_honorific('돕다'), '도우시면');
+
+assert.equal(conjugator.connective_and_honorific('가다'), '가시고');
+assert.equal(conjugator.connective_and_honorific('듣다'),'들으시고');
+assert.equal(conjugator.connective_and_honorific('춥다'),'추우시고');
+
+assert.equal(conjugator.connective_but_honorific('가다'), '가시지만');
+assert.equal(conjugator.connective_but_honorific('듣다'),'들으시지만');
+assert.equal(conjugator.connective_but_honorific('춥다'),'추우시지만');
+assert.equal(conjugator.connective_but_honorific('받다'),'받으시지만');
