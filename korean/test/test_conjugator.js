@@ -324,12 +324,12 @@ assert.equal(conjugator.interrogative_past_formal_high('가다'), '갔습니까'
 
 assert.equal(conjugator.imperative_present_informal_low('가다'), '가');
 
-assert.equal(conjugator.imperative_present_informal_high('가다'), '가세요');
-assert.equal(conjugator.imperative_present_informal_high('돕다'), '도우세요');
-assert.equal(conjugator.imperative_present_informal_high('걷다'), '걸으세요');
-assert.equal(conjugator.imperative_present_informal_high('눕다'), '누우세요');
-assert.equal(conjugator.imperative_present_informal_high('살다'), '사세요');
-assert.equal(conjugator.imperative_present_informal_high('걸다'), '거세요');
+assert.equal(conjugator.imperative_present_informal_high('가다'), '가요');
+assert.equal(conjugator.imperative_present_informal_high('돕다'), '도와요');
+assert.equal(conjugator.imperative_present_informal_high('걷다'), '걸어요');
+assert.equal(conjugator.imperative_present_informal_high('눕다'), '누워요');
+assert.equal(conjugator.imperative_present_informal_high('살다'), '살아요');
+assert.equal(conjugator.imperative_present_informal_high('걸다'), '걸어요');
 
 assert.equal(conjugator.imperative_present_formal_low('가다'), '가라');
 assert.equal(conjugator.imperative_present_formal_low('굽다'), '구워라');

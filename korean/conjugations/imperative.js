@@ -11,10 +11,7 @@ conjugations.imperative_present_informal_low.tense = 'present';
 conjugations.imperative_present_informal_low.speechLevel = 'informal low';
 
 conjugations.imperative_present_informal_high = function(infinitive, regular) {
-    if (conjugator.is_l_irregular(conjugator.base(infinitive, regular))) {
-        return conjugator.drop_l(conjugator.base3(infinitive, regular), '세요');
-    }
-    return conjugator.merge(conjugator.base3(infinitive, regular), '세요');
+    return declarative.declarative_present_informal_high(infinitive,regular);
 };
 conjugations.imperative_present_informal_high.conjugation = true;
 conjugations.imperative_present_informal_high.type = 'imperative';
