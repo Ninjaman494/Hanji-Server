@@ -574,3 +574,18 @@ assert.equal(conjugator.interrogative_present_formal_high_honorific('열다'), '
 assert.equal(conjugator.interrogative_present_formal_high_honorific('받다'), '받으십니까');
 assert.equal(conjugator.interrogative_present_formal_high_honorific('춥다'), '추우십니까');
 assert.equal(conjugator.interrogative_present_formal_high_honorific('크다',true,true), '크십니까');
+
+assert.equal(conjugator.interrogative_past_informal_low_honorific('열다'), '여셨어'); // same as declarative
+assert.equal(conjugator.interrogative_past_informal_high_honorific('열다'), '여셨어요'); // same as declarative
+
+assert.equal(conjugator.interrogative_past_formal_low_honorific('열다'), '여셨느냐');
+assert.equal(conjugator.interrogative_past_formal_low_honorific('받다'), '받으셨느냐');
+assert.equal(conjugator.interrogative_past_formal_low_honorific('춥다',false,true), '추우셨냐');
+assert.equal(conjugator.interrogative_past_formal_low_honorific('크다',true,true), '크셨냐');
+assert.equal(conjugator.interrogative_past_formal_low_honorific('있다'), '있으셨냐');
+assert.equal(conjugator.interrogative_past_formal_low_honorific('없다'), '없으셨냐');
+
+assert.equal(conjugator.interrogative_past_formal_high_honorific('열다'), '여셨습니까');
+assert.equal(conjugator.interrogative_past_formal_high_honorific('받다'), '받으셨습니까');
+assert.equal(conjugator.interrogative_past_formal_high_honorific('춥다'), '추우셨습니까');
+assert.equal(conjugator.interrogative_past_formal_high_honorific('크다',true,true), '크셨습니까');
