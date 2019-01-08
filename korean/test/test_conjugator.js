@@ -589,3 +589,19 @@ assert.equal(conjugator.interrogative_past_formal_high_honorific('열다'), '여
 assert.equal(conjugator.interrogative_past_formal_high_honorific('받다'), '받으셨습니까');
 assert.equal(conjugator.interrogative_past_formal_high_honorific('춥다'), '추우셨습니까');
 assert.equal(conjugator.interrogative_past_formal_high_honorific('크다',true,true), '크셨습니까');
+
+// Imperative
+assert.equal(conjugator.imperative_present_informal_low_honorific('가다'), '가셔');
+
+assert.equal(conjugator.imperative_present_informal_high_honorific('가다'), '가세요');
+assert.equal(conjugator.imperative_present_informal_high_honorific('살다'), '사세요');
+
+assert.equal(conjugator.imperative_present_formal_low_honorific('가다'), '가셔라');
+assert.equal(conjugator.imperative_present_formal_low_honorific('굽다'), '구우셔라');
+assert.equal(conjugator.imperative_present_formal_low_honorific('살다'), '사셔라');
+assert.equal(conjugator.imperative_present_formal_low_honorific('서다'), '서셔라');
+assert.equal(conjugator.imperative_present_formal_low_honorific('뵙다'), '뵈셔라');
+
+assert.equal(conjugator.imperative_present_formal_high_honorific('가다'), '가십시오');
+assert.equal(conjugator.imperative_present_formal_high_honorific('걷다'), '걸으십시오');
+assert.equal(conjugator.imperative_present_formal_high_honorific('돕다'), '도우십시오');
