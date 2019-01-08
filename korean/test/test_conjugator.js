@@ -227,6 +227,8 @@ assert.equal(conjugator.declarative_present_formal_low('살다'), '산다');
 assert.equal(conjugator.declarative_present_formal_low('오르다'), '오른다');
 assert.equal(conjugator.declarative_present_formal_low('가늘다', true, true), '가늘다');
 assert.equal(conjugator.declarative_present_formal_low('춥다', true, true), '춥다');
+assert.equal(conjugator.declarative_present_formal_low('있다'), '있다');
+assert.equal(conjugator.declarative_present_formal_low('없다'), '없다');
 
 assert.equal(conjugator.declarative_present_formal_high('가다'), '갑니다');
 assert.equal(conjugator.declarative_present_formal_high('좋다'), '좋습니다');
@@ -304,6 +306,8 @@ assert.equal(conjugator.interrogative_present_informal_high('걷다'), '걸어�
 
 assert.equal(conjugator.interrogative_present_formal_low('가다'), '가느냐');
 assert.equal(conjugator.interrogative_present_formal_low('알다'), '아느냐');
+assert.equal(conjugator.interrogative_present_formal_low('있다'), '있느냐');
+assert.equal(conjugator.interrogative_present_formal_low('없다'), '없느냐');
 
 assert.equal(conjugator.interrogative_present_formal_high('가다'), '갑니까');
 assert.equal(conjugator.interrogative_present_formal_high('까맣다'), '까맣습니까');
@@ -312,7 +316,9 @@ assert.equal(conjugator.interrogative_past_informal_low('가다'), '갔어');
 
 assert.equal(conjugator.interrogative_past_informal_high('가다'), '갔어요');
 
-assert.equal(conjugator.interrogative_past_formal_low('가다'), '갔니');
+assert.equal(conjugator.interrogative_past_formal_low('가다'), '갔느냐');
+assert.equal(conjugator.interrogative_past_formal_low('있다'), '있었느냐');
+assert.equal(conjugator.interrogative_past_formal_low('없다'), '없었느냐');
 
 assert.equal(conjugator.interrogative_past_formal_high('가다'), '갔습니까');
 
@@ -478,6 +484,8 @@ assert.equal(conjugator.declarative_present_formal_low_honorific('오르다'), '
 assert.equal(conjugator.declarative_present_formal_low_honorific('가늘다', true, true), '가느시다');
 assert.equal(conjugator.declarative_present_formal_low_honorific('춥다', false, true), '추우시다');
 assert.equal(conjugator.declarative_present_formal_low_honorific('쓰다', false, true), '쓰시다');
+assert.equal(conjugator.declarative_present_formal_low_honorific('있다'), '있으시다');
+assert.equal(conjugator.declarative_present_formal_low_honorific('없다'), '없으시다');
 
 assert.equal(conjugator.declarative_present_formal_high_honorific('살다'), '사십니다');
 assert.equal(conjugator.declarative_present_formal_high_honorific('오르다'), '오르십니다');
@@ -559,6 +567,8 @@ assert.equal(conjugator.interrogative_present_formal_low_honorific('열다'), '�
 assert.equal(conjugator.interrogative_present_formal_low_honorific('받다'), '받으시느냐');
 assert.equal(conjugator.interrogative_present_formal_low_honorific('춥다',false,true), '추우시냐');
 assert.equal(conjugator.interrogative_present_formal_low_honorific('크다',true,true), '크시냐');
+assert.equal(conjugator.interrogative_present_formal_low_honorific('있다'), '있으시냐');
+assert.equal(conjugator.interrogative_present_formal_low_honorific('없다'), '없으시냐');
 
 assert.equal(conjugator.interrogative_present_formal_high_honorific('열다'), '여십니까');
 assert.equal(conjugator.interrogative_present_formal_high_honorific('받다'), '받으십니까');

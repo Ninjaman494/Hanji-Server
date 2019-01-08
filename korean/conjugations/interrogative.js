@@ -63,8 +63,12 @@ conjugations.interrogative_past_informal_high.type = 'interrogative';
 conjugations.interrogative_past_informal_high.tense = 'past';
 conjugations.interrogative_past_informal_high.speechLevel = 'informal high';
 
-conjugations.interrogative_past_formal_low = function(infinitive, regular) {
-    return conjugator.merge(conjugator.past_base(infinitive, regular), '니');
+conjugations.interrogative_past_formal_low = function(infinitive, regular, isAdj) {
+    let ending = '느냐';
+    if(isAdj && !conjugator.is_itda_obda(infinitive,regular)) {
+        ending = '냐';
+    }
+    return conjugator.merge(conjugator.past_base(infinitive, regular),ending);
 };
 conjugations.interrogative_past_formal_low.conjugation = true;
 conjugations.interrogative_past_formal_low.type = 'interrogative';
