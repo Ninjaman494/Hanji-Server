@@ -18,12 +18,17 @@ conjugations.interrogative_present_informal_high.type = 'interrogative';
 conjugations.interrogative_present_informal_high.tense = 'present';
 conjugations.interrogative_present_informal_high.speechLevel = 'informal high';
 
-conjugations.interrogative_present_formal_low = function(infinitive, regular) {
+conjugations.interrogative_present_formal_low = function(infinitive, regular, isAdj) {
+    let ending = '느냐';
+    if(isAdj && !conjugator.is_itda_obda(infinitive,regular)) {
+        ending = '냐';
+    }
+
     infinitive = conjugator.base(infinitive, regular);
     if (conjugator.is_l_irregular(infinitive, regular)) {
-        return conjugator.drop_l(infinitive, '니');
+        return conjugator.drop_l(infinitive, ending);
     }
-    return conjugator.merge(infinitive, '니');
+    return conjugator.merge(infinitive, ending);
 };
 conjugations.interrogative_present_formal_low.conjugation = true;
 conjugations.interrogative_present_formal_low.type = 'interrogative';

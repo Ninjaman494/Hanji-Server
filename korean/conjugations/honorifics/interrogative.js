@@ -22,7 +22,7 @@ conjugations.interrogative_present_informal_high.honorific = true;
 
 conjugations.interrogative_present_formal_low = function(infinitive, regular, isAdj) {
     let stem = conjugator.add_honorific(infinitive,regular);
-    if(isAdj) {
+    if(isAdj || conjugator.is_itda_obda(infinitive,regular)) {
         return conjugator.merge(stem, '냐');
     }else{
         return conjugator.merge(stem,'느냐');
@@ -47,7 +47,7 @@ conjugations.interrogative_present_formal_high.speechLevel = 'formal high';
 conjugations.interrogative_present_formal_high.honorific = true;
 
 conjugations.interrogative_past_informal_low = function(infinitive, regular) {
-    return declarative.declarative_past_informal_low(infinitive, regular);
+    return declarative.declarative_past_informal_low_honorific(infinitive, regular);
 };
 conjugations.interrogative_past_informal_low.conjugation = true;
 conjugations.interrogative_past_informal_low.type = 'interrogative';
@@ -55,7 +55,7 @@ conjugations.interrogative_past_informal_low.tense = 'past';
 conjugations.interrogative_past_informal_low.speechLevel = 'informal low';
 
 conjugations.interrogative_past_informal_high = function(infinitive, regular) {
-    return declarative.declarative_past_informal_high(infinitive, regular);
+    return declarative.declarative_past_informal_high_honorific(infinitive, regular);
 };
 conjugations.interrogative_past_informal_high.conjugation = true;
 conjugations.interrogative_past_informal_high.type = 'interrogative';

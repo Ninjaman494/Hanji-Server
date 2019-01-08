@@ -61,7 +61,7 @@ conjugations.declarative_present_informal_high.tense = 'present';
 conjugations.declarative_present_informal_high.speechLevel = 'informal high';
 
 conjugations.declarative_present_formal_low = function(infinitive, regular, isAdj) {
-    if(isAdj){
+    if(isAdj || conjugator.is_itda_obda(infinitive,regular)){
         return conjugator.join(conjugator.base(infinitive,regular),'다');
     }
 

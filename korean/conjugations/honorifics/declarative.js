@@ -27,7 +27,7 @@ conjugations.declarative_present_informal_high.honorific = true;
 
 conjugations.declarative_present_formal_low = function(infinitive, regular, isAdj) {
     let stem  = conjugator.add_honorific(infinitive,regular);
-    if(isAdj){
+    if(isAdj || conjugator.is_itda_obda(infinitive,regular)){
         return conjugator.join(stem,'다');
     }else {
         return conjugator.merge(stem,'는다');

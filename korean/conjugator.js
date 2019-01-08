@@ -431,6 +431,11 @@ conjugator.add_honorific =  function(infinitive,regular){
     }
 };
 
+conjugator.is_itda_obda = function(infinitive,regular){
+    let stem = conjugator.base(infinitive, regular);
+    return stem.charAt(stem.length - 1) == '있' || stem.charAt(stem.length - 1) == '없';
+};
+
 conjugator.display_conjugations = function(infinitive, regular, callback) {
     var both_regular_and_irregular = false;
     infinitive = conjugator.base(infinitive, regular);
