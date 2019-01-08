@@ -423,6 +423,14 @@ conjugator.future_base = function(infinitive, regular) {
 };
 conjugator.future_base.conjugation = false;
 
+conjugator.add_honorific =  function(infinitive,regular){
+    if (conjugator.is_l_irregular(conjugator.base(infinitive, regular))) {
+        return conjugator.drop_l(conjugator.base3(infinitive, regular), '시');
+    }else{
+        return conjugator.merge(conjugator.base3(infinitive,regular),'시');
+    }
+};
+
 conjugator.display_conjugations = function(infinitive, regular, callback) {
     var both_regular_and_irregular = false;
     infinitive = conjugator.base(infinitive, regular);
