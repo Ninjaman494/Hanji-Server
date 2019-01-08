@@ -537,3 +537,16 @@ assert.equal(conjugator.propositive_present_formal_high_honorific('살다'), '�
 assert.equal(conjugator.propositive_present_formal_high_honorific('눕다'), '누우십시다');
 assert.equal(conjugator.propositive_present_formal_high_honorific('돕다'), '도우십시다');
 assert.equal(conjugator.propositive_present_formal_high_honorific('열다'), '여십시다');
+
+// Suppositive
+assert.equal(conjugator.suppositive_informal_low_honorific('열다'), '여시겠어');
+assert.equal(conjugator.suppositive_informal_low_honorific('받다'), '받으시겠어');
+
+assert.equal(conjugator.suppositive_informal_high_honorific('열다'), '여시겠어요');
+assert.equal(conjugator.suppositive_informal_high_honorific('받다'), '받으시겠어요');
+
+assert.equal(conjugator.suppositive_formal_low_honorific('열다'), '여시겠다');
+assert.equal(conjugator.suppositive_formal_low_honorific('받다'), '받으시겠다');
+
+assert.equal(conjugator.suppositive_formal_high_honorific('열다'), '여시겠습니다');
+assert.equal(conjugator.suppositive_formal_high_honorific('받다'), '받으시겠습니다');
