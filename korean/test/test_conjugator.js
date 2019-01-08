@@ -605,3 +605,11 @@ assert.equal(conjugator.imperative_present_formal_low_honorific('뵙다'), '뵈�
 assert.equal(conjugator.imperative_present_formal_high_honorific('가다'), '가십시오');
 assert.equal(conjugator.imperative_present_formal_high_honorific('걷다'), '걸으십시오');
 assert.equal(conjugator.imperative_present_formal_high_honorific('돕다'), '도우십시오');
+
+// Nominal
+assert.equal(conjugator.nominal_ing_honorific('살다'), '사심');
+assert.equal(conjugator.nominal_ing_honorific('걷다'), '걸으심');
+assert.equal(conjugator.nominal_ing_honorific('가져오다'), '가져오심');
+assert.equal(conjugator.nominal_ing_honorific('그렇다'), '그러심');
+assert.equal(conjugator.nominal_ing_honorific('까맣다'), '까마심');
+assert.equal(conjugator.nominal_ing_honorific('돕다'), '도우심');
