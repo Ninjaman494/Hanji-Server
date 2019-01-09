@@ -667,4 +667,6 @@ assert.equal(conjugator.determiner_future_honorific('부르다'),'부르실');
 assert.equal(conjugator.determiner_future_honorific('춥다'),'추우실');
 assert.equal(conjugator.determiner_future_honorific('같다'),'같으실');
 assert.equal(conjugator.determiner_future_honorific('걸다'),'거실');
-assert.equal(conjugator.determiner_future_honorific('열다'),'여실'); // actually a verb, but good test
+assert.equal(conjugator.determiner_future_honorific('열다'),'여실');
+assert.equal(conjugator.determiner_future_honorific('있다'),'있으실');
+assert.equal(conjugator.determiner_future_honorific('없다'),'없으실');
