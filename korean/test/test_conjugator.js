@@ -640,3 +640,31 @@ assert.equal(conjugator.connective_but_honorific('가다'), '가시지만');
 assert.equal(conjugator.connective_but_honorific('듣다'),'들으시지만');
 assert.equal(conjugator.connective_but_honorific('춥다'),'추우시지만');
 assert.equal(conjugator.connective_but_honorific('받다'),'받으시지만');
+
+// Determiner
+assert.equal(conjugator.determiner_present_honorific('차다',true,false), '차시는');
+assert.equal(conjugator.determiner_present_honorific('받다',true,false),'받으시는');
+assert.equal(conjugator.determiner_present_honorific('듣다',false,false),'들으시는');
+assert.equal(conjugator.determiner_present_honorific('살다',true,false),'사시는');
+assert.equal(conjugator.determiner_present_honorific('차다',true,true), '차신');
+assert.equal(conjugator.determiner_present_honorific('같다',true,true),'같으신');
+assert.equal(conjugator.determiner_present_honorific('걸다',false,true),'거신');
+assert.equal(conjugator.determiner_present_honorific('멋있다',true,false), '멋있으신'); // 있다 exception
+assert.equal(conjugator.determiner_present_honorific('재미없다',true,false), '재미없으신'); // 없다 exception
+
+assert.equal(conjugator.determiner_past_honorific('차다',true,false), '차신');
+assert.equal(conjugator.determiner_past_honorific('받다',true,false),'받으신');
+assert.equal(conjugator.determiner_past_honorific('듣다',false,false),'들으신');
+assert.equal(conjugator.determiner_past_honorific('굽다',true,false),'굽으신');
+assert.equal(conjugator.determiner_past_honorific('살다',false, false),'사신');
+assert.equal(conjugator.determiner_past_honorific('차다',true,true), undefined);
+assert.equal(conjugator.determiner_past_honorific('멋있다',true,false), undefined); // 있다 exception
+assert.equal(conjugator.determiner_past_honorific('재미없다',true,false), undefined); // 없다 exception
+
+assert.equal(conjugator.determiner_future_honorific('차다'), '차실');
+assert.equal(conjugator.determiner_future_honorific('받다'),'받으실');
+assert.equal(conjugator.determiner_future_honorific('부르다'),'부르실');
+assert.equal(conjugator.determiner_future_honorific('춥다'),'추우실');
+assert.equal(conjugator.determiner_future_honorific('같다'),'같으실');
+assert.equal(conjugator.determiner_future_honorific('걸다'),'거실');
+assert.equal(conjugator.determiner_future_honorific('열다'),'여실'); // actually a verb, but good test
