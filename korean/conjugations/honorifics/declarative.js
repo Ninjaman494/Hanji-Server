@@ -8,7 +8,7 @@ conjugations.declarative_present_informal_low = function(infinitive, regular, fu
     return declarative.declarative_present_informal_low(stem,regular,further_use);
 };
 conjugations.declarative_present_informal_low.conjugation = true;
-conjugations.declarative_present_informal_low.type =  'declarative';
+conjugations.declarative_present_informal_low.type =  'declarative present';
 conjugations.declarative_present_informal_low.tense = 'present';
 conjugations.declarative_present_informal_low.speechLevel = 'informal low';
 conjugations.declarative_present_informal_low.honorific = true;
@@ -20,7 +20,7 @@ conjugations.declarative_present_informal_high = function(infinitive, regular) {
     return conjugator.merge(conjugator.base3(infinitive, regular), '세요');
 };
 conjugations.declarative_present_informal_high.conjugation = true;
-conjugations.declarative_present_informal_high.type =  'declarative';
+conjugations.declarative_present_informal_high.type =  'declarative present';
 conjugations.declarative_present_informal_high.tense = 'present';
 conjugations.declarative_present_informal_high.speechLevel = 'informal high';
 conjugations.declarative_present_informal_high.honorific = true;
@@ -34,7 +34,7 @@ conjugations.declarative_present_formal_low = function(infinitive, regular, isAd
     }
 };
 conjugations.declarative_present_formal_low.conjugation = true;
-conjugations.declarative_present_formal_low.type =  'declarative';
+conjugations.declarative_present_formal_low.type =  'declarative present';
 conjugations.declarative_present_formal_low.tense = 'present';
 conjugations.declarative_present_formal_low.speechLevel = 'formal low';
 conjugations.declarative_present_formal_low.honorific = true;
@@ -46,7 +46,7 @@ conjugations.declarative_present_formal_high = function(infinitive, regular) {
     return conjugator.merge(conjugator.base3(infinitive, regular), '십니다');
 };
 conjugations.declarative_present_formal_high.conjugation = true;
-conjugations.declarative_present_formal_high.type =  'declarative';
+conjugations.declarative_present_formal_high.type =  'declarative present';
 conjugations.declarative_present_formal_high.tense = 'present';
 conjugations.declarative_present_formal_high.speechLevel = 'formal high';
 conjugations.declarative_present_formal_high.honorific = true;
@@ -56,7 +56,7 @@ conjugations.declarative_past_informal_low = function(infinitive, regular) {
     return conjugator.merge(conjugator.past_base(stem, regular), '어');
 };
 conjugations.declarative_past_informal_low.conjugation = true;
-conjugations.declarative_past_informal_low.type = 'declarative';
+conjugations.declarative_past_informal_low.type = 'declarative past';
 conjugations.declarative_past_informal_low.tense = 'past';
 conjugations.declarative_past_informal_low.speechLevel = 'informal low';
 conjugations.declarative_past_informal_low.honorific = true;
@@ -65,7 +65,7 @@ conjugations.declarative_past_informal_high = function(infinitive, regular) {
     return conjugator.merge(conjugations.declarative_past_informal_low(infinitive, regular), '요');
 };
 conjugations.declarative_past_informal_high.conjugation = true;
-conjugations.declarative_past_informal_high.type = 'declarative';
+conjugations.declarative_past_informal_high.type = 'declarative past';
 conjugations.declarative_past_informal_high.tense = 'past';
 conjugations.declarative_past_informal_high.speechLevel = 'informal high';
 conjugations.declarative_past_informal_high.honorific = true;
@@ -75,7 +75,7 @@ conjugations.declarative_past_formal_low = function(infinitive, regular) {
     return conjugator.merge(conjugator.past_base(stem, regular), '다');
 };
 conjugations.declarative_past_formal_low.conjugation = true;
-conjugations.declarative_past_formal_low.type = 'declarative';
+conjugations.declarative_past_formal_low.type = 'declarative past';
 conjugations.declarative_past_formal_low.tense = 'past';
 conjugations.declarative_past_formal_low.speechLevel = 'formal low';
 conjugations.declarative_past_formal_low.honorific = true;
@@ -85,7 +85,7 @@ conjugations.declarative_past_formal_high = function(infinitive, regular) {
     return conjugator.merge(conjugator.past_base(stem, regular), '습니다');
 };
 conjugations.declarative_past_formal_high.conjugation = true;
-conjugations.declarative_past_formal_high.type = 'declarative';
+conjugations.declarative_past_formal_high.type = 'declarative past';
 conjugations.declarative_past_formal_high.tense = 'past';
 conjugations.declarative_past_formal_high.speechLevel = 'formal high';
 conjugations.declarative_past_formal_high.honorific = true;
@@ -95,7 +95,7 @@ conjugations.declarative_future_informal_low = function(infinitive, regular) {
     return conjugator.merge(conjugator.future_base(stem, regular), ' 거야');
 };
 conjugations.declarative_future_informal_low.conjugation = true;
-conjugations.declarative_future_informal_low.type = 'declarative';
+conjugations.declarative_future_informal_low.type = 'declarative future';
 conjugations.declarative_future_informal_low.tense = 'future';
 conjugations.declarative_future_informal_low.speechLevel = 'informal low';
 conjugations.declarative_future_informal_low.honorific = true;
@@ -105,7 +105,7 @@ conjugations.declarative_future_informal_high = function(infinitive, regular) {
     return conjugator.merge(conjugator.future_base(stem, regular), ' 거예요');
 };
 conjugations.declarative_future_informal_high.conjugation = true;
-conjugations.declarative_future_informal_high.type = 'declarative';
+conjugations.declarative_future_informal_high.type = 'declarative future';
 conjugations.declarative_future_informal_high.tense = 'future';
 conjugations.declarative_future_informal_high.speechLevel = 'informal high';
 conjugations.declarative_future_informal_high.honorific = true;
@@ -115,7 +115,7 @@ conjugations.declarative_future_formal_low = function(infinitive, regular) {
     return conjugator.merge(conjugator.future_base(stem, regular), ' 거다');
 };
 conjugations.declarative_future_formal_low.conjugation = true;
-conjugations.declarative_future_formal_low.type = 'declarative';
+conjugations.declarative_future_formal_low.type = 'declarative future';
 conjugations.declarative_future_formal_low.tense = 'future';
 conjugations.declarative_future_formal_low.speechLevel = 'formal low';
 conjugations.declarative_future_formal_low.honorific = true;
@@ -125,7 +125,7 @@ conjugations.declarative_future_formal_high = function(infinitive, regular) {
     return conjugator.merge(conjugator.future_base(stem, regular), ' 겁니다');
 };
 conjugations.declarative_future_formal_high.conjugation = true;
-conjugations.declarative_future_formal_high.type = 'declarative';
+conjugations.declarative_future_formal_high.type = 'declarative future';
 conjugations.declarative_future_formal_high.tense = 'future';
 conjugations.declarative_future_formal_high.speechLevel = 'formal high';
 conjugations.declarative_future_formal_high.honorific = true;
