@@ -6,7 +6,7 @@ const resolvers = require('./resolvers');
 
 const admin = require('firebase-admin');
 admin.initializeApp({
-    credential: admin.credential.applicationDefault()
+    credential: admin.credential.cert('hanji-bd63d-849ae0babd80.json')
 });
 const db = admin.firestore();
 
