@@ -18,10 +18,10 @@ module.exports = {
         NONE: 'none',
     },
     SpeechLevel: {
-        FORMAL_NON_POLITE: 'formal low',
-        INFORMAL_NON_POLITE: 'informal low',
-        INFORMAL_POLITE: 'informal high',
-        FORMAL_POLITE: 'formal high',
+        FORMAL_LOW: 'formal low',
+        INFORMAL_LOW: 'informal low',
+        INFORMAL_HIGH: 'informal high',
+        FORMAL_HIGH: 'formal high',
         NONE: 'none'
     }
 };

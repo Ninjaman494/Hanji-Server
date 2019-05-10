@@ -33,10 +33,10 @@ const typeDefs = gql`
     }
     
     enum SpeechLevel {
-        FORMAL_NON_POLITE,
-        INFORMAL_NON_POLITE,
-        INFORMAL_POLITE,
-        FORMAL_POLITE,
+        FORMAL_LOW,
+        INFORMAL_LOW,
+        INFORMAL_HIGH,
+        FORMAL_HIGH,
         NONE
     }
     
