@@ -474,7 +474,7 @@ conjugator.each_conjugation = function(infinitive, regular, isAdj, honorific, ca
     infinitive = conjugator.base(infinitive, regular);
     for (conjugation in conjugator) {
         conjugator.reasons = [];
-        if (conjugator[conjugation].conjugation && (!honorific || honorific == conjugator[conjugation].honorific)) {
+        if (conjugator[conjugation].conjugation && (honorific == conjugator[conjugation].honorific || (!honorific && conjugator[conjugation].honorific == null))) {
             var r = {};
             r.conjugated = conjugator[conjugation](infinitive, regular, isAdj,honorific);
             if(r.conjugated == undefined){ // this conjugation doesn't exist for this word (ex. determiner past for adj.)
