@@ -17,16 +17,28 @@ class ConjugationAPI extends DataSource {
         this.context = config.context;
     }
 
-    fetchConjugations(stem, isAdj,honorific, regular){
+    fetchConjugations(stem, isAdj,honorific, regular, conjugationNames){
         if(regular == undefined) {
             // returns either 'regular verb' or type of irregular
             regular = conjugator.verb_type(stem, false) == 'regular verb';
         }
 
+        if(conjugationNames != null) {
+            for (let i = 0; i < conjugationNames.length; i++) {
+                conjugationNames[i] = conjugationNames[i].toLowerCase();
+            }
+        }
+
         let  data = [];
         conjugator.conjugate(stem,regular,isAdj,honorific, conjugations => {
             conjugations.forEach( c =>{
-                data.push(this.conjugationReducer(c));
+                let conjugation = this.conjugationReducer(c);
+                // If a list of conjugations was provided, check if this conjugation is part of the list
+                if(conjugationNames != null && conjugationNames.includes(conjugation.name)) {
+                    data.push(conjugation);
+                } else if(conjugationNames == null) {  // No list was provided, add all conjugations
+                    data.push(conjugation)
+                }
             });
         });
         return data;

@@ -6,8 +6,8 @@ module.exports = {
             dataSources.databaseAPI.fetchEntry(id),
         examples:(_, { id }, { dataSources }) =>
             dataSources.databaseAPI.fetchExamples(id),
-        conjugation:(_, {stem, isAdj, honorific, regular }, { dataSources }) =>
-            dataSources.conjugationAPI.fetchConjugations(stem,isAdj, honorific, regular),
+        conjugations:(_, {stem, isAdj, honorific, regular, conjugations }, { dataSources }) =>
+            dataSources.conjugationAPI.fetchConjugations(stem,isAdj, honorific, regular, conjugations),
         conjugationTypes: (_,{},{ dataSources }) =>
             dataSources.conjugationAPI.fetchConjugationTypes(),
         search:(_, { query }, { dataSources }) =>
