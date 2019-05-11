@@ -519,6 +519,16 @@ conjugator.conjugate_json = function(infinitive, regular, callback) {
     });
 };
 
+conjugator.getTypes = function() {
+  let types = new Set();
+  for(conjugation in conjugator) {
+      if (conjugator[conjugation].conjugation) {
+          types.add(conjugator[conjugation].type);
+      }
+  }
+  return types;
+};
+
 // Export functions to node
 try {
     for (f in conjugator) {

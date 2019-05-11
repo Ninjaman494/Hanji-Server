@@ -8,6 +8,8 @@ module.exports = {
             dataSources.databaseAPI.fetchExamples(id),
         conjugation:(_, {stem, isAdj, honorific, regular }, { dataSources }) =>
             dataSources.conjugationAPI.fetchConjugations(stem,isAdj, honorific, regular),
+        conjugationTypes: (_,{},{ dataSources }) =>
+            dataSources.conjugationAPI.fetchConjugationTypes(),
         search:(_, { query }, { dataSources }) =>
             dataSources.searchAPI.search(query)
     },

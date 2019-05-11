@@ -32,6 +32,10 @@ class ConjugationAPI extends DataSource {
         return data;
     }
 
+    fetchConjugationTypes() {
+        return Array.from(conjugator.getTypes());
+    }
+
     conjugationReducer(conjugation){
         return {
             name: conjugation.conjugation_name,
