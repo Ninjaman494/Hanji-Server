@@ -404,6 +404,7 @@ assert.equal(conjugator.determiner_present('부르다',false,true),'부른');
 assert.equal(conjugator.determiner_present('아니다',false,true),'아닌');
 assert.equal(conjugator.determiner_present('이다',false,true),'인');
 assert.equal(conjugator.determiner_present('걸다',false,true),'건');
+assert.equal(conjugator.determiner_present('가늘다',false,true),'가는');
 assert.equal(conjugator.determiner_present('열다',false,true),'연'); // actually a verb, but good test
 
 // determiner past - verbs

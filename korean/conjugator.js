@@ -71,12 +71,9 @@ conjugator.drop_l = function(x, y) {
 
 conjugator.drop_l_and_borrow_padchim = function(x, y) {
     if (hangeul.padchim(x.charAt(x.length-1)) == 'ᆯ') {
-        conjugator.reasons.push('drop ' + hangeul.padchim(x.charAt(x.length-1)) + ' borrow padchim')
-        return x.substring(0, x.length-1) +
-               hangeul.join(hangeul.lead(x[x.length-1]),
-                            hangeul.vowel(x[x.length-1]),
-                            hangeul.padchim(y[0])) +
-               y.substring(1);
+        let stem = x.substring(0,x.length-1) + hangeul.join(hangeul.lead(x[x.length-1]),hangeul.vowel(x[x.length-1]));
+        conjugator.reasons.push(`drop ㄹ (${x} -> ${stem})`);
+        return conjugator.merge(stem, y);
     }
 };
 
