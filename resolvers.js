@@ -10,6 +10,8 @@ module.exports = {
             dataSources.conjugationAPI.fetchConjugations(stem,isAdj, honorific, regular, conjugations),
         conjugationTypes: (_,{},{ dataSources }) =>
             dataSources.conjugationAPI.fetchConjugationTypes(),
+        conjugationNames: (_,{}, { dataSources }) =>
+            dataSources.conjugationAPI.fetchConjugationNames(),
         search:(_, { query }, { dataSources }) =>
             dataSources.searchAPI.search(query)
     },

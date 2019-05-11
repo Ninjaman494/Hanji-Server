@@ -6,6 +6,7 @@ const typeDefs = gql`
         examples(id: ID!): [Example]!
         conjugations(stem: String!, isAdj: Boolean!, honorific: Boolean!, regular: Boolean, conjugations: [String]): [Conjugation]!
         conjugationTypes: [String]!
+        conjugationNames: [String]!
         search(query: String!): [Entry]!
     }
     

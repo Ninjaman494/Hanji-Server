@@ -529,6 +529,16 @@ conjugator.getTypes = function() {
   return types;
 };
 
+conjugator.getNames = function() {
+    let names = new Set();
+    for(conjugation in conjugator) {
+        if(conjugator[conjugation].conjugation) {
+            names.add(conjugation.replace(/_/g, ' ').replace(' honorific',''));
+        }
+    }
+    return names;
+};
+
 // Export functions to node
 try {
     for (f in conjugator) {
