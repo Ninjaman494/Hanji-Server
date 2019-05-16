@@ -74,7 +74,7 @@ stemmer.generate_stems = function(verb) {
 stemmer.stem = function(verb) {
     // remove all conjugators that return what was passed in
     var ignored_conjugations = {};
-    var returnlist = [];
+    var returnList = new Set();
     var possConjugations = [];
     for (var f in conjugator) {
         if (conjugator[f].conjugation && conjugator[f]('test') == 'test') {
@@ -95,14 +95,14 @@ stemmer.stem = function(verb) {
                 if (conjugator[f](possible_stem) == verb) {
                     var infin = {'key': possible_stem + '다'};
                     if(possConjugations.indexOf(infin.key) == -1 && infin.key.indexOf(' ') == -1) {
-                        returnlist.push(infin);
+                        returnList.add(infin.key);
                         possConjugations.push(infin.key);
                     }
                 }
             }
         }
     }
-    return returnlist;
+    return returnList;
 };
 
 stemmer.stem_lookup = function(phrase, select_by_stem, callback) {
