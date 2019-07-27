@@ -24,15 +24,15 @@ class SearchAPI extends DataSource {
         let promises = [];
 
         let url = cursor != null ? encodeURI(process.env.SEARCH_URL + `${query}&cursor=${cursor}`) : encodeURI(process.env.SEARCH_URL + `${query}` );
-        let ids = await rp({ uri: url, json: true}).catch(function (err) {
+        let searchResult = await rp({ uri: url, json: true}).catch(function (err) {
             console.log(err);
         });
-        ids.results.forEach(id => {
+        searchResult.results.forEach(id => {
             promises.push(this.databaseAPI.fetchEntry(id)); // start fetching for each id
         });
         let results = await Promise.all(promises); // wait for promises to resolve
         return {
-          'cursor': ids.cursor,
+          'cursor': searchResult.cursor,
           'results': results
         };
     }
