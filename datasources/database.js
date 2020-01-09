@@ -40,6 +40,16 @@ class DatabaseAPI extends DataSource {
         return examples;
     }
 
+    // NOT used by GraphQL, but by a cron job
+    async fetchUnIndexedEntries() {
+        let snapshot = await this.db.collection('words').where('indexed','==',false).get();
+        let entries = [];
+        snapshot.forEach(doc => {
+            entries.push(this.entryReducer(doc));
+        });
+        return entries;
+    }
+
     exampleReducer(example,id){
         return {
             id: id,
