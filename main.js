@@ -1,5 +1,6 @@
 require('dotenv').config();
 const cron = require('node-cron');
+const express = require('express');
 const DatabaseAPI = require('./datasources/database');
 const ConjugationAPI = require('./datasources/conjugation');
 const SearchAPI = require('./datasources/search');
@@ -14,7 +15,7 @@ const settings = {timestampsInSnapshots: true}; // To remove timestamp warning
 const db = admin.firestore();
 db.settings(settings);
 
-const { ApolloServer } = require('apollo-server');
+const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./schema');
 let dbAPI = new DatabaseAPI(db);
 const server = new ApolloServer({
@@ -27,17 +28,27 @@ const server = new ApolloServer({
     })
 });
 
-// Every day at 11:00 AM
-cron.schedule("0 11 * * *", function() {
+// Every day at 5:00 PM EST
+cron.schedule("0 17 * * *", function() {
     console.log("CRON: Checking for un-indexed entries...");
     cronjobs.unindexedEntries(dbAPI).then(function (result) {
         console.log("CRON: Finished checking for un-index entries");
         cronjobs.logIndexingMsg(result);
+    }, {
+        scheduled: true,
+        timezone: "America/New_York"
     })
 });
 
+// Required for min_instances
+const app = express();
+server.applyMiddleware({ app });
+app.get('/_ah/warmup', (req, res) => {
+   res.send('All warmed up!');
+});
+
 const PORT = process.env.PORT || 4000;
-server.listen({ port: PORT }).then( ({url}) => {
+app.listen({ port: PORT },(url) => {
    console.log('Server ready at '+url)
 });
 
