@@ -60,7 +60,7 @@ class DatabaseAPI extends DataSource {
         return entries;
     }
 
-    exampleReducer(examples){
+    static exampleReducer(examples){
         let reducedExamples = [];
         examples.forEach(example => {
             reducedExamples.push({
@@ -78,9 +78,9 @@ class DatabaseAPI extends DataSource {
             pos: entry.pos,
             definitions: entry.definitions
         };
-        /*if(entry.examples.length > 0) {
-            data.examples = this.exampleReducer(entry.examples)
-        }*/
+        if(entry.examples) {
+            data.examples = DatabaseAPI.exampleReducer(entry.examples)
+        }
         if(entry.antonyms) {
             data.antonyms = entry.antonyms;
         }

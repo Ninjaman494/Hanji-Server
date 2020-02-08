@@ -22,6 +22,7 @@ const typeDefs = gql`
         definitions: [String]!
         antonyms: [String]
         synonyms: [String]
+        examples: [Example]
         regular: Boolean
         note: String
     }
