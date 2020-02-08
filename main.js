@@ -29,7 +29,7 @@ const server = new ApolloServer({
 });
 
 // Every day at 5:00 PM EST
-cron.schedule("0 17 * * *", function() {
+/*cron.schedule("0 17 * * *", function() {
     console.log("CRON: Checking for un-indexed entries...");
     cronjobs.unindexedEntries(dbAPI).then(function (result) {
         console.log("CRON: Finished checking for un-index entries");
@@ -38,7 +38,7 @@ cron.schedule("0 17 * * *", function() {
         scheduled: true,
         timezone: "America/New_York"
     })
-});
+});*/
 
 // Required for min_instances
 const app = express();
