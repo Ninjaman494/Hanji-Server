@@ -37,17 +37,36 @@ class DatabaseAPI extends DataSource {
     }
 
     async fetchEntry(id) {
-        let doc = await this.db.collection('words').doc(id).get();
-        return doc.exists ? DatabaseAPI.entryReducer(doc) : null;
+        const mongo = new MongoClient(URI, { useNewUrlParser: true });
+        await mongo.connect();
+        let results = await mongo
+            .db("hanji")
+            .collection("words")
+            .find({ _id: id })
+            .toArray();
+        mongo.close();
+        if(results.length > 0) {
+            return DatabaseAPI.entryReducer(results[0]);
+        } else {
+            return  null;
+        }
     }
 
     async fetchExamples(id) {
-        let snapshot = await this.db.collection('words').doc(id).collection('examples').get();
-        let examples = [];
-        snapshot.forEach(doc =>{
-            examples.push(this.exampleReducer(doc,id));
-        });
-        return examples;
+        const mongo = new MongoClient(URI, { useNewUrlParser: true });
+        await mongo.connect();
+        let results = await mongo
+            .db("hanji")
+            .collection("words")
+            .find({ _id: id }, { projection: { examples: 1 } })
+            .toArray();
+        mongo.close();
+
+        if(results.length > 0 && results[0].examples) {
+            return DatabaseAPI.exampleReducer(results[0].examples);
+        } else {
+            return  [];
+        }
     }
 
     // NOT used by GraphQL, but by a cron job
@@ -66,7 +85,7 @@ class DatabaseAPI extends DataSource {
             reducedExamples.push({
                 sentence: example.sentence,
                 translation: example.translation
-            })
+            });
         });
         return reducedExamples;
     }

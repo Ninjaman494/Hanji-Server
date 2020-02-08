@@ -28,7 +28,6 @@ const typeDefs = gql`
     }
     
     type Example {
-        id: ID!,
         sentence: String!
         translation: String!
     }
