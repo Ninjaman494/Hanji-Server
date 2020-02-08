@@ -87,7 +87,7 @@ function exampleReducer(examples){
     return reducedExamples;
 }
 
-addDocuments().then( async () => {
+/* addDocuments().then( async () => {
     console.log("Done");
     console.log('Count by POS:', posCountMap);
     console.log("totalEntries: " + totalEntries);
@@ -119,15 +119,16 @@ addDocuments().then( async () => {
         mongo.close();
     });
 });
-/*
+*/
+
 const mongo = new MongoClient(uri, { useNewUrlParser: true });
 mongo.connect(async err => {
     let mongoCollection = mongo.db("hanji").collection("words");
-    mongoCollection
-        .find({ $text: { $search: "cAfE" } })
+    let array = await mongoCollection
+        .find({ $text: { $search: "cafe" } })
         .project({ score: { $meta: "textScore" } })
         .sort( { score: { $meta: "textScore" } } )
-        .toArray().then(array => {
-        console.log(array);
-    })
-});*/
+        .toArray();
+    console.log(array);
+    mongo.close();
+});

@@ -1,4 +1,6 @@
 const { DataSource } = require('apollo-datasource');
+const MongoClient = require('mongodb').MongoClient;
+const URI = "***REMOVED***";
 
 class DatabaseAPI extends DataSource {
 
@@ -18,17 +20,25 @@ class DatabaseAPI extends DataSource {
     }
 
     async fetchEntries(term){
-        let snapshot = await this.db.collection('words').where('term', '==', term).get();
+        const mongo = new MongoClient(URI, { useNewUrlParser: true });
+        await mongo.connect();
+        let results = await mongo
+            .db("hanji")
+            .collection("words")
+            .find({ term: term })
+            .toArray();
+        mongo.close();
+
         let entries = [];
-        snapshot.forEach(doc => {
-            entries.push(this.entryReducer(doc));
+        results.forEach(doc => {
+            entries.push(DatabaseAPI.entryReducer(doc));
         });
         return entries;
     }
 
     async fetchEntry(id) {
         let doc = await this.db.collection('words').doc(id).get();
-        return doc.exists ? this.entryReducer(doc) : null;
+        return doc.exists ? DatabaseAPI.entryReducer(doc) : null;
     }
 
     async fetchExamples(id) {
@@ -45,30 +55,46 @@ class DatabaseAPI extends DataSource {
         let snapshot = await this.db.collection('words').where('indexed','==',false).get();
         let entries = [];
         snapshot.forEach(doc => {
-            entries.push(this.entryReducer(doc));
+            entries.push(DatabaseAPI.entryReducer(doc));
         });
         return entries;
     }
 
-    exampleReducer(example,id){
-        return {
-            id: id,
-            sentence: example.data().sentence,
-            translation: example.data().translation
-        };
+    exampleReducer(examples){
+        let reducedExamples = [];
+        examples.forEach(example => {
+            reducedExamples.push({
+                sentence: example.sentence,
+                translation: example.translation
+            })
+        });
+        return reducedExamples;
     }
 
-    entryReducer(entry){
-        return {
-            id: entry.id,
-            term: entry.data().term,
-            pos: entry.data().pos,
-            definitions: entry.data().definitions,
-            antonyms: entry.data().antonyms,
-            synonyms: entry.data().synonyms,
-            regular: entry.data().regular,
-            note: entry.data().note
+    static entryReducer(entry){
+        let data = {
+            id: entry._id,
+            term: entry.term,
+            pos: entry.pos,
+            definitions: entry.definitions
+        };
+        /*if(entry.examples.length > 0) {
+            data.examples = this.exampleReducer(entry.examples)
+        }*/
+        if(entry.antonyms) {
+            data.antonyms = entry.antonyms;
         }
+        if(entry.synonyms){
+            data.synonyms = entry.synonyms;
+        }
+        if(entry.regular) {
+            data.regular = entry.regular;
+        }
+        if(entry.note) {
+            data.note = entry.note;
+        }
+
+        return data;
     }
 }
 module.exports = DatabaseAPI;
