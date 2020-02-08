@@ -1,3 +1,5 @@
+const async = require('async');
+
 // Firebase Firestore Client
 const admin = require('firebase-admin');
 admin.initializeApp({
@@ -14,15 +16,16 @@ const uri = "***REMOVED***";
 const posCountMap = {};
 let hasExampleCount = 0;
 let totalExamples = 0;
+let totalEntries = 0;
 
 async function addDocuments(){
-    let snapshot = await db.collection('words').limit(5).get();
-    for(let doc of snapshot.docs) {
+    let snapshot = await db.collection('words').get();
+    await async.eachLimit(snapshot.docs, 100, async function (doc) { // Max 500 concurrent connections
         let examples = await doc.ref.collection('examples').get();
         console.log("doc: " + doc.id);
         console.log("examples: " + examples.size);
         await addDocument(doc, examples);
-    }
+    });
 }
 
 async function addDocument(doc, examples) {
@@ -36,10 +39,11 @@ async function addDocument(doc, examples) {
             console.log(err)
         } else {
             let insertedDoc = result.ops[0];
+            totalEntries += 1;
             posCountMap[insertedDoc.pos] = (posCountMap[insertedDoc.pos] || 0) + 1;
             if(insertedDoc.examples) {
                 hasExampleCount += 1;
-                totalExamples += insertedDoc.examples.size;
+                totalExamples += insertedDoc.examples.length;
             }
         }
     });
@@ -83,11 +87,37 @@ function exampleReducer(examples){
     return reducedExamples;
 }
 
-addDocuments().then( () => {
+addDocuments().then( async () => {
     console.log("Done");
     console.log('Count by POS:', posCountMap);
+    console.log("totalEntries: " + totalEntries);
     console.log("totalExamples: " + totalExamples);
     console.log("hasExample Count: " + hasExampleCount);
+
+    let query = {_id: "global"};
+    let statDoc = {
+        $set: {
+            _id: "global",
+            total_entries: totalEntries,
+            count_by_POS: posCountMap,
+            entries_with_examples: hasExampleCount,
+            total_examples: totalExamples
+        }
+    };
+    let options = { upsert: true };
+
+    const mongo = new MongoClient(uri, { useNewUrlParser: true });
+    await mongo.connect();
+    let mongoCollection = mongo.db("hanji").collection("stats");
+    mongoCollection.updateOne(query, statDoc, options, function (err, result) {
+        if (err) {
+            console.log(err)
+        } else {
+            let insertedDoc = result;
+            console.log("Done: " + insertedDoc);
+        }
+        mongo.close();
+    });
 });
 /*
 const mongo = new MongoClient(uri, { useNewUrlParser: true });
