@@ -1,3 +1,4 @@
+// Firebase Firestore Client
 const admin = require('firebase-admin');
 admin.initializeApp({
     credential: admin.credential.cert('../hanji-bd63d-849ae0babd80.json')
@@ -6,36 +7,43 @@ const settings = {timestampsInSnapshots: true}; // To remove timestamp warning
 const db = admin.firestore();
 db.settings(settings);
 
+// Mongo DB client
 const MongoClient = require('mongodb').MongoClient;
 const uri = "***REMOVED***";
 
-async function addDocument() {
-    let firestoreCollection = await db.collection('words').get();
-    await firestoreCollection.forEach(async doc => {
-        let examples = await db
-            .collection('words')
-            .doc(doc.id)
-            .collection('examples')
-            .get();
-        const mongo = new MongoClient(uri, { useNewUrlParser: true });
-        await mongo.connect(async err => {
-            if (err) {
-                console.log(err);
-                return;
-            }
+const posCountMap = {};
+let hasExampleCount = 0;
+let totalExamples = 0;
 
-            let mongoCollection = mongo.db("hanji").collection("words");
-            let mongoDoc = entryReducer(doc, examples);
-            await mongoCollection.insertOne(mongoDoc, function (err, result) {
-                if (err) {
-                    console.log(err)
-                } else {
-                    console.log(result)
-                }
-            });
-            await mongo.close();
-        });
+async function addDocuments(){
+    let snapshot = await db.collection('words').limit(5).get();
+    for(let doc of snapshot.docs) {
+        let examples = await doc.ref.collection('examples').get();
+        console.log("doc: " + doc.id);
+        console.log("examples: " + examples.size);
+        await addDocument(doc, examples);
+    }
+}
+
+async function addDocument(doc, examples) {
+    const mongo = new MongoClient(uri, { useNewUrlParser: true });
+    await mongo.connect();
+
+    let mongoCollection = mongo.db("hanji").collection("words");
+    let mongoDoc = entryReducer(doc, examples);
+    await mongoCollection.insertOne(mongoDoc, function (err, result) {
+        if (err) {
+            console.log(err)
+        } else {
+            let insertedDoc = result.ops[0];
+            posCountMap[insertedDoc.pos] = (posCountMap[insertedDoc.pos] || 0) + 1;
+            if(insertedDoc.examples) {
+                hasExampleCount += 1;
+                totalExamples += insertedDoc.examples.size;
+            }
+        }
     });
+    await mongo.close();
 }
 
 function entryReducer(entry, examples){
@@ -75,13 +83,18 @@ function exampleReducer(examples){
     return reducedExamples;
 }
 
-addDocument().then( () => console.log("Done"));
+addDocuments().then( () => {
+    console.log("Done");
+    console.log('Count by POS:', posCountMap);
+    console.log("totalExamples: " + totalExamples);
+    console.log("hasExample Count: " + hasExampleCount);
+});
 /*
 const mongo = new MongoClient(uri, { useNewUrlParser: true });
 mongo.connect(async err => {
     let mongoCollection = mongo.db("hanji").collection("words");
     mongoCollection
-        .find({ $text: { $search: "cafe" } })
+        .find({ $text: { $search: "cAfE" } })
         .project({ score: { $meta: "textScore" } })
         .sort( { score: { $meta: "textScore" } } )
         .toArray().then(array => {
