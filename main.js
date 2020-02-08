@@ -7,17 +7,9 @@ const SearchAPI = require('./datasources/search');
 const resolvers = require('./resolvers');
 const cronjobs = require('./cronjobs');
 
-const admin = require('firebase-admin');
-admin.initializeApp({
-    credential: admin.credential.cert('hanji-bd63d-849ae0babd80.json')
-});
-const settings = {timestampsInSnapshots: true}; // To remove timestamp warning
-const db = admin.firestore();
-db.settings(settings);
-
 const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./schema');
-let dbAPI = new DatabaseAPI(db);
+let dbAPI = new DatabaseAPI();
 const server = new ApolloServer({
     typeDefs,
     resolvers,

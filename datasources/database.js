@@ -4,9 +4,8 @@ const URI = "***REMOVED***";
 
 class DatabaseAPI extends DataSource {
 
-    constructor(db) {
+    constructor() {
         super();
-        this.db = db;
     }
 
     /**
