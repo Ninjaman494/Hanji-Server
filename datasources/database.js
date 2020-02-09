@@ -89,7 +89,13 @@ class DatabaseAPI extends DataSource {
         await array.forEach(entry => {
             entries.push(DatabaseAPI.entryReducer(entry));
         });
-        cursor += entries.length;
+
+        if(entries.length === 0) {
+            cursor = -1;
+        } else {
+            cursor += entries.length;
+        }
+
         return {
             cursor: cursor,
             results: entries
