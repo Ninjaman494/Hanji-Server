@@ -7,7 +7,7 @@ const typeDefs = gql`
         conjugations(stem: String!, isAdj: Boolean!, honorific: Boolean!, regular: Boolean, conjugations: [String]): [Conjugation]!
         conjugationTypes: [String]!
         conjugationNames: [String]!
-        search(query: String!, cursor: String): Result!
+        search(query: String!, cursor: Int): Result!
     }
     
     type Result {

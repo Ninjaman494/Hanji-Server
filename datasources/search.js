@@ -20,23 +20,6 @@ class SearchAPI extends DataSource {
         this.context = config.context;
     }
 
-    async searchEnglish(query, cursor) {
-        let promises = [];
-
-        let url = cursor != null ? encodeURI(process.env.SEARCH_URL + `${query}&cursor=${cursor}`) : encodeURI(process.env.SEARCH_URL + `${query}` );
-        let searchResult = await rp({ uri: url, json: true}).catch(function (err) {
-            console.log(err);
-        });
-        searchResult.results.forEach(id => {
-            promises.push(this.databaseAPI.fetchEntry(id)); // start fetching for each id
-        });
-        let results = await Promise.all(promises); // wait for promises to resolve
-        return {
-          'cursor': searchResult.cursor,
-          'results': results
-        };
-    }
-
     async searchKorean(stems){
         let promises = [];
         stems.forEach(stem => {
@@ -60,7 +43,7 @@ class SearchAPI extends DataSource {
             stems.add(query); // in case query is already in infinitive form
             return await this.searchKorean(stems);
         } else {
-            return await this.searchEnglish(query, cursor);
+            return await this.databaseAPI.searchEnglish(query, cursor);
         }
     }
 }

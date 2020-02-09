@@ -1,6 +1,7 @@
 const { DataSource } = require('apollo-datasource');
 const MongoClient = require('mongodb').MongoClient;
 const URI = "***REMOVED***";
+const PAGE_COUNT = 20;
 
 class DatabaseAPI extends DataSource {
 
@@ -66,6 +67,33 @@ class DatabaseAPI extends DataSource {
         } else {
             return  [];
         }
+    }
+
+    async searchEnglish(query, cursor) {
+        const mongo = new MongoClient(URI, { useNewUrlParser: true });
+        await mongo.connect();
+        if(!cursor) {
+            cursor = 0;
+        }
+
+        let array = await mongo
+            .db("hanji")
+            .collection("words")
+            .find({ $text: { $search: query } }, { limit: PAGE_COUNT, skip: cursor})
+            .project({ score: { $meta: "textScore" } })
+            .sort( { score: { $meta: "textScore" } } )
+            .toArray();
+        mongo.close();
+
+        let entries = [];
+        await array.forEach(entry => {
+            entries.push(DatabaseAPI.entryReducer(entry));
+        });
+        cursor += entries.length;
+        return {
+            cursor: cursor,
+            results: entries
+        };
     }
 
     static exampleReducer(examples){
