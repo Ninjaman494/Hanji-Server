@@ -7,6 +7,8 @@ class DatabaseAPI extends DataSource {
 
     constructor() {
         super();
+        this.lastFetched = new Date();
+        this.lastWOD = null;
     }
 
     /**
@@ -100,6 +102,26 @@ class DatabaseAPI extends DataSource {
             cursor: cursor,
             results: entries
         };
+    }
+
+    async fetchWordoftheDay(){
+        const mongo = new MongoClient(URI, { useNewUrlParser: true });
+        await mongo.connect();
+        let hourDiff = Math.abs(new Date() - this.lastFetched) / 36e5;
+
+        if(this.lastWOD == null || hourDiff >= 24) {
+            // fetch new Word of the Day
+            let result = await mongo
+                .db("hanji")
+                .collection("words")
+                .aggregate([{'$sample': {'size': 1}}])
+                .toArray();
+            this.lastWOD = result[0]
+        }
+        this.lastFetched = new Date();
+        mongo.close();
+
+        return DatabaseAPI.entryReducer(this.lastWOD)
     }
 
     static exampleReducer(examples){
