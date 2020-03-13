@@ -1,0 +1,4 @@
+cron:
+  - description: "uptime"
+    url: /
+    schedule: every 5 minutes
