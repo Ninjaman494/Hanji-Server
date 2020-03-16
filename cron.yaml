@@ -1,4 +1,4 @@
 cron:
   - description: "uptime"
-    url: /
-    schedule: every 5 minutes
+    url: /uptime
+    schedule: every 1 minutes

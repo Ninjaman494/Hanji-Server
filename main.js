@@ -39,6 +39,10 @@ app.get('/_ah/warmup', (req, res) => {
    res.send('All warmed up!');
 });
 
+app.get('/uptime', (req, res) => {
+   res.send('Still up!')
+});
+
 const PORT = process.env.PORT || 4000;
 app.listen({ port: PORT },(url) => {
    console.log('Server ready at '+url)
