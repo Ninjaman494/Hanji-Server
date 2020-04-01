@@ -1,45 +1,45 @@
-const admin = require('firebase-admin');
-admin.initializeApp({
-    credential: admin.credential.applicationDefault()
-});
-const db = admin.firestore();
+const { MongoClient} = require('mongodb');
+const uri = "***REMOVED***";
+
 const posCountMap = {};
 let hasExampleCount = 0;
 let totalExamples = 0;
+let totalEntries = 0;
 
 async function fetchAndCount() {
-    let snapshot = await db.collection('words').get();
-    for(let doc of snapshot.docs) {
-        console.log(doc.id, '=>', doc.data());
-        posCountMap[doc.data().pos] = (posCountMap[doc.data().pos] || 0) + 1;
+    const mongo = new MongoClient(uri, { useNewUrlParser: true});
+    await mongo.connect();
+    let words = mongo.db("hanji").collection("words");
+    await words.find().forEach(doc => {
+        console.log(doc._id);
+        posCountMap[doc.pos] = (posCountMap[doc.pos] || 0) + 1;
+        totalEntries += 1;
 
         // Count examples
-        let exampleSnapShot = await doc.ref.collection('examples').get();
-        let size = exampleSnapShot.size;
-        if(size > 0) {
-            console.log(doc.id, '->', exampleSnapShot.docs[0].data().sentence);
+        if(doc.examples  != null) {
             hasExampleCount += 1;
-            totalExamples += size;
+            totalExamples += doc.examples.length;
         }
-    }
-    console.log('Total Entries:', snapshot.size);
+    });
+
+    console.log('Total Entries:', totalEntries);
     console.log('Count by POS:', posCountMap);
     console.log('Entries with Examples:',hasExampleCount);
     console.log('Total Examples:', totalExamples);
-    return snapshot;
+
+    await mongo.db("hanji").collection("stats")
+        .updateOne({ _id: "global" },{
+            $set: {
+                count_by_POS: posCountMap,
+                entries_with_examples: hasExampleCount,
+                total_entries: totalEntries,
+                total_examples: totalExamples
+            }
+        });
+    await mongo.close();
 }
 
 fetchAndCount()
-    .then((snapshot) => {
-        db.collection('stats')
-            .doc('global')
-            .set({
-                total_entries: snapshot.size,
-                count_by_POS: posCountMap,
-                entries_with_examples: hasExampleCount,
-                total_examples: totalExamples,
-            })
-    })
     .catch((err) => {
         console.log('Error getting documents', err);
     });

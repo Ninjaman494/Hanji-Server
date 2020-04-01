@@ -116,9 +116,10 @@ class DatabaseAPI extends DataSource {
                 .collection("words")
                 .aggregate([{'$sample': {'size': 1}}])
                 .toArray();
-            this.lastWOD = result[0]
+            this.lastWOD = result[0];
+            this.lastFetched = new Date();
         }
-        this.lastFetched = new Date();
+
         mongo.close();
 
         return DatabaseAPI.entryReducer(this.lastWOD)
