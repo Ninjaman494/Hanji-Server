@@ -1,4 +1,5 @@
 require('dotenv').config();
+require('@google-cloud/debug-agent').start();
 const cron = require('node-cron');
 const express = require('express');
 const DatabaseAPI = require('./datasources/database');

@@ -6,13 +6,15 @@
   "author": "Akash Eldo",
   "license": "ISC",
   "scripts": {
-    "start": "node main.js"
+    "start": "node main.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/Ninjaman494/KoreanConjugator.git"
   },
   "dependencies": {
+    "@google-cloud/debug-agent": "^4.2.2",
     "@slack/web-api": "^5.6.0",
     "apollo-server": "^2.3.1",
     "apollo-server-express": "^2.9.15",
@@ -26,5 +28,10 @@
     "node-cron": "^2.0.3",
     "path": "^0.12.7",
     "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "apollo-server-testing": "^2.11.0",
+    "casual": "^1.6.2",
+    "jest": "^25.1.0"
   }
 }
