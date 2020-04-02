@@ -92,7 +92,7 @@ stemmer.stem = function(verb) {
                 if (!conjugator[f].conjugation || (f in ignored_conjugations && original)) {
                     continue;
                 }
-                if (conjugator[f](possible_stem) == verb) {
+                if (conjugator[f](possible_stem, true) == verb || conjugator[f](possible_stem, false) == verb) { // need one for reg and one for irreg
                     var infin = {'key': possible_stem + '다'};
                     if(possConjugations.indexOf(infin.key) == -1 && infin.key.indexOf(' ') == -1) {
                         returnList.add(infin.key);
