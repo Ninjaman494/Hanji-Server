@@ -1,7 +1,10 @@
 try {
     var conjugator = require('../conjugator'),
         assert     = require('assert');
-} catch(e) {}
+} catch(e) {
+    console.log(e);
+    return;
+}
 
 var rule = conjugator.no_padchim_rule({'을': true, '습': true, '읍': true, '는': true, '음': true});
 assert.deepEqual(rule('하', '습'), ['borrow padchim', '합']);

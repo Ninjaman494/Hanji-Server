@@ -140,7 +140,7 @@ conjugator.merge_rules = [
 
 conjugator.reasons = [];
 
-conjugator.merge = function(x, y) {
+conjugator.merge = function(x, y, noReasons = false) {
     /* concatenates every element in a list using the rules to
        merge the strings
     */
@@ -149,7 +149,9 @@ conjugator.merge = function(x, y) {
         if (!response) {
             output = rule(x, y);
             if (output) {
-                conjugator.reasons.push((output[0] ? output[0] : '') + ' (' + x + ' + ' + y + ' -> ' + output[1] + ')');
+                if(!noReasons) {
+                    conjugator.reasons.push((output[0] ? output[0] : '') + ' (' + x + ' + ' + y + ' -> ' + output[1] + ')');
+                }
                 response = output[1];
             }
         }
@@ -341,12 +343,14 @@ conjugator.base2 = function(infinitive, regular) {
     if (infinitive == '푸') {
         return '퍼';
     }
+
     new_infinitive = infinitive;
+    let x = infinitive.substring(0, infinitive.length-1) +
+        hangeul.join(hangeul.lead(infinitive.charAt(infinitive.length-1)),
+            hangeul.vowel(infinitive.charAt(infinitive.length-1)));
+
     if (conjugator.is_h_irregular(infinitive, regular)) {
-        new_infinitive = conjugator.merge(infinitive.substring(0, infinitive.length-1) +
-                                          hangeul.join(hangeul.lead(infinitive.charAt(infinitive.length-1)),
-                                                       hangeul.vowel(infinitive.charAt(infinitive.length-1))),
-                                          '이');
+        new_infinitive = conjugator.merge(x, '이', true);
         conjugator.reasons.push('ㅎ irregular (' + infinitive + ' -> ' + new_infinitive + ')');
     } else if (conjugator.is_p_irregular(infinitive, regular)) {
         // only some verbs get ㅗ (highly irregular)
@@ -356,10 +360,7 @@ conjugator.base2 = function(infinitive, regular) {
         } else {
             new_vowel = 'ㅜ';
         }
-        new_infinitive = conjugator.merge(infinitive.substring(0, infinitive.length-1) +
-                                          hangeul.join(hangeul.lead(infinitive.charAt(infinitive.length-1)),
-                                                       hangeul.vowel(infinitive.charAt(infinitive.length-1))),
-                                          hangeul.join('ᄋ', new_vowel))
+        new_infinitive = conjugator.merge(x, hangeul.join('ᄋ', new_vowel), true);
         conjugator.reasons.push('ㅂ irregular (' + infinitive + ' -> ' + new_infinitive + ')');
     } else if (conjugator.is_d_irregular(infinitive, regular)) {
         new_infinitive = new hangeul.Geulja(infinitive.substring(0, infinitive.length-1) +
@@ -369,9 +370,7 @@ conjugator.base2 = function(infinitive, regular) {
         new_infinitive.original_padchim = 'ᆮ';
         conjugator.reasons.push('ㄷ irregular (' + infinitive + ' -> ' + new_infinitive + ')');
     } else if (conjugator.is_s_irregular(infinitive, regular)) {
-        new_infinitive = new hangeul.Geulja(infinitive.substring(0, infinitive.length-1) +
-                                            hangeul.join(hangeul.lead(infinitive.charAt(infinitive.length-1)),
-                                            hangeul.vowel(infinitive.charAt(infinitive.length-1))));
+        new_infinitive = new hangeul.Geulja(x);
         new_infinitive.hidden_padchim = true;
         conjugator.reasons.push('ㅅ irregular (' + infinitive + ' -> ' + new_infinitive + ' [hidden padchim])');
     }
@@ -470,7 +469,7 @@ conjugator.display_conjugations = function(infinitive, regular, callback) {
 conjugator.each_conjugation = function(infinitive, regular, isAdj, honorific, callback) {
     infinitive = conjugator.base(infinitive, regular);
     for (conjugation in conjugator) {
-        conjugator.reasons = [];
+        conjugator.reasons.length = 0;
         if (conjugator[conjugation].conjugation && (honorific == conjugator[conjugation].honorific || (!honorific && conjugator[conjugation].honorific == null))) {
             var r = {};
             r.conjugated = conjugator[conjugation](infinitive, regular, isAdj,honorific);

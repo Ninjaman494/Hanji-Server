@@ -12,6 +12,7 @@ conjugations.declarative_present_informal_low = function(infinitive, regular, fu
     }
     // 르 irregular
     if (regular && infinitive == '이르') {
+        conjugator.reasons.push('르 irregular stem change [' + infinitive + ' -> 일러]');
         return '일러';
     }
     if (conjugator.is_l_euh_irregular(infinitive, regular)) {
@@ -20,10 +21,9 @@ conjugations.declarative_present_informal_low = function(infinitive, regular, fu
                 hangeul.vowel(infinitive[infinitive.length-2]),
                 'ᆯ');
         if (infinitive.substring(infinitive.length-2, infinitive.length) in {'푸르': true, '이르': true}) {
-            new_base = new_base + hangeul.join('ᄅ',
-                hangeul.vowel(hangeul.find_vowel_to_append(new_base)))
+            new_base = infinitive + '러';
             conjugator.reasons.push('irregular stem + ' + infinitive + ' -> ' + new_base);
-            return infinitive + '러';
+            return new_base;
         } else if (hangeul.find_vowel_to_append(infinitive.substring(0, infinitive.length-1)) == '아') {
             new_base += '라'
             conjugator.reasons.push('르 irregular stem change [' + infinitive + ' -> ' + new_base + ']');
@@ -48,12 +48,13 @@ conjugations.declarative_present_informal_low.speechLevel = 'informal low';
 conjugations.declarative_present_informal_high = function(infinitive, regular) {
     base = conjugator.base2(infinitive, regular);
     if ((base.charAt(base.length-1) == '이' && !base.hidden_padchim &&
-            !(base in conjugator.regular_ees)) ||
-        base == '아니') {
-        conjugator.reasons.push('에요 irregular')
+            !(base in conjugator.regular_ees)) || base == '아니') {
+        conjugator.reasons.push('에요 irregular');
         return base + '에요';
+    } else {
+        conjugator.reasons.length = 0; // Clear reasons
+        return conjugator.merge(conjugations.declarative_present_informal_low(infinitive, regular, true), '요');
     }
-    return conjugator.merge(conjugations.declarative_present_informal_low(infinitive, regular, true), '요');
 };
 conjugations.declarative_present_informal_high.conjugation = true;
 conjugations.declarative_present_informal_high.type =  'declarative present';
