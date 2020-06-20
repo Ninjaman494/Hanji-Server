@@ -1,5 +1,5 @@
 const { MongoClient} = require('mongodb');
-const uri = "***REMOVED***";
+const uri = process.env.MONGO_URL;
 
 const posCountMap = {};
 let hasExampleCount = 0;

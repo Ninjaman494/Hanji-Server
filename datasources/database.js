@@ -1,6 +1,6 @@
 const { DataSource } = require('apollo-datasource');
 const MongoClient = require('mongodb').MongoClient;
-const URI = "***REMOVED***";
+const URI = process.env.MONGO_URL;
 const PAGE_COUNT = 20;
 
 class DatabaseAPI extends DataSource {
