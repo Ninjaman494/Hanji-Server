@@ -1,8 +1,5 @@
 {
   "name": "koreanconjugator",
-  "jest": {
-    "transformIgnorePatterns": ["<rootDir>/korean/hangeul.js", "<rootDir>/node_modules/"]
-  },
   "version": "1.0.0",
   "description": "JavaScript Server for conjugating Korean verbs/adjectives. Uses Dan Bravender's source code for conjugation.",
   "main": "main.js",
