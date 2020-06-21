@@ -121,7 +121,3 @@ test('Fetch single incomplete entry', async () => {
     expect(res.data.entry.regular).toBe(null);
     expect(res.data.entry.note).toBe(null);
 });
-
-test('Fetch multiple entries', async () => {
-
-});
