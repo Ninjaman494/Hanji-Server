@@ -63,6 +63,103 @@ test('verb type functions', async () => {
     assert.equal(conjugator.verb_type('가다'), 'regular verb');
 });
 
+test('reasons', () => {
+    // Declarative present
+    conjugator.declarative_present_informal_low('가다');
+    expect(conjugator.reasons).toEqual(["vowel contraction [ㅏ ㅏ -> ㅏ] (가 + 아 -> 가)"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_informal_low('먹다');
+    expect(conjugator.reasons).toEqual(["join (먹 + 어 -> 먹어)"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_informal_low('춥다');
+    expect(conjugator.reasons).toEqual(["ㅂ irregular (춥 -> 추우)", "vowel contraction [ㅜ ㅓ -> ㅝ] (추우 + 어 -> 추워)"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_informal_low('되다');
+    expect(conjugator.reasons).toEqual(["vowel contraction [ㅚ ㅓ -> ㅙ] (되 + 어 -> 돼)"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_informal_low('낫다');
+    expect(conjugator.reasons).toEqual(["ㅅ irregular (낫 -> 나 [hidden padchim])", "join (나 + 아 -> 나아)"]);
+
+    // Issue #14
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_informal_low('이르다', true);
+    expect(conjugator.reasons).toEqual(["르 irregular stem change [이르 -> 일러]"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_informal_low('푸르다');
+    expect(conjugator.reasons).toEqual(["irregular stem + 푸르 -> 푸르러"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_informal_low('누르다',);
+    expect(conjugator.reasons).toEqual(["르 irregular stem change [누르 -> 눌러]"]);
+
+    // Test other levels, informal low covers most stuff
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_informal_high('낫다');
+    expect(conjugator.reasons).toEqual(["ㅅ irregular (낫 -> 나 [hidden padchim])","join (나 + 아 -> 나아)","join (나아 + 요 -> 나아요)"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_formal_low('낫다');
+    expect(conjugator.reasons).toEqual(["join (낫 + 는다 -> 낫는다)"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_formal_high('낫다');
+    expect(conjugator.reasons).toEqual(["join (낫 + 습니다 -> 낫습니다)"]);
+
+    // Declarative past
+    conjugator.reasons.length = 0;
+    conjugator.declarative_past_informal_low('가다');
+    expect(conjugator.reasons).toEqual(["vowel contraction [ㅏ ㅏ -> ㅏ] (가 + 아 -> 가)",
+        "vowel contraction [ㅏ ㅏ -> ㅏ] (가 + 았 -> 갔)",
+        "join (갔 + 어 -> 갔어)"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_past_informal_low('먹다');
+    expect(conjugator.reasons).toEqual(["join (먹 + 어 -> 먹어)",
+        "vowel contraction [ㅓ ㅓ -> ㅓ] (먹어 + 었 -> 먹었)",
+        "join (먹었 + 어 -> 먹었어)"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_past_informal_low('춥다');
+    expect(conjugator.reasons).toEqual(["ㅂ irregular (춥 -> 추우)",
+        "vowel contraction [ㅜ ㅓ -> ㅝ] (추우 + 어 -> 추워)",
+        "vowel contraction [ㅝ ㅓ -> ㅝ] (추워 + 었 -> 추웠)",
+        "join (추웠 + 어 -> 추웠어)"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_past_informal_low('되다');
+    expect(conjugator.reasons).toEqual(["vowel contraction [ㅚ ㅓ -> ㅙ] (되 + 어 -> 돼)",
+        "vowel contraction [ㅙ ㅓ -> ㅙ] (돼 + 었 -> 됐)",
+        "join (됐 + 어 -> 됐어)"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_past_informal_low('낫다');
+    expect(conjugator.reasons).toEqual(["ㅅ irregular (낫 -> 나 [hidden padchim])",
+        "join (나 + 아 -> 나아)",
+        "vowel contraction [ㅏ ㅏ -> ㅏ] (나아 + 았 -> 나았)",
+        "join (나았 + 어 -> 나았어)"]);
+
+    // Suppositive, Propositive, and Interrogative unique forms
+    conjugator.reasons.length = 0;
+    conjugator.suppositive_informal_low('낫다');
+    expect(conjugator.reasons).toEqual(["join (낫 + 겠어 -> 낫겠어)"]);
+    conjugator.reasons.length = 0;
+    conjugator.propositive_formal_low('낫다');
+    expect(conjugator.reasons).toEqual(["join (낫 + 자 -> 낫자)"]);
+    conjugator.reasons.length = 0;
+    conjugator.interrogative_present_formal_low('낫다');
+    expect(conjugator.reasons).toEqual(["join (낫 + 느냐 -> 낫느냐)"]);
+
+    // Determiners
+    conjugator.reasons.length = 0;
+    conjugator.determiner_present('차다',true,true);
+    expect(conjugator.reasons).toEqual(["borrow padchim (차 + 은 -> 찬)"]);
+    conjugator.reasons.length = 0;
+    conjugator.determiner_present('같다',true,true);
+    expect(conjugator.reasons).toEqual(["join (같 + 은 -> 같은)"]);
+    conjugator.reasons.length = 0;
+    conjugator.determiner_present('차다',true,false);
+    expect(conjugator.reasons).toEqual(["join (차 + 는 -> 차는)"]);
+    conjugator.reasons.length = 0;
+    conjugator.determiner_present('듣다',false,false);
+    expect(conjugator.reasons).toEqual(["join (듣 + 는 -> 듣는)"]);
+    conjugator.reasons.length = 0;
+    conjugator.determiner_present('부르다',false,false);
+    expect(conjugator.reasons).toEqual(["join (부르 + 는 -> 부르는)"]);
+});
+
 test('base functions', async () => {
     assert.equal(conjugator.base('알다'), '알');
     assert.equal(conjugator.base2('알다'), '알');
