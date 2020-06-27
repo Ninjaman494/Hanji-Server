@@ -65,6 +65,7 @@ test('verb type functions', async () => {
 
 test('reasons', () => {
     // Declarative present
+    conjugator.reasons.length = 0;
     conjugator.declarative_present_informal_low('가다');
     expect(conjugator.reasons).toEqual(["vowel contraction [ㅏ ㅏ -> ㅏ] (가 + 아 -> 가)"]);
     conjugator.reasons.length = 0;
