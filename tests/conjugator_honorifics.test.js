@@ -1,6 +1,46 @@
 const assert = require('assert');
 conjugator = require('../korean/conjugator');
 
+test('reasons', () => {
+    // Informal low
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_informal_low_honorific('가다');
+    expect(conjugator.reasons).toEqual(["join (가 + 시 -> 가시)","vowel contraction [ㅣ ㅓ -> ㅕ] (가시 + 어 -> 가셔)"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_informal_low_honorific('먹다');
+    expect(conjugator.reasons).toEqual(["padchim + consonant -> insert 으 (먹 + 시 -> 먹으시)","vowel contraction [ㅣ ㅓ -> ㅕ] (먹으시 + 어 -> 먹으셔)"]);
+
+    // Informal high
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_informal_high_honorific('가다');
+    expect(conjugator.reasons).toEqual(["join (가 + 세요 -> 가세요)"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_informal_high_honorific('먹다');
+    expect(conjugator.reasons).toEqual(["padchim + consonant -> insert 으 (먹 + 세요 -> 먹으세요)"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_informal_high_honorific('춥다');
+    expect(conjugator.reasons).toEqual(["join (추우 + 세요 -> 추우세요)"]);
+    conjugator.reasons.length = 0;
+    conjugator.declarative_present_informal_high_honorific('되다');
+    expect(conjugator.reasons).toEqual(["join (되 + 세요 -> 되세요)"]);
+
+    // Past formal high forms - Very long
+    conjugator.reasons.length = 0;
+    conjugator.declarative_past_formal_high_honorific('낫다');
+    expect(conjugator.reasons).toEqual(["ㅅ irregular (낫 -> 나 [hidden padchim])",
+        "padchim + consonant -> insert 으 (나 + 시 -> 나으시)",
+        "vowel contraction [ㅣ ㅓ -> ㅕ] (나으시 + 어 -> 나으셔)",
+        "vowel contraction [ㅕ ㅓ -> ㅕ] (나으셔 + 었 -> 나으셨)" ,
+        "join (나으셨 + 습니다 -> 나으셨습니다)"]);
+    conjugator.reasons.length = 0;
+    conjugator.interrogative_past_formal_high_honorific('낫다');
+    expect(conjugator.reasons).toEqual(["ㅅ irregular (낫 -> 나 [hidden padchim])",
+        "padchim + consonant -> insert 으 (나 + 시 -> 나으시)",
+        "vowel contraction [ㅣ ㅓ -> ㅕ] (나으시 + 어 -> 나으셔)",
+        "vowel contraction [ㅕ ㅓ -> ㅕ] (나으셔 + 었 -> 나으셨)" ,
+        "join (나으셨 + 습니까 -> 나으셨습니까)"]);
+});
+
 test('declarative present', async () => {
     assert.equal(conjugator.declarative_present_informal_low_honorific('굽다', true), '굽으셔');
     assert.equal(conjugator.declarative_present_informal_low_honorific('굽다', false), '구우셔');
