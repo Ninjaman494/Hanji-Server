@@ -138,7 +138,7 @@ class DatabaseAPI extends DataSource {
 
     static entryReducer(entry){
         let data = {
-            id: entry._id,
+            id: entry._id.toString(),
             term: entry.term,
             pos: entry.pos,
             definitions: entry.definitions

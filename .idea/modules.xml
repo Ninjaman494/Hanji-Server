@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Korean Conjugator.iml" filepath="$PROJECT_DIR$/Korean Conjugator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Hanji-Server.iml" filepath="$PROJECT_DIR$/Hanji-Server.iml" />
     </modules>
   </component>
 </project>
