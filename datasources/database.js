@@ -1,5 +1,6 @@
 const { DataSource } = require('apollo-datasource');
-const MongoClient = require('mongodb').MongoClient;
+const {MongoClient, ObjectId} = require('mongodb');
+const hangeul = require('../korean/hangeul');
 const URI = process.env.MONGO_URL;
 const PAGE_COUNT = 20;
 
@@ -39,6 +40,11 @@ class DatabaseAPI extends DataSource {
     }
 
     async fetchEntry(id) {
+        // Check if id is ObjectID or old form
+        if(!hangeul.is_hangeul(id.replace(/[0-9]/g, ''))) {
+            id = new ObjectId(id);
+        }
+
         const mongo = new MongoClient(URI, { useNewUrlParser: true });
         await mongo.connect();
         let results = await mongo
@@ -55,6 +61,11 @@ class DatabaseAPI extends DataSource {
     }
 
     async fetchExamples(id) {
+        // Check if id is ObjectID or old form
+        if(!hangeul.is_hangeul(id.replace(/[0-9]/g, ''))) {
+            id = new ObjectId(id);
+        }
+
         const mongo = new MongoClient(URI, { useNewUrlParser: true });
         await mongo.connect();
         let results = await mongo
