@@ -41,7 +41,7 @@ class DatabaseAPI extends DataSource {
 
     async fetchEntry(id) {
         // Check if id is ObjectID or old form
-        if(!hangeul.is_hangeul(id.replace(/[0-9]/g, ''))) {
+        if(!DatabaseAPI.containsHangul(id)) {
             id = new ObjectId(id);
         }
 
@@ -62,7 +62,7 @@ class DatabaseAPI extends DataSource {
 
     async fetchExamples(id) {
         // Check if id is ObjectID or old form
-        if(!hangeul.is_hangeul(id.replace(/[0-9]/g, ''))) {
+        if(!DatabaseAPI.containsHangul(id)) {
             id = new ObjectId(id);
         }
 
@@ -171,6 +171,15 @@ class DatabaseAPI extends DataSource {
         }
 
         return data;
+    }
+
+    static containsHangul(string) {
+        for(let i = 0;i<string.length;i++){
+            if (hangeul.is_hangeul(string[i])) {
+               return true;
+            }
+        }
+        return false;
     }
 }
 module.exports = DatabaseAPI;
