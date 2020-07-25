@@ -121,3 +121,59 @@ test('Fetch single incomplete entry', async () => {
     expect(res.data.entry.regular).toBe(null);
     expect(res.data.entry.note).toBe(null);
 });
+
+test('Fetch multiple entries', async () => {
+    const term = {
+        id: casual.uuid,
+        term: casual.word,
+        pos: casual.word,
+        definitions: casual.array_of_words(3),
+        examples: [{
+            sentence: casual.sentence,
+            translation: casual.sentence
+        }],
+        antonyms: casual.array_of_words(3),
+        synonyms: casual.array_of_words(3),
+        regular: casual.boolean,
+        note: casual.sentence
+    }
+
+    const databaseAPI = new DatabaseAPI();
+    databaseAPI.fetchEntries = (query) => [term, term, term]
+
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        dataSources: () => ({ databaseAPI}),
+    });
+
+    const { query } = createTestClient(server);
+    const GET_ENTRIES = gql`
+      query getEntries($term: String!) {
+        entries(term: $term) {
+            id,
+            term,
+            pos,
+            definitions,
+            antonyms,
+            synonyms,
+            examples {
+                sentence,
+                translation,
+            },
+            regular,
+            note
+        }
+      }
+    `;
+
+    const res = await query({ query: GET_ENTRIES, variables: { term: "term" } });
+    expect(res.data).not.toBe(null);
+    expect(res.data).not.toBe(undefined)
+    expect(res.data.entries).not.toBe(null);
+    expect(res.data.entries).not.toBe(undefined);
+
+    res.data.entries.forEach(entry => {
+        expect(entry).toEqual(term);
+    })
+})
