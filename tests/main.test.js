@@ -136,10 +136,10 @@ test('Fetch multiple entries', async () => {
         synonyms: casual.array_of_words(3),
         regular: casual.boolean,
         note: casual.sentence
-    }
+    };
 
     const databaseAPI = new DatabaseAPI();
-    databaseAPI.fetchEntries = (query) => [term, term, term]
+    databaseAPI.fetchEntries = (query) => [term, term, term];
 
     const server = new ApolloServer({
         typeDefs,
@@ -169,11 +169,45 @@ test('Fetch multiple entries', async () => {
 
     const res = await query({ query: GET_ENTRIES, variables: { term: "term" } });
     expect(res.data).not.toBe(null);
-    expect(res.data).not.toBe(undefined)
+    expect(res.data).not.toBe(undefined);
     expect(res.data.entries).not.toBe(null);
     expect(res.data.entries).not.toBe(undefined);
 
     res.data.entries.forEach(entry => {
         expect(entry).toEqual(term);
-    })
-})
+    });
+});
+
+test('Fetch examples', async () => {
+    const examples = [
+        {sentence: casual.sentence, translation: casual.sentence},
+        {sentence: casual.sentence, translation: casual.sentence},
+        {sentence: casual.sentence, translation: casual.sentence}
+    ];
+
+    const databaseAPI = new DatabaseAPI();
+    databaseAPI.fetchExamples = (id) => examples;
+
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        dataSources: () => ({ databaseAPI}),
+    });
+
+    const { query } = createTestClient(server);
+    const GET_EXAMPLES = gql`
+      query getExamples($id: ID!) {
+        examples(id: $id) {
+            sentence,
+            translation
+        }
+      }
+    `;
+
+    const res = await query({ query: GET_EXAMPLES, variables: { id: "id" } });
+    expect(res.data).not.toBe(null);
+    expect(res.data).not.toBe(undefined);
+    expect(res.data.examples).not.toBe(null);
+    expect(res.data.examples).not.toBe(undefined);
+    expect(res.data.examples).toEqual(examples);
+});
