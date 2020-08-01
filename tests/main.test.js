@@ -8,23 +8,23 @@ const resolvers = require('../resolvers');
 const typeDefs = require('../schema');
 
 test('Fetch single full entry', async () => {
-    const databaseAPI = new DatabaseAPI();
-    databaseAPI.fetchEntry = function(id) {
-        return {
-            id: id,
-            term: casual.word,
-            pos: casual.word,
-            definitions: casual.array_of_words(3),
-            examples: [{
-                sentence: casual.sentence,
-                translation: casual.sentence
-            }],
-            antonyms: casual.array_of_words(3),
-            synonyms: casual.array_of_words(3),
-            regular: casual.boolean,
-            note: casual.sentence
-        }
+    const entry = {
+        id: casual.uuid,
+        term: casual.word,
+        pos: casual.word,
+        definitions: casual.array_of_words(3),
+        examples: [{
+            sentence: casual.sentence,
+            translation: casual.sentence
+        }],
+        antonyms: casual.array_of_words(3),
+        synonyms: casual.array_of_words(3),
+        regular: casual.boolean,
+        note: casual.sentence
     };
+
+    const databaseAPI = new DatabaseAPI();
+    databaseAPI.fetchEntry = () => entry;
 
     const server = new ApolloServer({
         typeDefs,
@@ -55,30 +55,20 @@ test('Fetch single full entry', async () => {
     const res = await query({ query: GET_ENTRY, variables: { id: 1 } });
     expect(res.data).not.toBe(null);
     expect(res.data.entry).not.toBe(null);
-    // Required
-    expect(typeof res.data.entry.id).toBe('string');
-    expect(typeof res.data.entry.term).toBe('string');
-    expect(typeof res.data.entry.pos).toBe('string');
-    expect(Array.isArray(res.data.entry.definitions)).toBe(true);
-
-    // Optional
-    expect(Array.isArray(res.data.entry.synonyms)).toBe(true);
-    expect(Array.isArray(res.data.entry.antonyms)).toBe(true);
-    expect(typeof res.data.entry.examples).not.toBe(null);
-    expect(typeof res.data.entry.regular).toBe('boolean');
-    expect(typeof res.data.entry.note).toBe('string');
+    expect(res.data.entry).not.toBe(undefined);
+    expect(res.data.entry).toEqual(entry);
 });
 
 test('Fetch single incomplete entry', async () => {
-    const databaseAPI = new DatabaseAPI();
-    databaseAPI.fetchEntry = function(id) {
-        return {
-            id: id,
-            term: casual.word,
-            pos: casual.word,
-            definitions: casual.array_of_words(3)
-        }
+    const entry = {
+        id: casual.uuid,
+        term: casual.word,
+        pos: casual.word,
+        definitions: casual.array_of_words(3),
     };
+
+    const databaseAPI = new DatabaseAPI();
+    databaseAPI.fetchEntry = () => entry;
 
     const server = new ApolloServer({
         typeDefs,
@@ -105,22 +95,18 @@ test('Fetch single incomplete entry', async () => {
       }
     `;
 
-    // run query against the server and snapshot the output
     const res = await query({ query: GET_ENTRY, variables: { id: 1 } });
     expect(res.data).not.toBe(null);
     expect(res.data.entry).not.toBe(null);
-    // Required
-    expect(typeof res.data.entry.id).toBe('string');
-    expect(typeof res.data.entry.term).toBe('string');
-    expect(typeof res.data.entry.pos).toBe('string');
-    expect(Array.isArray(res.data.entry.definitions)).toBe(true);
-
-    // Optional
-    expect(res.data.entry.synonyms).toBe(null);
-    expect(res.data.entry.antonyms).toBe(null);
-    expect(res.data.entry.examples).toBe(null);
-    expect(res.data.entry.regular).toBe(null);
-    expect(res.data.entry.note).toBe(null);
+    expect(res.data.entry).not.toBe(undefined);
+    expect(res.data.entry).toEqual({
+        ...entry,
+        antonyms: null,
+        synonyms: null,
+        examples: null,
+        regular: null,
+        note: null,
+    });
 });
 
 test('Fetch multiple entries', async () => {
@@ -409,4 +395,55 @@ test('Fetch conjugation names', async () => {
     expect(res.data.conjugationNames).not.toBe(null);
     expect(res.data.conjugationNames).not.toBe(undefined);
     expect(res.data.conjugationNames).toEqual(names);
+});
+
+test('Fetch full word of the day', async () => {
+    const wod = {
+        id: casual.uuid,
+        term: casual.word,
+        pos: casual.word,
+        definitions: casual.array_of_words(3),
+        examples: [{
+            sentence: casual.sentence,
+            translation: casual.sentence
+        }],
+        antonyms: casual.array_of_words(3),
+        synonyms: casual.array_of_words(3),
+        regular: casual.boolean,
+        note: casual.sentence
+    };
+
+    const databaseAPI = new DatabaseAPI();
+    databaseAPI.fetchWordoftheDay = () => wod;
+
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        dataSources: () => ({ databaseAPI}),
+    });
+
+    const { query } = createTestClient(server);
+    const GET_WOD = gql`
+      query getWOD {
+        wordOfTheDay {
+            id,
+            term,
+            pos,
+            definitions,
+            antonyms,
+            synonyms,
+            examples {
+                sentence,
+                translation,
+            },
+            regular,
+            note
+        }
+      }
+    `;
+
+    const res = await query({ query: GET_WOD });
+    expect(res.data).not.toBe(null);
+    expect(res.data.wordOfTheDay).not.toBe(null);
+    expect(res.data.wordOfTheDay).toEqual(wod);
 });
