@@ -140,7 +140,7 @@ test('Fetch multiple entries', async () => {
     };
 
     const databaseAPI = new DatabaseAPI();
-    databaseAPI.fetchEntries = (query) => [term, term, term];
+    databaseAPI.fetchEntries = () => [term, term, term];
 
     const server = new ApolloServer({
         typeDefs,
@@ -275,7 +275,7 @@ test('Fetch examples', async () => {
     ];
 
     const databaseAPI = new DatabaseAPI();
-    databaseAPI.fetchExamples = (id) => examples;
+    databaseAPI.fetchExamples = () => examples;
 
     const server = new ApolloServer({
         typeDefs,
@@ -299,6 +299,62 @@ test('Fetch examples', async () => {
     expect(res.data.examples).not.toBe(null);
     expect(res.data.examples).not.toBe(undefined);
     expect(res.data.examples).toEqual(examples);
+});
+
+test('Fetch conjugations', async () => {
+    const conjugation = {
+        name: casual.word,
+        conjugation: casual.word,
+        type: casual.word,
+        tense: casual.random_element(['present', 'past', 'future']),
+        speechLevel: casual.random_element(['formal low','informal low','informal high','formal high']),
+        honorific: casual.boolean,
+        pronunciation: casual.word,
+        romanization: casual.word,
+        reasons: casual.array_of_words(7),
+    };
+
+    const conjugationAPI = new ConjugationAPI();
+    conjugationAPI.fetchConjugations = () => [conjugation, conjugation, conjugation];
+
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        dataSources: () => ({ conjugationAPI }),
+    });
+
+    const { query } = createTestClient(server);
+    const GET_CONJUGATIONS = gql`
+      query getConjugations($stem: String!, $isAdj: Boolean!, $honorific: Boolean!, $regular: Boolean, $conjugations: [String]) {
+        conjugations(stem: $stem, isAdj: $isAdj, honorific: $honorific, regular: $regular, conjugations: $conjugations) {
+            name,
+            conjugation,
+            type,
+            tense,
+            speechLevel,
+            honorific,
+            pronunciation,
+            romanization,
+            reasons
+        }
+      }
+    `;
+
+    const res = await query({
+        query: GET_CONJUGATIONS,
+        variables: { stem: 'stem', isAdj: true, honorific: true }
+    });
+    expect(res.data).not.toBe(null);
+    expect(res.data).not.toBe(undefined);
+    expect(res.data.conjugations).not.toBe(null);
+    expect(res.data.conjugations).not.toBe(undefined);
+    res.data.conjugations.forEach(fetchedConjugation =>
+        expect(fetchedConjugation).toEqual({
+            ...conjugation,
+            tense: conjugation.tense.toUpperCase(),
+            speechLevel: conjugation.speechLevel.toUpperCase().replace(' ','_')
+        })
+    );
 });
 
 test('Fetch conjugation types', async () => {
