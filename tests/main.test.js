@@ -4,6 +4,7 @@ const gql = require('graphql-tag');
 const casual = require('casual');
 const DatabaseAPI = require('../datasources/database');
 const ConjugationAPI = require('../datasources/conjugation');
+const SearchAPI = require('../datasources/search');
 const resolvers = require('../resolvers');
 const typeDefs = require('../schema');
 
@@ -446,4 +447,98 @@ test('Fetch full word of the day', async () => {
     expect(res.data).not.toBe(null);
     expect(res.data.wordOfTheDay).not.toBe(null);
     expect(res.data.wordOfTheDay).toEqual(wod);
+});
+
+test('Do a search', async () => {
+    const entries = [
+        {
+            id: casual.uuid,
+            term: casual.word,
+            pos: casual.word,
+            definitions: casual.array_of_words(3),
+            examples: [{
+                sentence: casual.sentence,
+                translation: casual.sentence
+            }],
+            antonyms: casual.array_of_words(3),
+            synonyms: casual.array_of_words(3),
+            regular: casual.boolean,
+            note: casual.sentence
+        },
+        {
+            id: casual.uuid,
+            term: casual.word,
+            pos: casual.word,
+            definitions: casual.array_of_words(3),
+            examples: [{
+                sentence: casual.sentence,
+                translation: casual.sentence
+            }],
+        },
+        {
+            id: casual.uuid,
+            term: casual.word,
+            pos: casual.word,
+            definitions: casual.array_of_words(3),
+            note: casual.sentence
+        }
+    ];
+    const result = {
+        cursor: casual.word,
+        results: entries,
+    };
+
+    const searchAPI = new SearchAPI();
+    searchAPI.search = () => result;
+
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        dataSources: () => ({ searchAPI }),
+    });
+
+    const { query } = createTestClient(server);
+    const SEARCH = gql`
+      query search($query: String!, $cursor: Int) {
+        search(query: $query, cursor: $cursor) {
+            cursor,
+            results {
+                id,
+                term,
+                pos,
+                definitions,
+                antonyms,
+                synonyms,
+                examples {
+                    sentence,
+                    translation,
+                },
+                regular,
+                note
+            }
+        }
+      }
+    `;
+
+    const res = await query({ query: SEARCH, variables: { query: "query", cursor: 0 } });
+    expect(res.data).not.toBe(null);
+    expect(res.data).not.toBe(undefined);
+    expect(res.data.search).not.toBe(null);
+    expect(res.data.search).not.toBe(undefined);
+    expect(res.data.search.cursor).toEqual(result.cursor);
+    expect(res.data.search.results[0]).toEqual(entries[0]);
+    expect(res.data.search.results[1]).toEqual({
+        ...entries[1],
+        antonyms: null,
+        synonyms: null,
+        regular: null,
+        note: null,
+    });
+    expect(res.data.search.results[2]).toEqual({
+        ...entries[2],
+        examples: null,
+        antonyms: null,
+        synonyms: null,
+        regular: null,
+    });
 });
