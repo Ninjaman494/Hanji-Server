@@ -542,3 +542,30 @@ test('Do a search', async () => {
         regular: null,
     });
 });
+
+test('Fetch stems', async () => {
+    const stems = casual.array_of_words(3);
+
+    const conjugationAPI = new ConjugationAPI();
+    conjugationAPI.fetchStems = () => stems;
+
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        dataSources: () => ({ conjugationAPI }),
+    });
+
+    const { query } = createTestClient(server);
+    const GET_NAMES = gql`
+      query StemQuery($query: String!) {
+        stems(term: $query)
+      }
+    `;
+
+    const res = await query({ query: GET_NAMES, variables: { query: "query" } });
+    expect(res.data).not.toBe(null);
+    expect(res.data).not.toBe(undefined);
+    expect(res.data.stems).not.toBe(null);
+    expect(res.data.stems).not.toBe(undefined);
+    expect(res.data.stems).toEqual(stems);
+});

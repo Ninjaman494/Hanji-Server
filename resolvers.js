@@ -15,7 +15,9 @@ module.exports = {
         search:(_, { query, cursor }, { dataSources }) =>
             dataSources.searchAPI.search(query, cursor),
         wordOfTheDay:(_,{},{ dataSources }) =>
-            dataSources.databaseAPI.fetchWordoftheDay()
+            dataSources.databaseAPI.fetchWordoftheDay(),
+        stems: (_, { term }, { dataSources }) =>
+            dataSources.conjugationAPI.fetchStems(term),
     },
     Tense: {
         PRESENT: 'present',

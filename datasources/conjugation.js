@@ -1,5 +1,6 @@
 const { DataSource } = require('apollo-datasource');
 const conjugator = require('../korean/conjugator');
+const stemmer = require('../korean/stemmer');
 
 class ConjugationAPI extends DataSource {
 
@@ -20,7 +21,7 @@ class ConjugationAPI extends DataSource {
     fetchConjugations(stem, isAdj,honorific, regular, conjugationNames){
         if(regular === null || regular === undefined) {
             // returns either 'regular verb' or type of irregular
-            regular = conjugator.verb_type(stem, false) == 'regular verb';
+            regular = conjugator.verb_type(stem, false) === 'regular verb';
         }
 
         if(conjugationNames != null) {
@@ -32,7 +33,7 @@ class ConjugationAPI extends DataSource {
         let  data = [];
         conjugator.conjugate(stem,regular,isAdj,honorific, conjugations => {
             conjugations.forEach( c =>{
-                let conjugation = this.conjugationReducer(c);
+                let conjugation = ConjugationAPI.conjugationReducer(c);
                 // If a list of conjugations was provided, check if this conjugation is part of the list
                 if(conjugationNames != null && conjugationNames.includes(conjugation.name)) {
                     data.push(conjugation);
@@ -44,15 +45,26 @@ class ConjugationAPI extends DataSource {
         return data;
     }
 
+    // noinspection JSMethodCanBeStatic
     fetchConjugationTypes() {
         return Array.from(conjugator.getTypes());
     }
 
+    // noinspection JSMethodCanBeStatic
     fetchConjugationNames() {
         return Array.from(conjugator.getNames());
     }
 
-    conjugationReducer(conjugation){
+    // noinspection JSMethodCanBeStatic
+    fetchStems(query) {
+        let stems = stemmer.stem(query);
+        if (query[query.length - 1] === '다') {
+            stems.add(query); // in case query is already in infinitive form
+        }
+        return Array.from(stems);
+    }
+
+    static conjugationReducer(conjugation){
         return {
             name: conjugation.conjugation_name,
             conjugation: conjugation.conjugated,

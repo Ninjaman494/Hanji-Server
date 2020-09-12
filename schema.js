@@ -9,6 +9,7 @@ const typeDefs = gql`
         conjugationNames: [String]!
         search(query: String!, cursor: Int): Result!
         wordOfTheDay: Entry!
+        stems(term: String!): [String]!
     }
     
     type Result {
