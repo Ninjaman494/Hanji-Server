@@ -32,6 +32,29 @@ stemmer.generate_stems = function(verb) {
                                    hangeul.vowel(hangeul.find_vowel_to_append(verb.substring(0, verb.length-1))),
                                    'ᇂ')]);
     }
+
+    // Removing added ㅏ and ㅓ
+    if (hangeul.vowel(verb[verb.length-1]) == 'ㅘ'){
+        possibles.push([false, verb.substring(0, verb.length -1) +
+                    hangeul.join(hangeul.lead(verb[verb.length-1]), 'ㅗ')]);
+    }
+    if (hangeul.vowel(verb[verb.length-1]) == 'ㅝ'){
+        possibles.push([false, verb.substring(0, verb.length -1) +
+        hangeul.join(hangeul.lead(verb[verb.length-1]), 'ㅜ')]);
+    }
+    // ㅚ + 어
+    if(hangeul.vowel(verb[verb.length-1]) == 'ㅙ'){
+        possibles.push([false, verb.substring(0, verb.length -1) +
+        hangeul.join(hangeul.lead(verb[verb.length-1]), 'ㅚ')]);
+    }
+    // 르 irregular
+    if( (verb[verb.length -1] == '라' || verb[verb.length -1] == '러') && hangeul.padchim(verb[verb.length-2]) == 'ᆯ'){
+       let char = verb[verb.length - 2];
+       char = hangeul.join(hangeul.lead(char),hangeul.vowel(char));
+       possibles.push([false, verb.substring(0,verb.length - 2)  + char + '르']);
+    }
+
+
     possibles.push([false, verb.substring(0, verb.length-1) +
                            hangeul.join(hangeul.lead(verb[verb.length-1]), 'ㅡ')]);
     possibles.push([true, verb]);
@@ -51,7 +74,7 @@ stemmer.generate_stems = function(verb) {
 stemmer.stem = function(verb) {
     // remove all conjugators that return what was passed in
     var ignored_conjugations = {};
-    var returnlist = [];
+    var returnList = new Set();
     var possConjugations = [];
     for (var f in conjugator) {
         if (conjugator[f].conjugation && conjugator[f]('test') == 'test') {
@@ -69,17 +92,17 @@ stemmer.stem = function(verb) {
                 if (!conjugator[f].conjugation || (f in ignored_conjugations && original)) {
                     continue;
                 }
-                if (conjugator[f](possible_stem) == verb) {
+                if (conjugator[f](possible_stem, true) == verb || conjugator[f](possible_stem, false) == verb) { // need one for reg and one for irreg
                     var infin = {'key': possible_stem + '다'};
                     if(possConjugations.indexOf(infin.key) == -1 && infin.key.indexOf(' ') == -1) {
-                        returnlist.push(infin);
+                        returnList.add(infin.key);
                         possConjugations.push(infin.key);
                     }
                 }
             }
         }
     }
-    return returnlist;
+    return returnList;
 };
 
 stemmer.stem_lookup = function(phrase, select_by_stem, callback) {

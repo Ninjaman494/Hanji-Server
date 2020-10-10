@@ -1,0 +1,4 @@
+cron:
+  - description: "uptime"
+    url: /uptime
+    schedule: every 1 minutes

@@ -24,11 +24,14 @@ function Geulja(__value__) {
     }
 };
 
-with(Geulja.prototype = new String) {
-    toString = valueOf = function() {
-        return this.__value__
-    };
-}
+Geulja.prototype = new String;
+Geulja.prototype.toString = function() {
+    return this.__value__
+};
+
+Geulja.prototype.valueOf = function() {
+    return this.__value__
+};
 
 var hangeul = function() {
     this.Geulja = Geulja;
