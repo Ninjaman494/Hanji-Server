@@ -30,4 +30,14 @@ test('finds dictionary forms', () => {
     expect(stemmer.stem('아파')).toContain('아프다');
     expect(stemmer.stem('하세요')).toContain('하다');
     expect(stemmer.stem('있으면')).toContain('있다');
+    expect(stemmer.stem('노란')).toContain('노랗다');
+});
+
+test('르 irregular', () => {
+    expect(stemmer.stem('일러')).toContain('이르다');
+    expect(stemmer.stem('일렀어')).toContain('이르다');
+    expect(stemmer.stem('이를 거야')).toContain('이르다');
+    expect(stemmer.stem('불러')).toContain('부르다');
+    expect(stemmer.stem('불렀어')).toContain('부르다');
+    expect(stemmer.stem('부를 거야')).toContain('부르다');
 });
