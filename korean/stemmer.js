@@ -47,8 +47,12 @@ stemmer.generate_stems = function(verb) {
         possibles.push([false, verb.substring(0, verb.length -1) +
         hangeul.join(hangeul.lead(verb[verb.length-1]), 'ㅚ')]);
     }
-    // 르 irregular
-    if( (verb[verb.length -1] == '라' || verb[verb.length -1] == '러') && hangeul.padchim(verb[verb.length-2]) == 'ᆯ'){
+    // 르 irregular, create a joined stem to handle past tense
+    const lead = hangeul.lead(verb[verb.length -1]);
+    const vowel = hangeul.vowel(verb[verb.length -1]);
+    const joined = hangeul.join(lead, vowel);
+
+    if( (joined === '라' || joined === '러') && hangeul.padchim(verb[verb.length-2]) === 'ᆯ'){
        let char = verb[verb.length - 2];
        char = hangeul.join(hangeul.lead(char),hangeul.vowel(char));
        possibles.push([false, verb.substring(0,verb.length - 2)  + char + '르']);
