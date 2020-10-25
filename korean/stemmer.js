@@ -58,8 +58,9 @@ stemmer.generate_stems = function(verb) {
     possibles.push([false, verb.substring(0, verb.length-1) +
                            hangeul.join(hangeul.lead(verb[verb.length-1]), 'ㅡ')]);
     possibles.push([true, verb]);
-    // try adding back in irregular disappearing padchims
-    ['ᆮ', 'ᆸ','ᆯ', 'ᆺ', 'ᄂ'].forEach(function(padchim) {
+    // try adding back in irregular disappearing padchims, use jamo from
+    // unicode block U+11Ax and U+11Bx
+    ['ᆮ', 'ᆸ','ᆯ', 'ᆺ', 'ᄂ', 'ᇂ'].forEach(function(padchim) {
         possibles.push([false, verb.substring(0, verb.length-1) +
                                 hangeul.join(hangeul.lead(verb[verb.length-1]),
                                              hangeul.vowel(verb[verb.length-1]), padchim)]);
