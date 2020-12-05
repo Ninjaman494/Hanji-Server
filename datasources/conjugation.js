@@ -18,7 +18,7 @@ class ConjugationAPI extends DataSource {
         this.context = config.context;
     }
 
-    fetchConjugations(stem, isAdj,honorific, regular, conjugationNames){
+    fetchConjugations(stem, isAdj, honorific, regular, conjugationNames){
         if(regular === null || regular === undefined) {
             // returns either 'regular verb' or type of irregular
             regular = conjugator.verb_type(stem, false) === 'regular verb';
@@ -31,7 +31,7 @@ class ConjugationAPI extends DataSource {
         }
 
         let  data = [];
-        conjugator.conjugate(stem,regular,isAdj,honorific, conjugations => {
+        conjugator.conjugate(stem, regular, isAdj, honorific, conjugations => {
             conjugations.forEach( c =>{
                 let conjugation = ConjugationAPI.conjugationReducer(c);
                 // If a list of conjugations was provided, check if this conjugation is part of the list
@@ -42,6 +42,22 @@ class ConjugationAPI extends DataSource {
                 }
             });
         });
+        return data;
+    }
+
+    fetchFavorites(stem, isAdj, regular, favorites) {
+        if(regular === null || regular === undefined) {
+            // returns either 'regular verb' or type of irregular
+            regular = conjugator.verb_type(stem, false) === 'regular verb';
+        }
+
+        const data = [];
+        favorites.forEach(fav => {
+           const conjugation = conjugator.conjugate_one(stem, regular, isAdj, fav.honorific, fav.conjugationName);
+
+           data.push(ConjugationAPI.conjugationReducer(conjugation));
+        });
+
         return data;
     }
 

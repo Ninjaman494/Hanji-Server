@@ -504,6 +504,37 @@ conjugator.conjugate = function(infinitive, regular, isAdj, honorific, callback)
     callback(conjugations);
 };
 
+conjugator.conjugate_one = function(infinitive, regular, isAdj, honorific, name) {
+    let conjugation = name.replace(/ /g,'_');
+    if(honorific) {
+        conjugation += '_honorific';
+    }
+
+    conjugator.reasons.length = 0;
+
+    const r = {};
+    r.conjugated = conjugator[conjugation](infinitive, regular, isAdj, honorific);
+    if(r.conjugated === undefined){ // this conjugation doesn't exist for this word (ex. determiner past for adj.)
+        return;
+    }
+
+    r.infinitive = infinitive + '다';
+    r.conjugation_name = conjugation.replace(/_/g, ' ').replace(' honorific','');
+    r.pronunciation = pronunciation.get_pronunciation(r.conjugated);
+    r.romanized = romanization.romanize(r.pronunciation);
+    r.reasons = [];
+    for (let reason in conjugator.reasons) {
+        r.reasons.push(conjugator.reasons[reason]);
+    }
+
+    r.type = conjugator[conjugation].type;
+    r.tense = conjugator[conjugation].tense;
+    r.speechLevel = conjugator[conjugation].speechLevel;
+    r.honorific = conjugator[conjugation].honorific ? conjugator[conjugation].honorific : false; // should be set to false if undefined
+
+    return r;
+};
+
 conjugator.conjugate_json = function(infinitive, regular, callback) {
     conjugator.conjugate(infinitive, regular, function(result) {
         result.unshift({
