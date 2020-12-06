@@ -55,7 +55,9 @@ class ConjugationAPI extends DataSource {
         favorites.forEach(fav => {
            const conjugation = conjugator.conjugate_one(stem, regular, isAdj, fav.honorific, fav.conjugationName);
 
-           data.push(ConjugationAPI.conjugationReducer(conjugation));
+           if(conjugation) {
+               data.push(ConjugationAPI.conjugationReducer(conjugation));
+           }
         });
 
         return data;
