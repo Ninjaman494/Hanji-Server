@@ -344,6 +344,66 @@ test('Fetch conjugations', async () => {
     );
 });
 
+test('Fetch favorites', async () => {
+    const conjugation = {
+        name: casual.word,
+        conjugation: casual.word,
+        type: casual.word,
+        tense: casual.random_element(['present', 'past', 'future']),
+        speechLevel: casual.random_element(['formal low','informal low','informal high','formal high']),
+        honorific: casual.boolean,
+        pronunciation: casual.word,
+        romanization: casual.word,
+        reasons: casual.array_of_words(7),
+    };
+
+    const conjugationAPI = new ConjugationAPI();
+    conjugationAPI.fetchFavorites = () => [conjugation, conjugation, conjugation];
+
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        dataSources: () => ({ conjugationAPI }),
+    });
+
+    const { query } = createTestClient(server);
+    const GET_FAVORITES = gql`
+      query getFavorites($stem: String!, $isAdj: Boolean!, $favorites: [FavInput]!) {
+        favorites(stem: $stem, isAdj: $isAdj, favorites: $favorites) {
+            name,
+            conjugation,
+            type,
+            tense,
+            speechLevel,
+            honorific,
+            pronunciation,
+            romanization,
+            reasons
+        }
+      }
+    `;
+
+    const favorites = [
+        { name: casual.word, conjugationName: casual.word, honorific: casual.boolean }
+    ];
+    const res = await query({
+        query: GET_FAVORITES,
+        variables: { stem: 'stem', isAdj: true, favorites: favorites }
+    });
+
+    expect(res.data).not.toBe(null);
+    expect(res.data).not.toBe(undefined);
+    expect(res.data.favorites).not.toBe(null);
+    expect(res.data.favorites).not.toBe(undefined);
+    res.data.favorites.forEach(fetchedConjugation =>
+        expect(fetchedConjugation).toEqual({
+            ...conjugation,
+            tense: conjugation.tense.toUpperCase(),
+            speechLevel: conjugation.speechLevel.toUpperCase().replace(' ','_')
+        })
+    );
+});
+
 test('Fetch conjugation types', async () => {
     const types = casual.array_of_words(7);
 
