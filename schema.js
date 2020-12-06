@@ -5,6 +5,7 @@ const typeDefs = gql`
         entry(id: ID!): Entry
         examples(id: ID!): [Example]!
         conjugations(stem: String!, isAdj: Boolean!, honorific: Boolean!, regular: Boolean, conjugations: [String]): [Conjugation]!
+        favorites(stem: String!, isAdj: Boolean!, regular: Boolean, favorites: [FavInput]!): [Conjugation]!
         conjugationTypes: [String]!
         conjugationNames: [String]!
         search(query: String!, cursor: Int): Result!
@@ -59,6 +60,12 @@ const typeDefs = gql`
         pronunciation: String!
         romanization: String!
         reasons: [String]!
+    }
+    
+    input FavInput {
+        name: String!
+        conjugationName: String!
+        honorific: Boolean!
     }
 `;
 
