@@ -21,6 +21,10 @@ module.exports = {
         stems: (_, { term }, { dataSources }) =>
             dataSources.conjugationAPI.fetchStems(term),
     },
+    Mutation: {
+        createEntrySuggestion: (_, { suggestion }, { dataSources }) =>
+            dataSources.databaseAPI.createEntrySuggestion(suggestion)
+    },
     Tense: {
         PRESENT: 'present',
         PAST: 'past',

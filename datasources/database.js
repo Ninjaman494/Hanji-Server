@@ -40,10 +40,7 @@ class DatabaseAPI extends DataSource {
     }
 
     async fetchEntry(id) {
-        // Check if id is ObjectID or old form
-        if(!DatabaseAPI.containsHangul(id)) {
-            id = new ObjectId(id);
-        }
+        id = this.getSafeID(id);
 
         const mongo = new MongoClient(URI, { useNewUrlParser: true });
         await mongo.connect();
@@ -61,10 +58,7 @@ class DatabaseAPI extends DataSource {
     }
 
     async fetchExamples(id) {
-        // Check if id is ObjectID or old form
-        if(!DatabaseAPI.containsHangul(id)) {
-            id = new ObjectId(id);
-        }
+        id = this.getSafeID(id);
 
         const mongo = new MongoClient(URI, { useNewUrlParser: true });
         await mongo.connect();
@@ -136,6 +130,39 @@ class DatabaseAPI extends DataSource {
         return DatabaseAPI.entryReducer(this.lastWOD)
     }
 
+    async createEntrySuggestion(suggestionData) {
+        const entry = await this.fetchEntry(suggestionData.entryID);
+        if(!entry) {
+            return {
+                success: false,
+                message: "An entry with the given id doesn't exist"
+            }
+        }
+
+        const mongo = new MongoClient(URI, { useNewUrlParser: true });
+        await mongo.connect();
+
+        const {ops} = await mongo
+            .db("hanji")
+            .collection("words-suggestions")
+            .insertOne({
+                ...suggestionData,
+                entryID: this.getSafeID(suggestionData.entryID),
+            });
+        if(ops.length !== 1) {
+            return {
+                success: false,
+                message: "Failed to insert suggestion into database"
+            }
+        }
+
+        return {
+            success: true,
+            message: "Entry suggestion successfully created",
+            suggestion: DatabaseAPI.entrySuggestionReducer(ops[0])
+        }
+    }
+
     static exampleReducer(examples){
         let reducedExamples = [];
         examples.forEach(example => {
@@ -173,6 +200,15 @@ class DatabaseAPI extends DataSource {
         return data;
     }
 
+    static entrySuggestionReducer(entrySuggestion) {
+        const {_id, entryID, ...rest} = entrySuggestion;
+        return {
+            id: _id.toString(),
+            entryID: entryID.toString(),
+            ...rest
+        };
+    }
+
     static containsHangul(string) {
         for(let i = 0;i<string.length;i++){
             if (hangeul.is_hangeul(string[i])) {
@@ -180,6 +216,14 @@ class DatabaseAPI extends DataSource {
             }
         }
         return false;
+    }
+
+    getSafeID(id) {
+        // Check if id is ObjectID or old form
+        if (!DatabaseAPI.containsHangul(id)) {
+            id = new ObjectId(id);
+        }
+        return id;
     }
 }
 module.exports = DatabaseAPI;
