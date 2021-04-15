@@ -149,6 +149,8 @@ class DatabaseAPI extends DataSource {
                 ...suggestionData,
                 entryID: this.getSafeID(suggestionData.entryID),
             });
+        mongo.close();
+
         if(ops.length !== 1) {
             return {
                 success: false,
@@ -161,6 +163,20 @@ class DatabaseAPI extends DataSource {
             message: "Entry suggestion successfully created",
             suggestion: DatabaseAPI.entrySuggestionReducer(ops[0])
         }
+    }
+
+    async fetchEntrySuggestions() {
+        const mongo = new MongoClient(URI, { useNewUrlParser: true });
+        await mongo.connect();
+
+        const array = await mongo
+            .db("hanji")
+            .collection("words-suggestions")
+            .find()
+            .toArray();
+        mongo.close();
+
+        return array.map(a => DatabaseAPI.entrySuggestionReducer(a));
     }
 
     static exampleReducer(examples){

@@ -20,6 +20,8 @@ module.exports = {
             dataSources.databaseAPI.fetchWordoftheDay(),
         stems: (_, { term }, { dataSources }) =>
             dataSources.conjugationAPI.fetchStems(term),
+        entrySuggestions: (_, {}, { dataSources}) =>
+            dataSources.databaseAPI.fetchEntrySuggestions()
     },
     Mutation: {
         createEntrySuggestion: (_, { suggestion }, { dataSources }) =>
