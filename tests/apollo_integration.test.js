@@ -236,7 +236,6 @@ test('Fetch multiple entries where some are incomplete', async () => {
     expect(res.data.entries).not.toBe(null);
     expect(res.data.entries).not.toBe(undefined);
 
-
     expect(res.data.entries[0]).toEqual(terms[0]);
     expect(res.data.entries[1]).toEqual({
         ...terms[1],
@@ -628,4 +627,77 @@ test('Fetch stems', async () => {
     expect(res.data.stems).not.toBe(null);
     expect(res.data.stems).not.toBe(undefined);
     expect(res.data.stems).toEqual(stems);
+});
+
+test('Fetch entry suggestions', async () => {
+    const suggestions = [
+        {
+            id: 'suggestion 1',
+            entryID: 'entry 1',
+            antonyms: ['antonym'],
+            synonyms: ['synonym'],
+            examples: [
+                {
+                    sentence: 'sentence',
+                    translation: 'translation'
+                }
+            ]
+        },
+        {
+            id: 'suggestion 2',
+            entryID: 'entry 2',
+            antonyms: ['antonym']
+        },
+        {
+            id: 'suggestion 3',
+            entryID: 'entry 3',
+            examples: [
+                {
+                    sentence: 'sentence',
+                    translation: 'translation'
+                }
+            ]
+        }
+    ];
+
+    const databaseAPI = new DatabaseAPI();
+    databaseAPI.fetchEntrySuggestions = () => suggestions;
+
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        dataSources: () => ({ databaseAPI}),
+    });
+
+    const { query } = createTestClient(server);
+    const GET_SUGGESTIONS = gql`
+     query getSuggestions {
+       entrySuggestions {
+         id,
+         entryID,
+         antonyms,
+         synonyms,
+         examples {
+           sentence,
+           translation
+         }
+       }
+     }
+    `;
+
+    const res = await query({ query: GET_SUGGESTIONS });
+    expect(res.data).not.toBe(null);
+    expect(res.data.entrySuggestions).not.toBe(null);
+
+    expect(res.data.entrySuggestions[0]).toEqual(suggestions[0]);
+    expect(res.data.entrySuggestions[1]).toEqual({
+        synonyms: null,
+        examples: null,
+        ...suggestions[1]
+    });
+    expect(res.data.entrySuggestions[2]).toEqual({
+        synonyms: null,
+        antonyms: null,
+        ...suggestions[2]
+    });
 });
