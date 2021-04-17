@@ -768,5 +768,86 @@ describe('Mutations', () => {
             id: 'id',
             ...suggestion
         });
+    });
+
+    test('Apply an entry suggestion', async () => {
+        const suggestion = {
+            id: casual.uuid,
+            entryID: casual.uuid,
+            antonyms: casual.array_of_words(3),
+            synonyms: casual.array_of_words(2),
+            examples: [
+                {
+                    sentence: casual.sentence,
+                    translation: casual.sentence
+                }
+            ]
+        };
+        const entry = {
+            id: casual.uuid,
+            antonyms: suggestion.antonyms,
+            synonyms: suggestion.synonyms,
+            examples: suggestion.examples,
+        };
+
+        const mockApply = jest.fn();
+        mockApply.mockReturnValue({
+            success: true,
+            message: "Entry suggestion successfully applied",
+            entry: entry,
+            suggestion: {
+                ...suggestion,
+                applied: true
+            }
+        });
+        const databaseAPI = new DatabaseAPI();
+        databaseAPI.applyEntrySuggestion = mockApply;
+
+        const server = new ApolloServer({
+            typeDefs,
+            resolvers,
+            dataSources: () => ({databaseAPI}),
+        });
+
+        const {mutate} = createTestClient(server);
+        const APPLY_SUGGESTION = gql`
+            mutation ApplySuggestion($id: ID!) {
+              applyEntrySuggestion(id: $id) {
+                success,
+                message,
+                entry {
+                  id,
+                  antonyms,
+                  synonyms,
+                  examples { 
+                    sentence,
+                    translation
+                  }
+                },
+                suggestion {
+                  id
+                  entryID,
+                  antonyms,
+                  synonyms,
+                  examples {
+                    sentence,
+                    translation
+                  },
+                  applied
+                },
+              }
+        }`;
+
+        const res = await mutate({mutation: APPLY_SUGGESTION, variables: {id: suggestion.id}});
+        expect(res.data).not.toBe(null);
+        expect(res.data.applyEntrySuggestion).toBeDefined();
+
+        expect(res.data.applyEntrySuggestion.success).toBeTruthy();
+        expect(res.data.applyEntrySuggestion.message).toEqual("Entry suggestion successfully applied");
+        expect(res.data.applyEntrySuggestion.entry).toEqual(entry);
+        expect(res.data.applyEntrySuggestion.suggestion).toEqual({
+            ...suggestion,
+            applied: true
+        });
     })
 });
