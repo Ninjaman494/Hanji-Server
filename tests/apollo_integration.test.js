@@ -849,5 +849,63 @@ describe('Mutations', () => {
             ...suggestion,
             applied: true
         });
+    });
+
+    test('Edit an entry suggestion', async () => {
+        const suggestion = {
+            id: casual.uuid,
+            entryID: casual.uuid,
+            antonyms: casual.array_of_words(3),
+            synonyms: casual.array_of_words(2),
+            examples: [
+                {
+                    sentence: casual.sentence,
+                    translation: casual.sentence
+                }
+            ]
+        };
+
+        const mockEdit = jest.fn();
+        mockEdit.mockReturnValue({
+            success: true,
+            message: "Entry suggestion successfully edited",
+            suggestion: suggestion,
+        });
+        const databaseAPI = new DatabaseAPI();
+        databaseAPI.editEntrySuggestion = mockEdit;
+
+        const server = new ApolloServer({
+            typeDefs,
+            resolvers,
+            dataSources: () => ({ databaseAPI}),
+        });
+
+        const { mutate } = createTestClient(server);
+        const EDIT_SUGGESTION = gql`
+            mutation EditSuggestion($id: ID!, $suggestion: EntrySuggestionInput!) {
+              editEntrySuggestion(id: $id, suggestion: $suggestion) {
+                success,
+                message,
+                suggestion {
+                  id
+                  entryID,
+                  antonyms,
+                  synonyms,
+                  examples {
+                    sentence,
+                    translation
+                  }
+                },
+              }
+            }`;
+
+        const {id, ...rest} = suggestion;
+        const res = await mutate({ mutation: EDIT_SUGGESTION, variables: { id: id, suggestion: rest } });
+        expect(res.data).not.toBe(null);
+        expect(res.data.editEntrySuggestion).toBeDefined();
+
+        expect(res.data.editEntrySuggestion.success).toBeTruthy();
+        expect(res.data.editEntrySuggestion.message).toEqual("Entry suggestion successfully edited");
+        expect(res.data.editEntrySuggestion.suggestion).toEqual(suggestion);
     })
 });
