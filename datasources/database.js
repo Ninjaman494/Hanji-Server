@@ -224,6 +224,33 @@ class DatabaseAPI extends DataSource {
         }
     }
 
+    async editEntrySuggestion(id, suggestionData) {
+        const mongo = new MongoClient(URI, {useNewUrlParser: true});
+        await mongo.connect();
+
+        const {value: updatedSuggestion} = await mongo
+            .db("hanji")
+            .collection("words-suggestions")
+            .findOneAndUpdate(
+                {_id: this.getSafeID(id)},
+                {$set: suggestionData},
+                {returnOriginal: false}
+            );
+
+        if (!updatedSuggestion) {
+            return {
+                success: false,
+                message: "Failed to edit suggestion"
+            }
+        }
+
+        return {
+            success: true,
+            message: "Successfully edited suggestion",
+            suggestion: DatabaseAPI.entrySuggestionReducer(updatedSuggestion)
+        }
+    }
+
     async fetchEntrySuggestions() {
         const mongo = new MongoClient(URI, { useNewUrlParser: true });
         await mongo.connect();

@@ -28,6 +28,8 @@ module.exports = {
             dataSources.databaseAPI.createEntrySuggestion(suggestion),
         applyEntrySuggestion: (_, { id }, { dataSources }) =>
             dataSources.databaseAPI.applyEntrySuggestion(id),
+        editEntrySuggestion: (_, { id, suggestion }, { dataSources }) =>
+            dataSources.databaseAPI.editEntrySuggestion(id, suggestion),
     },
     Tense: {
         PRESENT: 'present',
