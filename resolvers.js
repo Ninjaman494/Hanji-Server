@@ -25,7 +25,9 @@ module.exports = {
     },
     Mutation: {
         createEntrySuggestion: (_, { suggestion }, { dataSources }) =>
-            dataSources.databaseAPI.createEntrySuggestion(suggestion)
+            dataSources.databaseAPI.createEntrySuggestion(suggestion),
+        applyEntrySuggestion: (_, { id }, { dataSources }) =>
+            dataSources.databaseAPI.applyEntrySuggestion(id),
     },
     Tense: {
         PRESENT: 'present',

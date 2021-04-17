@@ -16,8 +16,8 @@ const typeDefs = gql`
     
     type Mutation {
         createEntrySuggestion(suggestion: EntrySuggestionInput!): EntrySuggestionResponse!
-        editEntrySuggestion(suggestion: EntrySuggestionInput!): EntrySuggestionResponse!
-        applyEntrySuggestion(suggestion: EntrySuggestionInput!): EntrySuggestionResponse!
+        editEntrySuggestion(id: ID!, suggestion: EntrySuggestionInput!): EntrySuggestionResponse!
+        applyEntrySuggestion(id: ID!): EntrySuggestionResponse!
     }
     
     type Result {
@@ -75,6 +75,7 @@ const typeDefs = gql`
         antonyms: [String]
         synonyms: [String]
         examples: [Example]
+        applied: Boolean!
     }
     
     

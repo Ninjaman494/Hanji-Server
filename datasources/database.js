@@ -19,6 +19,7 @@ class DatabaseAPI extends DataSource {
      * here, so we can know about the user making requests
      */
     initialize(config) {
+        // noinspection JSUnusedGlobalSymbols
         this.context = config.context;
     }
 
@@ -165,6 +166,64 @@ class DatabaseAPI extends DataSource {
         }
     }
 
+    async applyEntrySuggestion(id) {
+        const mongo = new MongoClient(URI, {useNewUrlParser: true});
+        await mongo.connect();
+
+        // Fetch suggestion, check it's not already applied
+        const suggestion = await mongo
+            .db("hanji")
+            .collection("words-suggestions")
+            .findOne({_id: this.getSafeID(id)});
+
+        if (suggestion.applied) {
+            return {
+                success: false,
+                message: "This suggestion has already been applied"
+            }
+        }
+
+        // Update entry based on suggestion
+        const updates = {};
+        if (suggestion.antonyms) updates.antonym = {$each: suggestion.antonyms};
+        if (suggestion.synonyms) updates.synonyms = {$each: suggestion.synonyms};
+        if (suggestion.examples) updates.examples = {$each: suggestion.examples};
+
+        const {value: updatedEntry} = await mongo
+            .db("hanji")
+            .collection("words-staging")
+            .findOneAndUpdate(
+                {_id: this.getSafeID(suggestion.entryID)},
+                {$push: updates},
+                {returnOriginal: false}
+            );
+
+        if (!updatedEntry) {
+            return {
+                success: false,
+                message: "Failed to insert suggestion into database"
+            }
+        }
+
+        // Mark suggestion as applied
+        const {value: updatedSuggestion} = await mongo
+            .db("hanji")
+            .collection("words-suggestions")
+            .findOneAndUpdate(
+                {_id: this.getSafeID(id)},
+                {$set: {applied: true}},
+                {returnOriginal: false}
+            );
+
+        mongo.close();
+        return {
+            success: true,
+            message: "Entry suggestion successfully applied",
+            entry: DatabaseAPI.entryReducer(updatedEntry),
+            suggestion: DatabaseAPI.entrySuggestionReducer(updatedSuggestion),
+        }
+    }
+
     async fetchEntrySuggestions() {
         const mongo = new MongoClient(URI, { useNewUrlParser: true });
         await mongo.connect();
@@ -217,10 +276,11 @@ class DatabaseAPI extends DataSource {
     }
 
     static entrySuggestionReducer(entrySuggestion) {
-        const {_id, entryID, ...rest} = entrySuggestion;
+        const {_id, entryID, applied, ...rest} = entrySuggestion;
         return {
             id: _id.toString(),
             entryID: entryID.toString(),
+            applied: !!applied,
             ...rest
         };
     }
