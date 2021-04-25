@@ -12,6 +12,7 @@ const typeDefs = gql`
         wordOfTheDay: Entry!
         stems(term: String!): [String]!
         entrySuggestions: [EntrySuggestion]!
+        entrySuggestion(id: ID!): EntrySuggestion!
     }
     
     type Mutation {

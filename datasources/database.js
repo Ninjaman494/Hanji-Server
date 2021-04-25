@@ -265,6 +265,20 @@ class DatabaseAPI extends DataSource {
         return array.map(a => DatabaseAPI.entrySuggestionReducer(a));
     }
 
+    async fetchEntrySuggestion(id) {
+        const mongo = new MongoClient(URI, { useNewUrlParser: true });
+        await mongo.connect();
+
+        const array = await mongo
+            .db("hanji")
+            .collection("words-suggestions")
+            .find({_id: this.getSafeID(id)})
+            .toArray();
+        mongo.close();
+
+        return array.length > 0 ? DatabaseAPI.entrySuggestionReducer(array[0]) : null;
+    }
+
     static exampleReducer(examples){
         let reducedExamples = [];
         examples.forEach(example => {

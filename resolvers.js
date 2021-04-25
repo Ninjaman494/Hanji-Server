@@ -21,7 +21,9 @@ module.exports = {
         stems: (_, { term }, { dataSources }) =>
             dataSources.conjugationAPI.fetchStems(term),
         entrySuggestions: (_, {}, { dataSources}) =>
-            dataSources.databaseAPI.fetchEntrySuggestions()
+            dataSources.databaseAPI.fetchEntrySuggestions(),
+        entrySuggestion: (_, { id }, { dataSources }) =>
+            dataSources.databaseAPI.fetchEntrySuggestion(id)
     },
     Mutation: {
         createEntrySuggestion: (_, { suggestion }, { dataSources }) =>
