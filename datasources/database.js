@@ -147,8 +147,10 @@ class DatabaseAPI extends DataSource {
             .db("hanji")
             .collection("words-suggestions")
             .insertOne({
-                ...suggestionData,
                 entryID: this.getSafeID(suggestionData.entryID),
+                antonyms: suggestionData.antonyms?.filter(a => a.length > 0),
+                synonyms: suggestionData.synonyms?.filter(s => s.length > 0),
+                examples: suggestionData.examples?.filter(e => e.sentence.length > 0 && e.translation.length > 0),
             });
         mongo.close();
 
