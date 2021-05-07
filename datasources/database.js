@@ -193,7 +193,7 @@ class DatabaseAPI extends DataSource {
 
         const {value: updatedEntry} = await mongo
             .db("hanji")
-            .collection("words-staging")
+            .collection("words")
             .findOneAndUpdate(
                 {_id: this.getSafeID(suggestion.entryID)},
                 {$push: updates},
