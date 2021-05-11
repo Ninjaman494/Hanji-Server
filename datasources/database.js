@@ -19,6 +19,7 @@ class DatabaseAPI extends DataSource {
      * here, so we can know about the user making requests
      */
     initialize(config) {
+        // noinspection JSUnusedGlobalSymbols
         this.context = config.context;
     }
 
@@ -40,10 +41,7 @@ class DatabaseAPI extends DataSource {
     }
 
     async fetchEntry(id) {
-        // Check if id is ObjectID or old form
-        if(!DatabaseAPI.containsHangul(id)) {
-            id = new ObjectId(id);
-        }
+        id = this.getSafeID(id);
 
         const mongo = new MongoClient(URI, { useNewUrlParser: true });
         await mongo.connect();
@@ -61,10 +59,7 @@ class DatabaseAPI extends DataSource {
     }
 
     async fetchExamples(id) {
-        // Check if id is ObjectID or old form
-        if(!DatabaseAPI.containsHangul(id)) {
-            id = new ObjectId(id);
-        }
+        id = this.getSafeID(id);
 
         const mongo = new MongoClient(URI, { useNewUrlParser: true });
         await mongo.connect();
@@ -136,6 +131,156 @@ class DatabaseAPI extends DataSource {
         return DatabaseAPI.entryReducer(this.lastWOD)
     }
 
+    async createEntrySuggestion(suggestionData) {
+        const entry = await this.fetchEntry(suggestionData.entryID);
+        if(!entry) {
+            return {
+                success: false,
+                message: "An entry with the given id doesn't exist"
+            }
+        }
+
+        const mongo = new MongoClient(URI, { useNewUrlParser: true });
+        await mongo.connect();
+
+        const {ops} = await mongo
+            .db("hanji")
+            .collection("words-suggestions")
+            .insertOne({
+                entryID: this.getSafeID(suggestionData.entryID),
+                antonyms: suggestionData.antonyms?.filter(a => a.length > 0),
+                synonyms: suggestionData.synonyms?.filter(s => s.length > 0),
+                examples: suggestionData.examples?.filter(e => e.sentence.length > 0 && e.translation.length > 0),
+            });
+        mongo.close();
+
+        if(ops.length !== 1) {
+            return {
+                success: false,
+                message: "Failed to insert suggestion into database"
+            }
+        }
+
+        return {
+            success: true,
+            message: "Entry suggestion successfully created",
+            suggestion: DatabaseAPI.entrySuggestionReducer(ops[0])
+        }
+    }
+
+    async applyEntrySuggestion(id) {
+        const mongo = new MongoClient(URI, {useNewUrlParser: true});
+        await mongo.connect();
+
+        // Fetch suggestion, check it's not already applied
+        const suggestion = await mongo
+            .db("hanji")
+            .collection("words-suggestions")
+            .findOne({_id: this.getSafeID(id)});
+
+        if (suggestion.applied) {
+            return {
+                success: false,
+                message: "This suggestion has already been applied"
+            }
+        }
+
+        // Update entry based on suggestion
+        const updates = {};
+        if (suggestion.antonyms) updates.antonyms = {$each: suggestion.antonyms};
+        if (suggestion.synonyms) updates.synonyms = {$each: suggestion.synonyms};
+        if (suggestion.examples) updates.examples = {$each: suggestion.examples};
+
+        const {value: updatedEntry} = await mongo
+            .db("hanji")
+            .collection("words")
+            .findOneAndUpdate(
+                {_id: this.getSafeID(suggestion.entryID)},
+                {$push: updates},
+                {returnOriginal: false}
+            );
+
+        if (!updatedEntry) {
+            return {
+                success: false,
+                message: "Failed to insert suggestion into database"
+            }
+        }
+
+        // Mark suggestion as applied
+        const {value: updatedSuggestion} = await mongo
+            .db("hanji")
+            .collection("words-suggestions")
+            .findOneAndUpdate(
+                {_id: this.getSafeID(id)},
+                {$set: {applied: true}},
+                {returnOriginal: false}
+            );
+
+        mongo.close();
+        return {
+            success: true,
+            message: "Entry suggestion successfully applied",
+            entry: DatabaseAPI.entryReducer(updatedEntry),
+            suggestion: DatabaseAPI.entrySuggestionReducer(updatedSuggestion),
+        }
+    }
+
+    async editEntrySuggestion(id, suggestionData) {
+        const mongo = new MongoClient(URI, {useNewUrlParser: true});
+        await mongo.connect();
+
+        const {value: updatedSuggestion} = await mongo
+            .db("hanji")
+            .collection("words-suggestions")
+            .findOneAndUpdate(
+                {_id: this.getSafeID(id)},
+                {$set: suggestionData},
+                {returnOriginal: false}
+            );
+
+        if (!updatedSuggestion) {
+            return {
+                success: false,
+                message: "Failed to edit suggestion"
+            }
+        }
+
+        return {
+            success: true,
+            message: "Successfully edited suggestion",
+            suggestion: DatabaseAPI.entrySuggestionReducer(updatedSuggestion)
+        }
+    }
+
+    async fetchEntrySuggestions() {
+        const mongo = new MongoClient(URI, { useNewUrlParser: true });
+        await mongo.connect();
+
+        const array = await mongo
+            .db("hanji")
+            .collection("words-suggestions")
+            .find()
+            .toArray();
+        mongo.close();
+
+        return array.map(a => DatabaseAPI.entrySuggestionReducer(a));
+    }
+
+    async fetchEntrySuggestion(id) {
+        const mongo = new MongoClient(URI, { useNewUrlParser: true });
+        await mongo.connect();
+
+        const array = await mongo
+            .db("hanji")
+            .collection("words-suggestions")
+            .find({_id: this.getSafeID(id)})
+            .toArray();
+        mongo.close();
+
+        return array.length > 0 ? DatabaseAPI.entrySuggestionReducer(array[0]) : null;
+    }
+
     static exampleReducer(examples){
         let reducedExamples = [];
         examples.forEach(example => {
@@ -173,6 +318,16 @@ class DatabaseAPI extends DataSource {
         return data;
     }
 
+    static entrySuggestionReducer(entrySuggestion) {
+        const {_id, entryID, applied, ...rest} = entrySuggestion;
+        return {
+            id: _id.toString(),
+            entryID: entryID.toString(),
+            applied: !!applied,
+            ...rest
+        };
+    }
+
     static containsHangul(string) {
         for(let i = 0;i<string.length;i++){
             if (hangeul.is_hangeul(string[i])) {
@@ -180,6 +335,14 @@ class DatabaseAPI extends DataSource {
             }
         }
         return false;
+    }
+
+    getSafeID(id) {
+        // Check if id is ObjectID or old form
+        if (!DatabaseAPI.containsHangul(id)) {
+            id = new ObjectId(id);
+        }
+        return id;
     }
 }
 module.exports = DatabaseAPI;

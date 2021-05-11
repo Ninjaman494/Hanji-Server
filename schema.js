@@ -11,6 +11,14 @@ const typeDefs = gql`
         search(query: String!, cursor: Int): Result!
         wordOfTheDay: Entry!
         stems(term: String!): [String]!
+        entrySuggestions: [EntrySuggestion]!
+        entrySuggestion(id: ID!): EntrySuggestion!
+    }
+    
+    type Mutation {
+        createEntrySuggestion(suggestion: EntrySuggestionInput!): EntrySuggestionResponse!
+        editEntrySuggestion(id: ID!, suggestion: EntrySuggestionInput!): EntrySuggestionResponse!
+        applyEntrySuggestion(id: ID!): EntrySuggestionResponse!
     }
     
     type Result {
@@ -61,11 +69,40 @@ const typeDefs = gql`
         romanization: String!
         reasons: [String]!
     }
+        
+    type EntrySuggestion {
+        id: ID!
+        entryID: ID!
+        antonyms: [String]
+        synonyms: [String]
+        examples: [Example]
+        applied: Boolean!
+    }
+    
+    
+    type EntrySuggestionResponse {
+        success: Boolean!
+        message: String!
+        entry: Entry
+        suggestion: EntrySuggestion
+    }
     
     input FavInput {
         name: String!
         conjugationName: String!
         honorific: Boolean!
+    }
+    
+    input EntrySuggestionInput {
+        entryID: ID!
+        antonyms: [String]
+        synonyms: [String]
+        examples: [ExampleInput]
+    }
+    
+    input ExampleInput {
+        sentence: String!
+        translation: String!
     }
 `;
 

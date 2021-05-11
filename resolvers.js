@@ -20,6 +20,18 @@ module.exports = {
             dataSources.databaseAPI.fetchWordoftheDay(),
         stems: (_, { term }, { dataSources }) =>
             dataSources.conjugationAPI.fetchStems(term),
+        entrySuggestions: (_, {}, { dataSources}) =>
+            dataSources.databaseAPI.fetchEntrySuggestions(),
+        entrySuggestion: (_, { id }, { dataSources }) =>
+            dataSources.databaseAPI.fetchEntrySuggestion(id)
+    },
+    Mutation: {
+        createEntrySuggestion: (_, { suggestion }, { dataSources }) =>
+            dataSources.databaseAPI.createEntrySuggestion(suggestion),
+        applyEntrySuggestion: (_, { id }, { dataSources }) =>
+            dataSources.databaseAPI.applyEntrySuggestion(id),
+        editEntrySuggestion: (_, { id, suggestion }, { dataSources }) =>
+            dataSources.databaseAPI.editEntrySuggestion(id, suggestion),
     },
     Tense: {
         PRESENT: 'present',
