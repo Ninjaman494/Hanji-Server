@@ -187,7 +187,7 @@ class DatabaseAPI extends DataSource {
 
         // Update entry based on suggestion
         const updates = {};
-        if (suggestion.antonyms) updates.antonym = {$each: suggestion.antonyms};
+        if (suggestion.antonyms) updates.antonyms = {$each: suggestion.antonyms};
         if (suggestion.synonyms) updates.synonyms = {$each: suggestion.synonyms};
         if (suggestion.examples) updates.examples = {$each: suggestion.examples};
 
