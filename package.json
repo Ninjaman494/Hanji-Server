@@ -2,11 +2,11 @@
   "name": "koreanconjugator",
   "version": "2.0.1",
   "description": "JavaScript Server for conjugating Korean verbs/adjectives. Uses Dan Bravender's source code for conjugation.",
-  "main": "main.js",
+  "main": "src/main.js",
   "author": "Akash Eldo",
   "license": "ISC",
   "scripts": {
-    "start": "node main.js",
+    "start": "node src/main.js",
     "test": "jest"
   },
   "repository": {
