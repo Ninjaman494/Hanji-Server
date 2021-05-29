@@ -1,12 +1,10 @@
 require('dotenv').config();
 require('@google-cloud/debug-agent').start();
-const cron = require('node-cron');
 const express = require('express');
 const DatabaseAPI = require('./datasources/database');
 const ConjugationAPI = require('./datasources/conjugation');
 const SearchAPI = require('./datasources/search');
 const resolvers = require('./resolvers');
-const cronjobs = require('./cronjobs');
 
 const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./schema');
@@ -20,18 +18,6 @@ const server = new ApolloServer({
         searchAPI: new SearchAPI(dbAPI)
     })
 });
-
-// Every day at 5:00 PM EST
-/*cron.schedule("0 17 * * *", function() {
-    console.log("CRON: Checking for un-indexed entries...");
-    cronjobs.unindexedEntries(dbAPI).then(function (result) {
-        console.log("CRON: Finished checking for un-index entries");
-        cronjobs.logIndexingMsg(result);
-    }, {
-        scheduled: true,
-        timezone: "America/New_York"
-    })
-});*/
 
 // Required for min_instances
 const app = express();
