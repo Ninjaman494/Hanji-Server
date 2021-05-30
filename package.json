@@ -33,6 +33,6 @@
   "devDependencies": {
     "apollo-server-testing": "2.25.0",
     "casual": "1.6.2",
-    "jest": "25.1.0"
+    "jest": "25.5.4"
   }
 }
