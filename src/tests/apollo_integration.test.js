@@ -1,3 +1,4 @@
+const { createRateLimitDirective, createRateLimitTypeDef } = require('graphql-rate-limit-directive');
 const { ApolloServer } = require('apollo-server-express');
 const { createTestClient } = require('apollo-server-testing');
 const gql = require('graphql-tag');
@@ -7,6 +8,19 @@ const ConjugationAPI = require('../datasources/conjugation');
 const SearchAPI = require('../datasources/search');
 const resolvers = require('../resolvers');
 const typeDefs = require('../schema');
+
+const createTestServer = (dataSources) => {
+    const server = new ApolloServer({
+        typeDefs: [createRateLimitTypeDef(), typeDefs],
+        resolvers,
+        schemaDirectives: {
+            rateLimit: createRateLimitDirective(),
+        },
+        dataSources: () => dataSources,
+    });
+
+    return createTestClient(server);
+};
 
 describe('Queries', () => {
     test('Fetch single full entry', async () => {
@@ -28,13 +42,7 @@ describe('Queries', () => {
         const databaseAPI = new DatabaseAPI();
         databaseAPI.fetchEntry = () => entry;
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ databaseAPI}),
-        });
-
-        const { query } = createTestClient(server);
+        const { query } = createTestServer({databaseAPI});
         const GET_ENTRY = gql`
           query getEntry($id: ID!) {
             entry(id: $id) {
@@ -72,12 +80,7 @@ describe('Queries', () => {
         const databaseAPI = new DatabaseAPI();
         databaseAPI.fetchEntry = () => entry;
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ databaseAPI}),
-        });
-        const { query } = createTestClient(server);
+        const { query } = createTestServer({databaseAPI});
         const GET_ENTRY = gql`
           query getEntry($id: ID!) {
             entry(id: $id) {
@@ -130,13 +133,7 @@ describe('Queries', () => {
         const databaseAPI = new DatabaseAPI();
         databaseAPI.fetchEntries = () => [term, term, term];
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ databaseAPI}),
-        });
-
-        const { query } = createTestClient(server);
+        const { query } = createTestServer({databaseAPI});
         const GET_ENTRIES = gql`
           query getEntries($term: String!) {
             entries(term: $term) {
@@ -205,13 +202,7 @@ describe('Queries', () => {
         const databaseAPI = new DatabaseAPI();
         databaseAPI.fetchEntries = () => terms;
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ databaseAPI}),
-        });
-
-        const { query } = createTestClient(server);
+        const { query } = createTestServer({databaseAPI});
         const GET_ENTRIES = gql`
           query getEntries($term: String!) {
             entries(term: $term) {
@@ -264,13 +255,7 @@ describe('Queries', () => {
         const databaseAPI = new DatabaseAPI();
         databaseAPI.fetchExamples = () => examples;
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ databaseAPI}),
-        });
-
-        const { query } = createTestClient(server);
+        const { query } = createTestServer({databaseAPI});
         const GET_EXAMPLES = gql`
           query getExamples($id: ID!) {
             examples(id: $id) {
@@ -304,13 +289,7 @@ describe('Queries', () => {
         const conjugationAPI = new ConjugationAPI();
         conjugationAPI.fetchConjugations = () => [conjugation, conjugation, conjugation];
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ conjugationAPI }),
-        });
-
-        const { query } = createTestClient(server);
+        const { query } = createTestServer({conjugationAPI});
         const GET_CONJUGATIONS = gql`
           query getConjugations($stem: String!, $isAdj: Boolean!, $honorific: Boolean!, $regular: Boolean, $conjugations: [String]) {
             conjugations(stem: $stem, isAdj: $isAdj, honorific: $honorific, regular: $regular, conjugations: $conjugations) {
@@ -360,13 +339,7 @@ describe('Queries', () => {
         const conjugationAPI = new ConjugationAPI();
         conjugationAPI.fetchFavorites = () => [conjugation, conjugation, conjugation];
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ conjugationAPI }),
-        });
-
-        const { query } = createTestClient(server);
+        const { query } = createTestServer({conjugationAPI});
         const GET_FAVORITES = gql`
           query getFavorites($stem: String!, $isAdj: Boolean!, $favorites: [FavInput]!) {
             favorites(stem: $stem, isAdj: $isAdj, favorites: $favorites) {
@@ -410,13 +383,7 @@ describe('Queries', () => {
         const conjugationAPI = new ConjugationAPI();
         conjugationAPI.fetchConjugationTypes = () => types;
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ conjugationAPI}),
-        });
-
-        const { query } = createTestClient(server);
+        const { query } = createTestServer({conjugationAPI});
         const GET_TYPES = gql`
           query getTypes {
             conjugationTypes
@@ -437,13 +404,7 @@ describe('Queries', () => {
         const conjugationAPI = new ConjugationAPI();
         conjugationAPI.fetchConjugationNames = () => names;
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ conjugationAPI}),
-        });
-
-        const { query } = createTestClient(server);
+        const { query } = createTestServer({conjugationAPI});
         const GET_NAMES = gql`
           query getNames {
             conjugationNames
@@ -477,13 +438,7 @@ describe('Queries', () => {
         const databaseAPI = new DatabaseAPI();
         databaseAPI.fetchWordoftheDay = () => wod;
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ databaseAPI}),
-        });
-
-        const { query } = createTestClient(server);
+        const { query } = createTestServer({databaseAPI});
         const GET_WOD = gql`
           query getWOD {
             wordOfTheDay {
@@ -551,13 +506,7 @@ describe('Queries', () => {
         const searchAPI = new SearchAPI();
         searchAPI.search = () => result;
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ searchAPI }),
-        });
-
-        const { query } = createTestClient(server);
+        const { query } = createTestServer({searchAPI});
         const SEARCH = gql`
           query search($query: String!, $cursor: Int) {
             search(query: $query, cursor: $cursor) {
@@ -609,13 +558,7 @@ describe('Queries', () => {
         const conjugationAPI = new ConjugationAPI();
         conjugationAPI.fetchStems = () => stems;
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ conjugationAPI }),
-        });
-
-        const { query } = createTestClient(server);
+        const { query } = createTestServer({conjugationAPI});
         const GET_NAMES = gql`
           query StemQuery($query: String!) {
             stems(term: $query)
@@ -664,13 +607,7 @@ describe('Queries', () => {
         const databaseAPI = new DatabaseAPI();
         databaseAPI.fetchEntrySuggestions = () => suggestions;
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ databaseAPI}),
-        });
-
-        const { query } = createTestClient(server);
+        const { query } = createTestServer({databaseAPI});
         const GET_SUGGESTIONS = gql`
              query getSuggestions {
                entrySuggestions {
@@ -730,13 +667,7 @@ describe('Mutations', () => {
         const databaseAPI = new DatabaseAPI();
         databaseAPI.createEntrySuggestion = mockCreate;
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ databaseAPI}),
-        });
-
-        const { mutate } = createTestClient(server);
+        const { mutate } = createTestServer({databaseAPI});
         const CREATE_SUGGESTION = gql`
             mutation CreateSuggestion($suggestion: EntrySuggestionInput!) {
               createEntrySuggestion(suggestion: $suggestion) {
@@ -803,13 +734,7 @@ describe('Mutations', () => {
         const databaseAPI = new DatabaseAPI();
         databaseAPI.applyEntrySuggestion = mockApply;
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({databaseAPI}),
-        });
-
-        const {mutate} = createTestClient(server);
+        const {mutate} = createTestServer({databaseAPI});
         const APPLY_SUGGESTION = gql`
             mutation ApplySuggestion($id: ID!) {
               applyEntrySuggestion(id: $id) {
@@ -874,13 +799,7 @@ describe('Mutations', () => {
         const databaseAPI = new DatabaseAPI();
         databaseAPI.editEntrySuggestion = mockEdit;
 
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-            dataSources: () => ({ databaseAPI}),
-        });
-
-        const { mutate } = createTestClient(server);
+        const { mutate } = createTestServer({databaseAPI});
         const EDIT_SUGGESTION = gql`
             mutation EditSuggestion($id: ID!, $suggestion: EntrySuggestionInput!) {
               editEntrySuggestion(id: $id, suggestion: $suggestion) {

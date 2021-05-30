@@ -1,6 +1,6 @@
 const { gql } = require('apollo-server');
 const typeDefs = gql`
-    type Query {
+    type Query @rateLimit(limit: 5, duration: 10) {
         entries(term: String!): [Entry]!
         entry(id: ID!): Entry
         examples(id: ID!): [Example]!
@@ -15,7 +15,7 @@ const typeDefs = gql`
         entrySuggestion(id: ID!): EntrySuggestion!
     }
     
-    type Mutation {
+    type Mutation @rateLimit(limit: 5, duration: 10) {
         createEntrySuggestion(suggestion: EntrySuggestionInput!): EntrySuggestionResponse!
         editEntrySuggestion(id: ID!, suggestion: EntrySuggestionInput!): EntrySuggestionResponse!
         applyEntrySuggestion(id: ID!): EntrySuggestionResponse!

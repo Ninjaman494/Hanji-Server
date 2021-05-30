@@ -1,37 +1,41 @@
 require('dotenv').config();
 require('@google-cloud/debug-agent').start();
-const cron = require('node-cron');
 const express = require('express');
+const { ApolloServer } = require('apollo-server-express');
+const { createRateLimitDirective, createRateLimitTypeDef, defaultKeyGenerator } = require('graphql-rate-limit-directive');
 const DatabaseAPI = require('./datasources/database');
 const ConjugationAPI = require('./datasources/conjugation');
 const SearchAPI = require('./datasources/search');
 const resolvers = require('./resolvers');
-const cronjobs = require('./cronjobs');
-
-const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./schema');
+
+// Source: https://github.com/ravangen/graphql-rate-limit/blob/master/examples/context/index.js
+// Creates a unique key based on ip address and endpoint being accessed
+const keyGenerator = (directiveArgs, obj, args, context, info) =>
+    `${context.ip}:${defaultKeyGenerator(
+        directiveArgs,
+        obj,
+        args,
+        context,
+        info,
+    )}`;
+
 let dbAPI = new DatabaseAPI();
 const server = new ApolloServer({
-    typeDefs,
+    typeDefs: [createRateLimitTypeDef(), typeDefs],
     resolvers,
+    context: ({req}) => ({ip: req.ip}),
+    schemaDirectives: {
+        rateLimit: createRateLimitDirective({
+            keyGenerator,
+        }),
+    },
     dataSources: () => ({
         databaseAPI: dbAPI,
         conjugationAPI: new ConjugationAPI(),
         searchAPI: new SearchAPI(dbAPI)
     })
 });
-
-// Every day at 5:00 PM EST
-/*cron.schedule("0 17 * * *", function() {
-    console.log("CRON: Checking for un-indexed entries...");
-    cronjobs.unindexedEntries(dbAPI).then(function (result) {
-        console.log("CRON: Finished checking for un-index entries");
-        cronjobs.logIndexingMsg(result);
-    }, {
-        scheduled: true,
-        timezone: "America/New_York"
-    })
-});*/
 
 // Required for min_instances
 const app = express();
@@ -52,7 +56,7 @@ app.listen({ port: PORT },(url) => {
 // Implement String.format. First, check if it isn't implemented already.
 if (!String.prototype.format) {
     String.prototype.format = function() {
-        var args = arguments;
+        const args = arguments;
         return this.replace(/{(\d+)}/g, function(match, number) {
             return typeof args[number] != 'undefined'
                 ? args[number]
