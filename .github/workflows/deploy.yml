@@ -15,7 +15,7 @@ jobs:
       - name: Create env file
         run: echo $ENV_SECRETS > .env
         env:
-          KEYS_TXT: ${{ secrets.ENV_SECRETS }}
+          ENV_SECRETS: ${{ secrets.ENV_SECRETS }}
 
       - name: Deploy to Google App Engine
         uses: google-github-actions/deploy-appengine@main
