@@ -31,7 +31,7 @@
     "request-promise": "^4.2.2"
   },
   "devDependencies": {
-    "apollo-server-testing": "2.11.0",
+    "apollo-server-testing": "2.25.0",
     "casual": "1.6.2",
     "jest": "25.1.0"
   }
