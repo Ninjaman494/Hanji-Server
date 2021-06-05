@@ -2,7 +2,27 @@
   "extends": [
     "config:base"
   ],
-  "groupName": "all",
+  "prCreation": "status-success",
+  "packageRules": [
+    {
+      "groupName": "Dev Dependencies (non-major)",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch", "minor"]
+    },
+    {
+      "groupName": "Dependencies (non-major)",
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["patch", "minor"]
+    },
+    {
+      "groupName": "GraphQL Dependencies",
+      "matchPackagePatterns": [
+        "apollo*",
+        "graphql*",
+        "express"
+      ]
+    }
+  ],
   "schedule": [
     "every weekend"
   ]
