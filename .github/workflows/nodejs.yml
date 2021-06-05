@@ -10,7 +10,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -18,9 +18,8 @@ jobs:
         with:
           node-version: 14.x
       - run: npm ci
-      - run: npm run build --if-present
       - run: npm test
-  renovate:
+  validate-renovate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
