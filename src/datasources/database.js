@@ -253,6 +253,28 @@ class DatabaseAPI extends DataSource {
         }
     }
 
+    async deleteEntrySuggestion(id) {
+        const mongo = new MongoClient(URI, {useNewUrlParser: true});
+        await mongo.connect();
+
+        const { value } = await mongo
+            .db("hanji")
+            .collection("words-suggestions")
+            .findOneAndDelete({ _id: this.getSafeID(id) });
+
+        if (!value) {
+            return {
+                success: false,
+                message: "Failed to delete suggestion"
+            }
+        }
+
+        return {
+            success: true,
+            message: "Successfully deleted suggestion",
+        }
+    }
+
     async fetchEntrySuggestions() {
         const mongo = new MongoClient(URI, { useNewUrlParser: true });
         await mongo.connect();

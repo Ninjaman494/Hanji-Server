@@ -32,6 +32,8 @@ module.exports = {
             dataSources.databaseAPI.applyEntrySuggestion(id),
         editEntrySuggestion: (_, { id, suggestion }, { dataSources }) =>
             dataSources.databaseAPI.editEntrySuggestion(id, suggestion),
+        deleteEntrySuggestion: (_, { id, suggestion }, { dataSources }) =>
+            dataSources.databaseAPI.deleteEntrySuggestion(id, suggestion),
     },
     Tense: {
         PRESENT: 'present',

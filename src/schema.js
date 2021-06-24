@@ -19,6 +19,7 @@ const typeDefs = gql`
         createEntrySuggestion(suggestion: EntrySuggestionInput!): EntrySuggestionResponse!
         editEntrySuggestion(id: ID!, suggestion: EntrySuggestionInput!): EntrySuggestionResponse!
         applyEntrySuggestion(id: ID!): EntrySuggestionResponse!
+        deleteEntrySuggestion(id: ID!): EntrySuggestionResponse!
     }
     
     type Result {
