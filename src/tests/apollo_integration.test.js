@@ -826,5 +826,29 @@ describe('Mutations', () => {
         expect(res.data.editEntrySuggestion.success).toBeTruthy();
         expect(res.data.editEntrySuggestion.message).toEqual("Entry suggestion successfully edited");
         expect(res.data.editEntrySuggestion.suggestion).toEqual(suggestion);
+    });
+
+    test('Delete an entry suggestion', async () => {
+        const mockDelete = jest.fn();
+        mockDelete.mockReturnValue({
+            success: true,
+            message: "Entry suggestion successfully deleted",
+        });
+        const databaseAPI = new DatabaseAPI();
+        databaseAPI.deleteEntrySuggestion = mockDelete;
+
+        const { mutate } = createTestServer({databaseAPI});
+        const DELETE_SUGGESTION = gql`
+            mutation DeleteSuggestion($id: ID!) {
+              deleteEntrySuggestion(id: $id) {
+                success,
+                message,
+              }
+            }`;
+
+        const res = await mutate({ mutation: DELETE_SUGGESTION, variables: { id: casual.uuid } });
+
+        expect(res.data?.deleteEntrySuggestion?.success).toBeTruthy();
+        expect(res.data?.deleteEntrySuggestion?.message).toEqual("Entry suggestion successfully deleted");
     })
 });

@@ -2,7 +2,6 @@
   "extends": [
     "config:base"
   ],
-  "prCreation": "status-success",
   "packageRules": [
     {
       "groupName": "Dev Dependencies (non-major)",
