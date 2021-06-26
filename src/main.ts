@@ -1,17 +1,17 @@
 require('dotenv').config();
 require('@google-cloud/debug-agent').start();
-const express = require('express');
-const { ApolloServer } = require('apollo-server-express');
-const {
+import express from 'express';
+import { ApolloServer, SchemaDirectiveVisitor } from 'apollo-server-express';
+import {
   createRateLimitDirective,
   createRateLimitTypeDef,
   defaultKeyGenerator,
-} = require('graphql-rate-limit-directive');
-const DatabaseAPI = require('./datasources/database');
-const ConjugationAPI = require('./datasources/conjugation');
-const SearchAPI = require('./datasources/search');
-const resolvers = require('./resolvers');
-const typeDefs = require('./schema');
+} from 'graphql-rate-limit-directive';
+import DatabaseAPI from './datasources/database';
+import ConjugationAPI from './datasources/conjugation';
+import SearchAPI from './datasources/search';
+import resolvers from './resolvers';
+import typeDefs from './schema';
 
 // Source: https://github.com/ravangen/graphql-rate-limit/blob/master/examples/context/index.js
 // Creates a unique key based on ip address and endpoint being accessed
@@ -21,7 +21,7 @@ const keyGenerator = (directiveArgs, obj, args, context, info) =>
     obj,
     args,
     context,
-    info
+    info,
   )}`;
 
 let dbAPI = new DatabaseAPI();
@@ -32,7 +32,7 @@ const server = new ApolloServer({
   schemaDirectives: {
     rateLimit: createRateLimitDirective({
       keyGenerator,
-    }),
+    }) as unknown as typeof SchemaDirectiveVisitor,
   },
   dataSources: () => ({
     databaseAPI: dbAPI,
@@ -53,16 +53,6 @@ app.get('/uptime', (req, res) => {
 });
 
 const PORT = process.env.PORT || 4000;
-app.listen({ port: PORT }, (url) => {
-  console.log('Server ready at ' + url);
+app.listen({ port: PORT }, () => {
+  console.log('Server ready');
 });
-
-// Implement String.format. First, check if it isn't implemented already.
-if (!String.prototype.format) {
-  String.prototype.format = function () {
-    const args = arguments;
-    return this.replace(/{(\d+)}/g, function (match, number) {
-      return typeof args[number] != 'undefined' ? args[number] : match;
-    });
-  };
-}

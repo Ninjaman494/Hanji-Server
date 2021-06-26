@@ -3,6 +3,7 @@
   "version": "2.0.1",
   "description": "JavaScript Server for conjugating Korean verbs/adjectives. Uses Dan Bravender's source code for conjugation.",
   "main": "src/main.js",
+  "type": "commonjs",
   "author": "Akash Eldo",
   "license": "ISC",
   "scripts": {
@@ -34,6 +35,7 @@
   "devDependencies": {
     "apollo-server-testing": "2.25.0",
     "casual": "1.6.2",
-    "jest": "27.0.4"
+    "jest": "27.0.4",
+    "typescript": "^4.3.4"
   }
 }

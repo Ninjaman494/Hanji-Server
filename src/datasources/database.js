@@ -150,7 +150,7 @@ class DatabaseAPI extends DataSource {
         antonyms: suggestionData.antonyms?.filter((a) => a.length > 0),
         synonyms: suggestionData.synonyms?.filter((s) => s.length > 0),
         examples: suggestionData.examples?.filter(
-          (e) => e.sentence.length > 0 && e.translation.length > 0
+          (e) => e.sentence.length > 0 && e.translation.length > 0,
         ),
       });
     mongo.close();
@@ -198,7 +198,7 @@ class DatabaseAPI extends DataSource {
       .findOneAndUpdate(
         { _id: this.getSafeID(suggestion.entryID) },
         { $push: updates },
-        { returnOriginal: false }
+        { returnOriginal: false },
       );
 
     if (!updatedEntry) {
@@ -215,7 +215,7 @@ class DatabaseAPI extends DataSource {
       .findOneAndUpdate(
         { _id: this.getSafeID(id) },
         { $set: { applied: true } },
-        { returnOriginal: false }
+        { returnOriginal: false },
       );
 
     mongo.close();
@@ -237,7 +237,7 @@ class DatabaseAPI extends DataSource {
       .findOneAndUpdate(
         { _id: this.getSafeID(id) },
         { $set: suggestionData },
-        { returnOriginal: false }
+        { returnOriginal: false },
       );
 
     if (!updatedSuggestion) {
