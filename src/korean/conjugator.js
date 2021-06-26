@@ -434,40 +434,6 @@ conjugator.is_itda_obda = function(infinitive,regular){
     return stem.charAt(stem.length - 1) == '있' || stem.charAt(stem.length - 1) == '없';
 };
 
-conjugator.display_conjugations = function(infinitive, regular, callback) {
-    var both_regular_and_irregular = false;
-    infinitive = conjugator.base(infinitive, regular);
-    out = '';
-    if (infinitive in conjugator.both_regular_and_irregular) {
-        both_regular_and_irregular = true;
-        out += '<dd class="warning">warning</dd>';
-        out += '<dt>This verb has both regular and irregular forms.</dt>';
-    }
-    out += '<div class="conjugation"><dd>verb type</dd>';
-    out += '<dt>' + conjugator.verb_type(infinitive, regular)
-    if (both_regular_and_irregular) {
-        out += ' <button id="form-change">view ' + (regular ? 'irregular' : 'regular') + ' form</button>';
-    }
-    out += '</dt></div>';
-    for (conjugation in conjugator) {
-        conjugator.reasons = [];
-        if (conjugator[conjugation].conjugation) {
-            out += '<div class="conjugation"><dd>' + conjugation.replace(/_/g, ' ') + '</dd>';
-            var conjugated = conjugator[conjugation](infinitive, regular);
-            var pron = pronunciation.get_pronunciation(conjugated);
-            var romanized = romanization.romanize(pron);
-            out += '<dt>' + conjugated + ' <button class="show-reasons">↴</button></dt>';
-            out += '<ul class="reasons">';
-            out += '<li>pronunciation [' + (pron != conjugated ? (pron + ' / ') : '') + romanized + ']</li>';
-            for (reason in conjugator.reasons) {
-                out += '<li>' + conjugator.reasons[reason] + '</li>';
-            }
-            out += '</ul></div>';
-        }
-    }
-    callback(out);
-};
-
 conjugator.each_conjugation = function(infinitive, regular, isAdj, honorific, callback) {
     infinitive = conjugator.base(infinitive, regular);
     for (conjugation in conjugator) {
@@ -535,20 +501,6 @@ conjugator.conjugate_one = function(infinitive, regular, isAdj, honorific, name)
     r.honorific = conjugator[conjugation].honorific ? conjugator[conjugation].honorific : false; // should be set to false if undefined
 
     return r;
-};
-
-conjugator.conjugate_json = function(infinitive, regular, callback) {
-    conjugator.conjugate(infinitive, regular, function(result) {
-        result.unshift({
-            'type': 'both_regular_and_irregular',
-            'value': conjugator.base(infinitive) in conjugator.both_regular_and_irregular
-        });
-        result.unshift({
-            'type': 'verb_type',
-            'value': conjugator.verb_type(infinitive, regular)
-        });
-        callback(JSON.stringify(result));
-    });
 };
 
 conjugator.getTypes = function() {

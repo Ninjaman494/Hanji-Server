@@ -217,10 +217,6 @@ pronunciation.get_pronunciation = function(word) {
     return (word + String.fromCharCode(0)).split('').reduce(pronunciation.apply_rules).substring(0, word.length);
 };
 
-// This will be incremented when the algorithm is modified so clients
-// that have cached API calls will know that their cache is invalid
-pronunciation.version = 1;
-
 // Export functions to node
 try {
     for (f in pronunciation) {
