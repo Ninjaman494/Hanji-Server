@@ -1,10 +1,34 @@
-const { DataSource } = require('apollo-datasource');
-const { MongoClient, ObjectId } = require('mongodb');
+import { DataSource } from 'apollo-datasource';
+import { MongoClient, ObjectId } from 'mongodb';
 const hangeul = require('../korean/hangeul');
 const URI = process.env.MONGO_URL;
+
 const PAGE_COUNT = 20;
 
+type Entry = {
+  id: string;
+  term: string;
+  pos: string;
+  definitions: string[];
+  examples?: {
+    sentence: string;
+    translation: string;
+  }[];
+  antonyms?: string[];
+  synonyms?: string[];
+  regular?: boolean;
+  note?: string;
+};
+
+type EntryDoc = Omit<Entry, 'id'> & {
+  _id: ObjectId;
+};
+
 class DatabaseAPI extends DataSource {
+  lastFetched: Date;
+  lastWOD: EntryDoc;
+  context: unknown;
+
   constructor() {
     super();
     this.lastFetched = new Date();
@@ -18,7 +42,6 @@ class DatabaseAPI extends DataSource {
    * here, so we can know about the user making requests
    */
   initialize(config) {
-    // noinspection JSUnusedGlobalSymbols
     this.context = config.context;
   }
 
@@ -27,7 +50,7 @@ class DatabaseAPI extends DataSource {
     await mongo.connect();
     let results = await mongo
       .db('hanji')
-      .collection('words')
+      .collection<EntryDoc>('words')
       .find({ term: term })
       .toArray();
     mongo.close();
@@ -112,7 +135,8 @@ class DatabaseAPI extends DataSource {
   async fetchWordoftheDay() {
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
-    let hourDiff = Math.abs(new Date() - this.lastFetched) / 36e5;
+    let hourDiff =
+      Math.abs(new Date().getTime() - this.lastFetched.getTime()) / 36e5;
 
     if (this.lastWOD == null || hourDiff >= 24) {
       // fetch new Word of the Day
@@ -187,7 +211,7 @@ class DatabaseAPI extends DataSource {
     }
 
     // Update entry based on suggestion
-    const updates = {};
+    const updates: any = {};
     if (suggestion.antonyms) updates.antonyms = { $each: suggestion.antonyms };
     if (suggestion.synonyms) updates.synonyms = { $each: suggestion.synonyms };
     if (suggestion.examples) updates.examples = { $each: suggestion.examples };
@@ -317,8 +341,8 @@ class DatabaseAPI extends DataSource {
     return reducedExamples;
   }
 
-  static entryReducer(entry) {
-    let data = {
+  static entryReducer(entry: EntryDoc) {
+    let data: Entry = {
       id: entry._id.toString(),
       term: entry.term,
       pos: entry.pos,
@@ -370,4 +394,5 @@ class DatabaseAPI extends DataSource {
     return id;
   }
 }
-module.exports = DatabaseAPI;
+
+export default DatabaseAPI;
