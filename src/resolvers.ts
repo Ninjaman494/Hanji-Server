@@ -1,6 +1,6 @@
 export default {
   Query: {
-    entries: async (_, { term }, { dataSources }) =>
+    entries: (_, { term }, { dataSources }) =>
       dataSources.databaseAPI.fetchEntries(term),
     entry: (_, { id }, { dataSources }) =>
       dataSources.databaseAPI.fetchEntry(id),
