@@ -1,8 +1,22 @@
-const { DataSource } = require('apollo-datasource');
+import { DataSource } from 'apollo-datasource';
 const conjugator = require('../korean/conjugator');
 const stemmer = require('../korean/stemmer');
 
-class ConjugationAPI extends DataSource {
+type Conjugation = {
+  conjugation_name: string;
+  conjugated: string;
+  type: string;
+  tense: string;
+  speechLevel: string;
+  honorific: boolean;
+  pronunciation: string;
+  romanized: string;
+  reasons: string[];
+};
+
+export default class ConjugationAPI extends DataSource {
+  context: unknown;
+
   constructor() {
     super();
   }
@@ -17,7 +31,13 @@ class ConjugationAPI extends DataSource {
     this.context = config.context;
   }
 
-  fetchConjugations(stem, isAdj, honorific, regular, conjugationNames) {
+  fetchConjugations(
+    stem: string,
+    isAdj: boolean,
+    honorific: boolean,
+    regular: boolean,
+    conjugationNames: string[],
+  ) {
     if (regular === null || regular === undefined) {
       // returns either 'regular verb' or type of irregular
       regular = conjugator.verb_type(stem, false) === 'regular verb';
@@ -29,26 +49,32 @@ class ConjugationAPI extends DataSource {
       }
     }
 
-    let data = [];
-    conjugator.conjugate(stem, regular, isAdj, honorific, (conjugations) => {
-      conjugations.forEach((c) => {
-        let conjugation = ConjugationAPI.conjugationReducer(c);
-        // If a list of conjugations was provided, check if this conjugation is part of the list
-        if (
-          conjugationNames != null &&
-          conjugationNames.includes(conjugation.name)
-        ) {
-          data.push(conjugation);
-        } else if (conjugationNames == null) {
-          // No list was provided, add all conjugations
-          data.push(conjugation);
-        }
-      });
-    });
+    const data = [];
+    conjugator.conjugate(
+      stem,
+      regular,
+      isAdj,
+      honorific,
+      (conjugations: Conjugation[]) => {
+        conjugations.forEach((c) => {
+          const conjugation = ConjugationAPI.conjugationReducer(c);
+          // If a list of conjugations was provided, check if this conjugation is part of the list
+          if (
+            conjugationNames != null &&
+            conjugationNames.includes(conjugation.name)
+          ) {
+            data.push(conjugation);
+          } else if (conjugationNames == null) {
+            // No list was provided, add all conjugations
+            data.push(conjugation);
+          }
+        });
+      },
+    );
     return data;
   }
 
-  fetchFavorites(stem, isAdj, regular, favorites) {
+  fetchFavorites(stem: string, isAdj: boolean, regular: boolean, favorites) {
     if (regular === null || regular === undefined) {
       // returns either 'regular verb' or type of irregular
       regular = conjugator.verb_type(stem, false) === 'regular verb';
@@ -61,7 +87,7 @@ class ConjugationAPI extends DataSource {
         regular,
         isAdj,
         fav.honorific,
-        fav.conjugationName
+        fav.conjugationName,
       );
 
       if (conjugation) {
@@ -80,15 +106,15 @@ class ConjugationAPI extends DataSource {
     return Array.from(conjugator.getNames());
   }
 
-  fetchStems(query) {
-    let stems = stemmer.stem(query);
+  fetchStems(query: string) {
+    const stems = stemmer.stem(query);
     if (query[query.length - 1] === '다') {
       stems.add(query); // in case query is already in infinitive form
     }
     return Array.from(stems);
   }
 
-  static conjugationReducer(conjugation) {
+  static conjugationReducer(conjugation: Conjugation) {
     return {
       name: conjugation.conjugation_name,
       conjugation: conjugation.conjugated,
@@ -102,4 +128,3 @@ class ConjugationAPI extends DataSource {
     };
   }
 }
-module.exports = ConjugationAPI;

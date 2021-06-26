@@ -1,10 +1,13 @@
-const { DataSource } = require('apollo-datasource');
-const rp = require('request-promise');
+import DatabaseAPI from './database';
+import { DataSource } from 'apollo-datasource';
 const hangeul = require('../korean/hangeul');
 const stemmer = require('../korean/stemmer');
 
 class SearchAPI extends DataSource {
-  constructor(databaseAPI) {
+  databaseAPI: DatabaseAPI;
+  context: unknown;
+
+  constructor(databaseAPI: DatabaseAPI) {
     super();
     this.databaseAPI = databaseAPI;
   }
@@ -19,15 +22,12 @@ class SearchAPI extends DataSource {
     this.context = config.context;
   }
 
-  async searchKorean(stems) {
-    let promises = [];
-    stems.forEach((stem) => {
-      promises.push(this.databaseAPI.fetchEntries(stem));
-    });
+  async searchKorean(stems: Set<string>) {
+    const entries = await Promise.all(
+      Array.from(stems).map((s) => this.databaseAPI.fetchEntries(s)),
+    );
 
-    // Remove empty arrays from fetchEntries' result
     let results = [];
-    let entries = await Promise.all(promises);
     entries.forEach((array) => {
       if (array.length > 0) {
         results = results.concat(array);
@@ -36,7 +36,7 @@ class SearchAPI extends DataSource {
     return { results: results };
   }
 
-  async search(query, cursor) {
+  async search(query: string, cursor?: number) {
     if (hangeul.is_hangeul_string(query)) {
       let stems = stemmer.stem(query);
       stems.add(query); // in case query is already in infinitive form
@@ -46,4 +46,5 @@ class SearchAPI extends DataSource {
     }
   }
 }
-module.exports = SearchAPI;
+
+export default SearchAPI;
