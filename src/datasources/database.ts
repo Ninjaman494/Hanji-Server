@@ -209,9 +209,15 @@ class DatabaseAPI extends DataSource {
 
     // Update entry based on suggestion
     const updates: PushOperator<EntryDoc> = {};
-    if (suggestion.antonyms) updates.antonyms = { $each: suggestion.antonyms };
-    if (suggestion.synonyms) updates.synonyms = { $each: suggestion.synonyms };
-    if (suggestion.examples) updates.examples = { $each: suggestion.examples };
+    if (suggestion.antonyms) {
+      (updates.antonyms as {}) = { $each: suggestion.antonyms };
+    }
+    if (suggestion.synonyms) {
+      (updates.synonyms as {}) = { $each: suggestion.synonyms };
+    }
+    if (suggestion.examples) {
+      (updates.examples as {}) = { $each: suggestion.examples };
+    }
 
     const { value: updatedEntry } = await mongo
       .db('hanji')
