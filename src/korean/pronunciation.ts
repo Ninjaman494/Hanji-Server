@@ -30,7 +30,7 @@ export const move_padchim_to_replace_eung = (
     return;
   }
   if (
-    hangeul.padchim(x[x.length - 1]) in padchim_to_lead &&
+    (hangeul.padchim(x[x.length - 1]) as string) in padchim_to_lead &&
     hangeul.lead(y[0]) == 'ᄋ'
   ) {
     return [
@@ -40,9 +40,9 @@ export const move_padchim_to_replace_eung = (
           hangeul.vowel(x[x.length - 1]),
         ),
       hangeul.join(
-        padchim_to_lead[hangeul.padchim(x[x.length - 1])],
+        padchim_to_lead[hangeul.padchim(x[x.length - 1]) as string],
         hangeul.vowel(y[0]),
-        hangeul.padchim(y[0]),
+        hangeul.padchim(y[0]) as string,
       ) + y.substring(1),
     ];
   }
@@ -53,7 +53,7 @@ export const change_padchim_pronunciation = (
   changers: { [key: string]: boolean },
 ): ((x: string, y: string) => string[]) => {
   return function (x, y) {
-    if (hangeul.padchim(x[x.length - 1]) in changers) {
+    if ((hangeul.padchim(x[x.length - 1]) as string) in changers) {
       return [
         x.substring(0, x.length - 1) +
           hangeul.join(
@@ -87,12 +87,14 @@ export const consonant_combination_rule = (
           hangeul.join(
             hangeul.lead(x[x.length - 1]),
             hangeul.vowel(x[x.length - 1]),
-            new_padchim == '*' ? hangeul.padchim(x[-1]) : new_padchim,
+            new_padchim == '*'
+              ? (hangeul.padchim(x[-1]) as string)
+              : new_padchim,
           ),
         hangeul.join(
           new_lead == '*' ? hangeul.lead(y[0]) : new_lead,
           hangeul.vowel(y[0]),
-          hangeul.padchim(y[0]),
+          hangeul.padchim(y[0]) as string,
         ) + y.substring(1),
       ];
     }

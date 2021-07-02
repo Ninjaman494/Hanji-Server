@@ -8,9 +8,9 @@ export default {
   clearMocks: true,
   transformIgnorePatterns: [
     '/src/korean/conjugations',
-    '/src/korean/conjugator.js',
-    '/src/korean/hangeul.js',
     '/node_modules',
+    'conjugator.js',
+    'geulja.js',
   ],
   modulePathIgnorePatterns: ['/build'],
 };
