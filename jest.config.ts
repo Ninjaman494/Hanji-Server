@@ -6,6 +6,11 @@
 export default {
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
-  transformIgnorePatterns: ['/src/korean/', '/node_modules'],
+  transformIgnorePatterns: [
+    '/src/korean/conjugations',
+    '/src/korean/conjugator.js',
+    '/src/korean/hangeul.js',
+    '/node_modules',
+  ],
   modulePathIgnorePatterns: ['/build'],
 };

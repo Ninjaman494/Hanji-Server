@@ -1,6 +1,8 @@
 import {
   is_hangeul,
   is_hangeul_string,
+  find_vowel_to_append,
+  match,
   lead,
   vowel,
   padchim,
@@ -66,6 +68,8 @@ describe('hangeul functions', () => {
     geulja = new Geulja('걸');
     geulja.original_padchim = 'ㄷ';
     expect(padchim(geulja)).toEqual('ㄷ');
+
+    geulja.charAt(0);
 
     geulja = new Geulja('나');
     geulja.hidden_padchim = true;
