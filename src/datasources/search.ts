@@ -1,7 +1,7 @@
 import DatabaseAPI from './database';
 import { DataSource } from 'apollo-datasource';
-const hangeul = require('../korean/hangeul');
-const stemmer = require('../korean/stemmer');
+import * as hangeul from '../korean/hangeul';
+import * as stemmer from '../korean/stemmer';
 
 class SearchAPI extends DataSource {
   databaseAPI: DatabaseAPI;

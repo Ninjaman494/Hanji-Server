@@ -1,6 +1,6 @@
 import { DataSource } from 'apollo-datasource';
+import * as stemmer from '../korean/stemmer';
 const conjugator = require('../korean/conjugator');
-const stemmer = require('../korean/stemmer');
 
 type Conjugation = {
   conjugation_name: string;

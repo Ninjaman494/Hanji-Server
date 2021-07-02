@@ -7,7 +7,7 @@ import {
   EntrySuggestionResponse,
   Result,
 } from './types';
-const hangeul = require('../korean/hangeul');
+import * as hangeul from '../korean/hangeul';
 const URI = process.env.MONGO_URL;
 
 const PAGE_COUNT = 20;
