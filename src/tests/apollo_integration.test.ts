@@ -2,7 +2,7 @@ import {
   createRateLimitDirective,
   createRateLimitTypeDef,
 } from 'graphql-rate-limit-directive';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, SchemaDirectiveVisitor } from 'apollo-server-express';
 import { createTestClient } from 'apollo-server-testing';
 import gql from 'graphql-tag';
 import casual from 'casual';
@@ -17,12 +17,13 @@ const createTestServer = (dataSources) => {
     typeDefs: [createRateLimitTypeDef(), typeDefs],
     resolvers,
     schemaDirectives: {
-      rateLimit: createRateLimitDirective(),
+      rateLimit:
+        createRateLimitDirective() as unknown as typeof SchemaDirectiveVisitor,
     },
     dataSources: () => dataSources,
   });
 
-  return createTestClient(server);
+  return createTestClient(server as any);
 };
 
 describe('Queries', () => {
@@ -45,7 +46,7 @@ describe('Queries', () => {
     };
 
     const databaseAPI = new DatabaseAPI();
-    databaseAPI.fetchEntry = () => entry;
+    databaseAPI.fetchEntry = () => Promise.resolve(entry);
 
     const { query } = createTestServer({ databaseAPI });
     const GET_ENTRY = gql`
@@ -83,7 +84,7 @@ describe('Queries', () => {
     };
 
     const databaseAPI = new DatabaseAPI();
-    databaseAPI.fetchEntry = () => entry;
+    databaseAPI.fetchEntry = () => Promise.resolve(entry);
 
     const { query } = createTestServer({ databaseAPI });
     const GET_ENTRY = gql`
@@ -138,7 +139,7 @@ describe('Queries', () => {
     };
 
     const databaseAPI = new DatabaseAPI();
-    databaseAPI.fetchEntries = () => [term, term, term];
+    databaseAPI.fetchEntries = () => Promise.resolve([term, term, term]);
 
     const { query } = createTestServer({ databaseAPI });
     const GET_ENTRIES = gql`
@@ -214,7 +215,7 @@ describe('Queries', () => {
     ];
 
     const databaseAPI = new DatabaseAPI();
-    databaseAPI.fetchEntries = () => terms;
+    databaseAPI.fetchEntries = () => Promise.resolve(terms);
 
     const { query } = createTestServer({ databaseAPI });
     const GET_ENTRIES = gql`
@@ -270,7 +271,7 @@ describe('Queries', () => {
     ];
 
     const databaseAPI = new DatabaseAPI();
-    databaseAPI.fetchExamples = () => examples;
+    databaseAPI.fetchExamples = () => Promise.resolve(examples);
 
     const { query } = createTestServer({ databaseAPI });
     const GET_EXAMPLES = gql`
@@ -493,7 +494,7 @@ describe('Queries', () => {
     };
 
     const databaseAPI = new DatabaseAPI();
-    databaseAPI.fetchWordoftheDay = () => wod;
+    databaseAPI.fetchWordoftheDay = () => Promise.resolve(wod);
 
     const { query } = createTestServer({ databaseAPI });
     const GET_WOD = gql`
@@ -564,8 +565,8 @@ describe('Queries', () => {
       results: entries,
     };
 
-    const searchAPI = new SearchAPI();
-    searchAPI.search = () => result;
+    const searchAPI = new SearchAPI(null);
+    searchAPI.search = () => Promise.resolve(result);
 
     const { query } = createTestServer({ searchAPI });
     const SEARCH = gql`
@@ -672,7 +673,7 @@ describe('Queries', () => {
     ];
 
     const databaseAPI = new DatabaseAPI();
-    databaseAPI.fetchEntrySuggestions = () => suggestions;
+    databaseAPI.fetchEntrySuggestions = () => Promise.resolve(suggestions);
 
     const { query } = createTestServer({ databaseAPI });
     const GET_SUGGESTIONS = gql`

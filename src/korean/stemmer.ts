@@ -1,3 +1,4 @@
+// @ts-nocheck conjugator functions aren't typed
 // (C) 2010 Dan Bravender - licensed under the AGPL 3.0
 // (C) 2021 Akash Eldo - Converted to TypeScript
 import * as hangeul from './hangeul';

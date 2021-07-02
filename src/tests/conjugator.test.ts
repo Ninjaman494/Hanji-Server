@@ -1,5 +1,6 @@
+// @ts-nocheck conjugator functions aren't typed
 import { equal, deepEqual } from 'assert';
-const conjugator = require('../korean/conjugator');
+import conjugator from '../korean/conjugator';
 
 test('utility functions', async () => {
   let rule = conjugator.no_padchim_rule({

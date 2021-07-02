@@ -37,7 +37,7 @@ export type Conjugation = {
 export type EntrySuggestion = {
   id: string;
   entryID: string;
-  applied: boolean;
+  applied?: boolean;
   examples?: Example[];
   antonyms?: string[];
   synonyms?: string[];
