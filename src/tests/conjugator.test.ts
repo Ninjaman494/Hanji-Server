@@ -1,5 +1,5 @@
 const assert = require('assert');
-conjugator = require('../korean/conjugator');
+const conjugator = require('../korean/conjugator');
 
 test('utility functions', async () => {
     let rule = conjugator.no_padchim_rule({'을': true, '습': true, '읍': true, '는': true, '음': true});
