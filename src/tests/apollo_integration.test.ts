@@ -599,7 +599,7 @@ describe('Queries', () => {
     expect(res.data).not.toBe(undefined);
     expect(res.data.search).not.toBe(null);
     expect(res.data.search).not.toBe(undefined);
-    expect(res.data.search.cursor).toEqual(result.cursor);
+    expect(res.data.search.cursor).toEqual(result.cursor.toString());
     expect(res.data.search.results[0]).toEqual(entries[0]);
     expect(res.data.search.results[1]).toEqual({
       ...entries[1],
