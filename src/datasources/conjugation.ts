@@ -1,22 +1,13 @@
 import { DataSource } from 'apollo-datasource';
 import * as stemmer from '../korean/stemmer';
-import conjugator, { Conjugation } from '../korean/conjugator';
+import conjugator, {
+  Conjugation as RawConjugation,
+} from '../korean/conjugator';
+import { Conjugation, FavInput, SpeechLevel, Tense } from './types';
 
 export default class ConjugationAPI extends DataSource {
-  context: unknown;
-
   constructor() {
     super();
-  }
-
-  /**
-   * This is a function that gets called by ApolloServer when being setup.
-   * This function gets called with the datasource config including things
-   * like caches and context. We'll assign this.context to the request context
-   * here, so we can know about the user making requests
-   */
-  initialize(config) {
-    this.context = config.context;
   }
 
   fetchConjugations(
@@ -25,7 +16,7 @@ export default class ConjugationAPI extends DataSource {
     honorific: boolean,
     regular: boolean,
     conjugationNames: string[],
-  ) {
+  ): Conjugation[] {
     if (regular === null || regular === undefined) {
       // returns either 'regular verb' or type of irregular
       regular = conjugator.verb_type(stem, false) === 'regular verb';
@@ -38,31 +29,30 @@ export default class ConjugationAPI extends DataSource {
     }
 
     const data = [];
-    conjugator.conjugate(
-      stem,
-      regular,
-      isAdj,
-      honorific,
-      (conjugations: Conjugation[]) => {
-        conjugations.forEach((c) => {
-          const conjugation = ConjugationAPI.conjugationReducer(c);
-          // If a list of conjugations was provided, check if this conjugation is part of the list
-          if (
-            conjugationNames != null &&
-            conjugationNames.includes(conjugation.name)
-          ) {
-            data.push(conjugation);
-          } else if (conjugationNames == null) {
-            // No list was provided, add all conjugations
-            data.push(conjugation);
-          }
-        });
-      },
-    );
+    conjugator.conjugate(stem, regular, isAdj, honorific, (conjugations) => {
+      conjugations.forEach((c) => {
+        const conjugation = ConjugationAPI.conjugationReducer(c);
+        // If a list of conjugations was provided, check if this conjugation is part of the list
+        if (
+          conjugationNames != null &&
+          conjugationNames.includes(conjugation.name)
+        ) {
+          data.push(conjugation);
+        } else if (conjugationNames == null) {
+          // No list was provided, add all conjugations
+          data.push(conjugation);
+        }
+      });
+    });
     return data;
   }
 
-  fetchFavorites(stem: string, isAdj: boolean, regular: boolean, favorites) {
+  fetchFavorites(
+    stem: string,
+    isAdj: boolean,
+    regular: boolean,
+    favorites: FavInput[],
+  ): Conjugation[] {
     if (regular === null || regular === undefined) {
       // returns either 'regular verb' or type of irregular
       regular = conjugator.verb_type(stem, false) === 'regular verb';
@@ -86,15 +76,15 @@ export default class ConjugationAPI extends DataSource {
     return data;
   }
 
-  fetchConjugationTypes() {
+  fetchConjugationTypes(): string[] {
     return Array.from(conjugator.getTypes());
   }
 
-  fetchConjugationNames() {
+  fetchConjugationNames(): string[] {
     return Array.from(conjugator.getNames());
   }
 
-  fetchStems(query: string) {
+  fetchStems(query: string): string[] {
     const stems = stemmer.stem(query);
     if (query[query.length - 1] === '다') {
       stems.add(query); // in case query is already in infinitive form
@@ -102,13 +92,13 @@ export default class ConjugationAPI extends DataSource {
     return Array.from(stems);
   }
 
-  static conjugationReducer(conjugation: Conjugation) {
+  static conjugationReducer(conjugation: RawConjugation): Conjugation {
     return {
       name: conjugation.conjugation_name,
       conjugation: conjugation.conjugated,
       type: conjugation.type,
-      tense: conjugation.tense,
-      speechLevel: conjugation.speechLevel,
+      tense: conjugation.tense as Tense,
+      speechLevel: conjugation.speechLevel as SpeechLevel,
       honorific: conjugation.honorific,
       pronunciation: conjugation.pronunciation,
       romanization: conjugation.romanized,

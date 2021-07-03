@@ -5,7 +5,8 @@ import {
   EntrySuggestion,
   EntrySuggestionInput,
   EntrySuggestionResponse,
-  Result,
+  Example,
+  SearchResult,
 } from './types';
 import * as hangeul from '../korean/hangeul';
 const URI = process.env.MONGO_URL;
@@ -30,7 +31,6 @@ export type Id = ObjectId | string; // scraped entries have string ids
 class DatabaseAPI extends DataSource {
   lastFetched: Date;
   lastWOD: EntryDoc;
-  context: unknown;
 
   constructor() {
     super();
@@ -38,39 +38,29 @@ class DatabaseAPI extends DataSource {
     this.lastWOD = null;
   }
 
-  /**
-   * This is a function that gets called by ApolloServer when being setup.
-   * This function gets called with the datasource config including things
-   * like caches and context. We'll assign this.context to the request context
-   * here, so we can know about the user making requests
-   */
-  initialize(config) {
-    this.context = config.context;
-  }
-
-  async fetchEntries(term: string) {
+  async fetchEntries(term: string): Promise<Entry[]> {
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
-    let results = await mongo
+    const results = await mongo
       .db('hanji')
       .collection<EntryDoc>('words')
       .find({ term: term })
       .toArray();
     mongo.close();
 
-    let entries = [];
+    const entries: Entry[] = [];
     results.forEach((doc) => {
       entries.push(DatabaseAPI.entryReducer(doc));
     });
     return entries;
   }
 
-  async fetchEntry(id: Id) {
+  async fetchEntry(id: Id): Promise<Entry> {
     id = this.getSafeID(id);
 
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
-    let results = await mongo
+    const results = await mongo
       .db('hanji')
       .collection<EntryDoc>('words')
       .find({ _id: id })
@@ -83,12 +73,12 @@ class DatabaseAPI extends DataSource {
     }
   }
 
-  async fetchExamples(id: Id) {
+  async fetchExamples(id: Id): Promise<Example[]> {
     id = this.getSafeID(id);
 
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
-    let results = await mongo
+    const results = await mongo
       .db('hanji')
       .collection<EntryDoc>('words')
       .find({ _id: id }, { projection: { examples: 1 } })
@@ -102,7 +92,7 @@ class DatabaseAPI extends DataSource {
     }
   }
 
-  async searchEnglish(query: string, cursor?: number): Promise<Result> {
+  async searchEnglish(query: string, cursor?: number): Promise<SearchResult> {
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
     if (!cursor) {
@@ -210,13 +200,19 @@ class DatabaseAPI extends DataSource {
     // Update entry based on suggestion
     const updates: PushOperator<EntryDoc> = {};
     if (suggestion.antonyms) {
-      (updates.antonyms as {}) = { $each: suggestion.antonyms };
+      (updates.antonyms as Record<string, unknown>) = {
+        $each: suggestion.antonyms,
+      };
     }
     if (suggestion.synonyms) {
-      (updates.synonyms as {}) = { $each: suggestion.synonyms };
+      (updates.synonyms as Record<string, unknown>) = {
+        $each: suggestion.synonyms,
+      };
     }
     if (suggestion.examples) {
-      (updates.examples as {}) = { $each: suggestion.examples };
+      (updates.examples as Record<string, unknown>) = {
+        $each: suggestion.examples,
+      };
     }
 
     const { value: updatedEntry } = await mongo
@@ -337,8 +333,8 @@ class DatabaseAPI extends DataSource {
   }
 
   // TODO Check if this can be removed
-  static exampleReducer(examples) {
-    let reducedExamples = [];
+  static exampleReducer(examples: Example[]): Example[] {
+    const reducedExamples: Example[] = [];
     examples.forEach((example) => {
       reducedExamples.push({
         sentence: example.sentence,
@@ -349,7 +345,7 @@ class DatabaseAPI extends DataSource {
   }
 
   static entryReducer(entry: EntryDoc): Entry {
-    let data: Entry = {
+    const data: Entry = {
       id: entry._id.toString(),
       term: entry.term,
       pos: entry.pos,
@@ -374,7 +370,9 @@ class DatabaseAPI extends DataSource {
     return data;
   }
 
-  static entrySuggestionReducer(entrySuggestion): EntrySuggestion {
+  static entrySuggestionReducer(
+    entrySuggestion: EntrySuggestionDoc,
+  ): EntrySuggestion {
     const { _id, entryID, applied, ...rest } = entrySuggestion;
     return {
       id: _id.toString(),
@@ -384,7 +382,7 @@ class DatabaseAPI extends DataSource {
     };
   }
 
-  static containsHangul(string: string) {
+  static containsHangul(string: string): boolean {
     for (let i = 0; i < string.length; i++) {
       if (hangeul.is_hangeul(string[i])) {
         return true;
@@ -393,12 +391,12 @@ class DatabaseAPI extends DataSource {
     return false;
   }
 
-  getSafeID(id) {
+  getSafeID(id: ObjectId | string): ObjectId {
     // Check if id is ObjectID or old form
-    if (!DatabaseAPI.containsHangul(id)) {
+    if (!DatabaseAPI.containsHangul(id as string)) {
       id = new ObjectId(id);
     }
-    return id;
+    return id as ObjectId;
   }
 }
 

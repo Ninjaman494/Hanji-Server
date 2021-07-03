@@ -11,7 +11,7 @@ describe('pronunciation functions', () => {
   });
 
   test('to digut', async () => {
-    let to_digut = change_padchim_pronunciation('ᆮ', {
+    const to_digut = change_padchim_pronunciation('ᆮ', {
       ᆺ: true,
       ᆻ: true,
       ᆽ: true,
@@ -23,7 +23,7 @@ describe('pronunciation functions', () => {
   });
 
   test('giyuk to eung', async () => {
-    let giyuk_to_eung = consonant_combination_rule('ᆨ', 'ᄆ', 'ᆼ', 'ᄆ');
+    const giyuk_to_eung = consonant_combination_rule('ᆨ', 'ᄆ', 'ᆼ', 'ᄆ');
     expect(giyuk_to_eung('국', '물')).toEqual(['궁', '물']);
   });
 
@@ -89,8 +89,8 @@ describe('pronunciation functions', () => {
       ['없어', '업써'],
       ['싫겠어', '실게써'],
     ].forEach(function (test_data) {
-      let input = test_data[0];
-      let expected = test_data[1];
+      const input = test_data[0];
+      const expected = test_data[1];
       expect(get_pronunciation(input)).toEqual(expected);
     });
   });

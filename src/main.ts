@@ -1,5 +1,5 @@
-require('dotenv').config();
-require('@google-cloud/debug-agent').start();
+import dotenv from 'dotenv';
+import debugAgent from '@google-cloud/debug-agent';
 import express from 'express';
 import { ApolloServer, SchemaDirectiveVisitor } from 'apollo-server-express';
 import {
@@ -13,6 +13,9 @@ import SearchAPI from './datasources/search';
 import resolvers from './resolvers';
 import typeDefs from './schema';
 
+dotenv.config();
+debugAgent.start();
+
 // Source: https://github.com/ravangen/graphql-rate-limit/blob/master/examples/context/index.js
 // Creates a unique key based on ip address and endpoint being accessed
 const keyGenerator = (directiveArgs, obj, args, context, info) =>
@@ -24,7 +27,7 @@ const keyGenerator = (directiveArgs, obj, args, context, info) =>
     info,
   )}`;
 
-let dbAPI = new DatabaseAPI();
+const dbAPI = new DatabaseAPI();
 const server = new ApolloServer({
   typeDefs: [createRateLimitTypeDef(), typeDefs],
   resolvers,

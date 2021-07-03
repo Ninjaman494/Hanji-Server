@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 
-export type Result = {
+export type SearchResult = {
   cursor?: number;
   results: Entry[];
 };
@@ -32,6 +32,12 @@ export type Conjugation = {
   pronunciation: string;
   romanization: string;
   reasons: string[];
+};
+
+export type FavInput = {
+  name: string;
+  conjugationName: string;
+  honorific: boolean;
 };
 
 export type EntrySuggestion = {

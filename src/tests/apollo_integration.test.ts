@@ -23,7 +23,7 @@ const createTestServer = (dataSources) => {
     dataSources: () => dataSources,
   });
 
-  return createTestClient(server as any);
+  return createTestClient(server as never);
 };
 
 describe('Queries', () => {
@@ -561,7 +561,7 @@ describe('Queries', () => {
       },
     ];
     const result = {
-      cursor: casual.word,
+      cursor: 20,
       results: entries,
     };
 

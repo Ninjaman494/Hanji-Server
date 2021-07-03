@@ -25,8 +25,8 @@ describe('romanization functions', () => {
       ['먹을거야', 'muh-geul-guh-yah'],
       ['슈퍼', 'shyoo-puh'],
     ].forEach(function (test_data) {
-      let input = test_data[0];
-      let expected = test_data[1];
+      const input = test_data[0];
+      const expected = test_data[1];
       expect(romanize(input)).toEqual(expected);
     });
   });

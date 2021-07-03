@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server');
+import { gql } from 'apollo-server';
 const typeDefs = gql`
   type Query @rateLimit(limit: 5, duration: 10) {
     entries(term: String!): [Entry]!
