@@ -6,10 +6,6 @@ import conjugator, {
 import { Conjugation, FavInput, SpeechLevel, Tense } from './types';
 
 export default class ConjugationAPI extends DataSource {
-  constructor() {
-    super();
-  }
-
   fetchConjugations(
     stem: string,
     isAdj: boolean,
@@ -58,8 +54,7 @@ export default class ConjugationAPI extends DataSource {
       regular = conjugator.verb_type(stem, false) === 'regular verb';
     }
 
-    const data = [];
-    favorites.forEach((fav) => {
+    const data = favorites.map((fav) => {
       const conjugation = conjugator.conjugate_one(
         stem,
         regular,
@@ -69,7 +64,7 @@ export default class ConjugationAPI extends DataSource {
       );
 
       if (conjugation) {
-        data.push(ConjugationAPI.conjugationReducer(conjugation));
+        return ConjugationAPI.conjugationReducer(conjugation);
       }
     });
 
@@ -93,16 +88,22 @@ export default class ConjugationAPI extends DataSource {
   }
 
   static conjugationReducer(conjugation: RawConjugation): Conjugation {
+    const {
+      conjugation_name,
+      conjugated,
+      romanized,
+      tense,
+      speechLevel,
+      ...rest
+    } = conjugation;
+
     return {
-      name: conjugation.conjugation_name,
-      conjugation: conjugation.conjugated,
-      type: conjugation.type,
-      tense: conjugation.tense as Tense,
-      speechLevel: conjugation.speechLevel as SpeechLevel,
-      honorific: conjugation.honorific,
-      pronunciation: conjugation.pronunciation,
-      romanization: conjugation.romanized,
-      reasons: conjugation.reasons,
+      name: conjugation_name,
+      conjugation: conjugated,
+      romanization: romanized,
+      tense: tense as Tense,
+      speechLevel: speechLevel as SpeechLevel,
+      ...rest,
     };
   }
 }

@@ -25,7 +25,7 @@ interface conjugator {
     isAdj: boolean,
     honorific: boolean,
     conjugationName: string,
-  ): Conjugation;
+  ): Conjugation | null;
   getTypes(): Set<string>;
   getNames(): Set<string>;
 

@@ -2,7 +2,7 @@ import DatabaseAPI from './database';
 import { DataSource } from 'apollo-datasource';
 import * as hangeul from '../korean/hangeul';
 import * as stemmer from '../korean/stemmer';
-import { Entry, SearchResult } from './types';
+import { SearchResult } from './types';
 
 class SearchAPI extends DataSource {
   databaseAPI: DatabaseAPI;
@@ -17,13 +17,11 @@ class SearchAPI extends DataSource {
       Array.from(stems).map((s) => this.databaseAPI.fetchEntries(s)),
     );
 
-    let results: Entry[] = [];
-    entries.forEach((array) => {
-      if (array.length > 0) {
-        results = results.concat(array);
-      }
-    });
-    return { results: results };
+    const results = entries.reduce(
+      (prev, curr) => curr.length > 0 && prev.concat(curr),
+    );
+
+    return { results };
   }
 
   async search(query: string, cursor?: number): Promise<SearchResult> {

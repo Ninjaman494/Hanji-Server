@@ -48,11 +48,7 @@ class DatabaseAPI extends DataSource {
       .toArray();
     mongo.close();
 
-    const entries: Entry[] = [];
-    results.forEach((doc) => {
-      entries.push(DatabaseAPI.entryReducer(doc));
-    });
-    return entries;
+    return results.map((doc) => DatabaseAPI.entryReducer(doc));
   }
 
   async fetchEntry(id: Id): Promise<Entry> {
@@ -66,11 +62,8 @@ class DatabaseAPI extends DataSource {
       .find({ _id: id })
       .toArray();
     mongo.close();
-    if (results.length > 0) {
-      return DatabaseAPI.entryReducer(results[0]);
-    } else {
-      return null;
-    }
+
+    return results.length > 0 ? DatabaseAPI.entryReducer(results[0]) : null;
   }
 
   async fetchExamples(id: Id): Promise<Example[]> {
@@ -85,11 +78,7 @@ class DatabaseAPI extends DataSource {
       .toArray();
     mongo.close();
 
-    if (results.length > 0 && results[0].examples) {
-      return DatabaseAPI.exampleReducer(results[0].examples);
-    } else {
-      return [];
-    }
+    return results[0]?.examples ?? [];
   }
 
   async searchEnglish(query: string, cursor?: number): Promise<SearchResult> {
@@ -332,42 +321,12 @@ class DatabaseAPI extends DataSource {
       : null;
   }
 
-  // TODO Check if this can be removed
-  static exampleReducer(examples: Example[]): Example[] {
-    const reducedExamples: Example[] = [];
-    examples.forEach((example) => {
-      reducedExamples.push({
-        sentence: example.sentence,
-        translation: example.translation,
-      });
-    });
-    return reducedExamples;
-  }
-
   static entryReducer(entry: EntryDoc): Entry {
-    const data: Entry = {
-      id: entry._id.toString(),
-      term: entry.term,
-      pos: entry.pos,
-      definitions: entry.definitions,
+    const { _id, ...rest } = entry;
+    return {
+      id: _id.toString(),
+      ...rest,
     };
-    if (entry.examples) {
-      data.examples = DatabaseAPI.exampleReducer(entry.examples);
-    }
-    if (entry.antonyms) {
-      data.antonyms = entry.antonyms;
-    }
-    if (entry.synonyms) {
-      data.synonyms = entry.synonyms;
-    }
-    if (entry.regular) {
-      data.regular = entry.regular;
-    }
-    if (entry.note) {
-      data.note = entry.note;
-    }
-
-    return data;
   }
 
   static entrySuggestionReducer(
@@ -391,12 +350,11 @@ class DatabaseAPI extends DataSource {
     return false;
   }
 
-  getSafeID(id: ObjectId | string): ObjectId {
+  getSafeID(id: Id): ObjectId {
     // Check if id is ObjectID or old form
-    if (!DatabaseAPI.containsHangul(id as string)) {
-      id = new ObjectId(id);
-    }
-    return id as ObjectId;
+    return !DatabaseAPI.containsHangul(id as string)
+      ? new ObjectId(id)
+      : (id as ObjectId);
   }
 }
 
