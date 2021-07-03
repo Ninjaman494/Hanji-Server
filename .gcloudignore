@@ -6,11 +6,14 @@
 # For more information, run:
 #   $ gcloud topic gcloudignore
 #
+.eslint*
 .gcloudignore
 .git
 .gitignore
 .prettier*
 *.md
+babel.config.ts
+jest.config.ts
 renovate.json
 node_modules
 build

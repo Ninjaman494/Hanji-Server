@@ -17,8 +17,8 @@ class SearchAPI extends DataSource {
       Array.from(stems).map((s) => this.databaseAPI.fetchEntries(s)),
     );
 
-    const results = entries.reduce(
-      (prev, curr) => curr.length > 0 && prev.concat(curr),
+    const results = entries.reduce((prev, curr) =>
+      curr.length > 0 ? prev.concat(curr) : prev,
     );
 
     return { results };

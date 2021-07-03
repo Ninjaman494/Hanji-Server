@@ -1,5 +1,7 @@
-import dotenv from 'dotenv';
-import debugAgent from '@google-cloud/debug-agent';
+// Env has to be imported this way to work in other files
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config();
+import { start } from '@google-cloud/debug-agent';
 import express from 'express';
 import { ApolloServer, SchemaDirectiveVisitor } from 'apollo-server-express';
 import {
@@ -13,8 +15,7 @@ import SearchAPI from './datasources/search';
 import resolvers from './resolvers';
 import typeDefs from './schema';
 
-dotenv.config();
-debugAgent.start();
+start();
 
 // Source: https://github.com/ravangen/graphql-rate-limit/blob/master/examples/context/index.js
 // Creates a unique key based on ip address and endpoint being accessed
