@@ -1,6 +1,5 @@
-// @ts-nocheck conjugator functions aren't typed
 import { equal } from 'assert';
-import * as conjugator from '../korean/conjugator';
+import conjugator from '../korean/conjugator';
 
 test('reasons', () => {
   // Informal low

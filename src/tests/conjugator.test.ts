@@ -1,4 +1,3 @@
-// @ts-nocheck conjugator functions aren't typed
 import { equal, deepEqual } from 'assert';
 import conjugator from '../korean/conjugator';
 

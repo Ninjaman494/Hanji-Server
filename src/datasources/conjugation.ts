@@ -1,18 +1,6 @@
 import { DataSource } from 'apollo-datasource';
 import * as stemmer from '../korean/stemmer';
-const conjugator = require('../korean/conjugator');
-
-type Conjugation = {
-  conjugation_name: string;
-  conjugated: string;
-  type: string;
-  tense: string;
-  speechLevel: string;
-  honorific: boolean;
-  pronunciation: string;
-  romanized: string;
-  reasons: string[];
-};
+import conjugator, { Conjugation } from '../korean/conjugator';
 
 export default class ConjugationAPI extends DataSource {
   context: unknown;
