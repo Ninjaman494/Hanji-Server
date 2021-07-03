@@ -1,6 +1,6 @@
-module.exports = {
+export default {
   Query: {
-    entries: async (_, { term }, { dataSources }) =>
+    entries: (_, { term }, { dataSources }) =>
       dataSources.databaseAPI.fetchEntries(term),
     entry: (_, { id }, { dataSources }) =>
       dataSources.databaseAPI.fetchEntry(id),
@@ -9,21 +9,21 @@ module.exports = {
     conjugations: (
       _,
       { stem, isAdj, honorific, regular, conjugations },
-      { dataSources }
+      { dataSources },
     ) =>
       dataSources.conjugationAPI.fetchConjugations(
         stem,
         isAdj,
         honorific,
         regular,
-        conjugations
+        conjugations,
       ),
     favorites: (_, { stem, isAdj, regular, favorites }, { dataSources }) =>
       dataSources.conjugationAPI.fetchFavorites(
         stem,
         isAdj,
         regular,
-        favorites
+        favorites,
       ),
     conjugationTypes: (_, {}, { dataSources }) =>
       dataSources.conjugationAPI.fetchConjugationTypes(),

@@ -6,12 +6,17 @@
 # For more information, run:
 #   $ gcloud topic gcloudignore
 #
+.eslint*
 .gcloudignore
-# If you would like to upload your .git directory, .gitignore file or files
-# from your .gitignore file, remove the corresponding line
-# below:
 .git
 .gitignore
-
-# Node.js dependencies:
-node_modules/
+.prettier*
+*.md
+babel.config.ts
+jest.config.ts
+renovate.json
+node_modules
+build
+src/tests
+src/scripts
+.github

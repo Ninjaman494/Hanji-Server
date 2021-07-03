@@ -1,107 +1,104 @@
-const { DataSource } = require('apollo-datasource');
-const { MongoClient, ObjectId } = require('mongodb');
-const hangeul = require('../korean/hangeul');
+import { DataSource } from 'apollo-datasource';
+import { MongoClient, ObjectId, PushOperator } from 'mongodb';
+import {
+  Entry,
+  EntrySuggestion,
+  EntrySuggestionInput,
+  EntrySuggestionResponse,
+  Example,
+  SearchResult,
+} from './types';
+import * as hangeul from '../korean/hangeul';
 const URI = process.env.MONGO_URL;
+
 const PAGE_COUNT = 20;
 
+export type EntryDoc = Omit<Entry, 'id'> & {
+  _id: Id;
+};
+
+export type EntrySuggestionDoc = Omit<
+  EntrySuggestion,
+  'id' | 'entryID' | 'applied'
+> & {
+  _id: ObjectId;
+  entryID: Id;
+  applied?: boolean;
+};
+
+export type Id = ObjectId | string; // scraped entries have string ids
+
 class DatabaseAPI extends DataSource {
+  lastFetched: Date;
+  lastWOD: EntryDoc;
+
   constructor() {
     super();
     this.lastFetched = new Date();
     this.lastWOD = null;
   }
 
-  /**
-   * This is a function that gets called by ApolloServer when being setup.
-   * This function gets called with the datasource config including things
-   * like caches and context. We'll assign this.context to the request context
-   * here, so we can know about the user making requests
-   */
-  initialize(config) {
-    // noinspection JSUnusedGlobalSymbols
-    this.context = config.context;
-  }
-
-  async fetchEntries(term) {
+  async fetchEntries(term: string): Promise<Entry[]> {
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
-    let results = await mongo
+    const results = await mongo
       .db('hanji')
-      .collection('words')
+      .collection<EntryDoc>('words')
       .find({ term: term })
       .toArray();
     mongo.close();
 
-    let entries = [];
-    results.forEach((doc) => {
-      entries.push(DatabaseAPI.entryReducer(doc));
-    });
-    return entries;
+    return results.map((doc) => DatabaseAPI.entryReducer(doc));
   }
 
-  async fetchEntry(id) {
+  async fetchEntry(id: Id): Promise<Entry> {
     id = this.getSafeID(id);
 
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
-    let results = await mongo
+    const results = await mongo
       .db('hanji')
-      .collection('words')
+      .collection<EntryDoc>('words')
       .find({ _id: id })
       .toArray();
     mongo.close();
-    if (results.length > 0) {
-      return DatabaseAPI.entryReducer(results[0]);
-    } else {
-      return null;
-    }
+
+    return results.length > 0 ? DatabaseAPI.entryReducer(results[0]) : null;
   }
 
-  async fetchExamples(id) {
+  async fetchExamples(id: Id): Promise<Example[]> {
     id = this.getSafeID(id);
 
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
-    let results = await mongo
+    const results = await mongo
       .db('hanji')
-      .collection('words')
+      .collection<EntryDoc>('words')
       .find({ _id: id }, { projection: { examples: 1 } })
       .toArray();
     mongo.close();
 
-    if (results.length > 0 && results[0].examples) {
-      return DatabaseAPI.exampleReducer(results[0].examples);
-    } else {
-      return [];
-    }
+    return results[0]?.examples ?? [];
   }
 
-  async searchEnglish(query, cursor) {
+  async searchEnglish(query: string, cursor?: number): Promise<SearchResult> {
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
     if (!cursor) {
       cursor = 0;
     }
 
-    let array = await mongo
+    const array = await mongo
       .db('hanji')
-      .collection('words')
+      .collection<EntryDoc>('words')
       .find({ $text: { $search: query } }, { limit: PAGE_COUNT, skip: cursor })
       .project({ score: { $meta: 'textScore' } })
       .sort({ score: { $meta: 'textScore' } })
       .toArray();
     mongo.close();
 
-    let entries = [];
-    await array.forEach((entry) => {
-      entries.push(DatabaseAPI.entryReducer(entry));
-    });
-
-    if (entries.length === 0) {
-      cursor = -1;
-    } else {
-      cursor += entries.length;
-    }
+    const entries = array.map((e) => DatabaseAPI.entryReducer(e));
+    cursor = entries.length === 0 ? -1 : cursor + entries.length;
 
     return {
       cursor: cursor,
@@ -109,16 +106,17 @@ class DatabaseAPI extends DataSource {
     };
   }
 
-  async fetchWordoftheDay() {
+  async fetchWordoftheDay(): Promise<Entry> {
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
-    let hourDiff = Math.abs(new Date() - this.lastFetched) / 36e5;
+    const hourDiff =
+      Math.abs(new Date().getTime() - this.lastFetched.getTime()) / 36e5;
 
     if (this.lastWOD == null || hourDiff >= 24) {
       // fetch new Word of the Day
-      let result = await mongo
+      const result = await mongo
         .db('hanji')
-        .collection('words')
+        .collection<EntryDoc>('words')
         .aggregate([{ $sample: { size: 1 } }])
         .toArray();
       this.lastWOD = result[0];
@@ -130,7 +128,9 @@ class DatabaseAPI extends DataSource {
     return DatabaseAPI.entryReducer(this.lastWOD);
   }
 
-  async createEntrySuggestion(suggestionData) {
+  async createEntrySuggestion(
+    suggestionData: EntrySuggestionInput,
+  ): Promise<EntrySuggestionResponse> {
     const entry = await this.fetchEntry(suggestionData.entryID);
     if (!entry) {
       return {
@@ -144,13 +144,13 @@ class DatabaseAPI extends DataSource {
 
     const { ops } = await mongo
       .db('hanji')
-      .collection('words-suggestions')
+      .collection<EntrySuggestionDoc>('words-suggestions')
       .insertOne({
         entryID: this.getSafeID(suggestionData.entryID),
         antonyms: suggestionData.antonyms?.filter((a) => a.length > 0),
         synonyms: suggestionData.synonyms?.filter((s) => s.length > 0),
         examples: suggestionData.examples?.filter(
-          (e) => e.sentence.length > 0 && e.translation.length > 0
+          (e) => e.sentence.length > 0 && e.translation.length > 0,
         ),
       });
     mongo.close();
@@ -169,14 +169,14 @@ class DatabaseAPI extends DataSource {
     };
   }
 
-  async applyEntrySuggestion(id) {
+  async applyEntrySuggestion(id: Id): Promise<EntrySuggestionResponse> {
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
 
     // Fetch suggestion, check it's not already applied
     const suggestion = await mongo
       .db('hanji')
-      .collection('words-suggestions')
+      .collection<EntrySuggestionDoc>('words-suggestions')
       .findOne({ _id: this.getSafeID(id) });
 
     if (suggestion.applied) {
@@ -187,18 +187,30 @@ class DatabaseAPI extends DataSource {
     }
 
     // Update entry based on suggestion
-    const updates = {};
-    if (suggestion.antonyms) updates.antonyms = { $each: suggestion.antonyms };
-    if (suggestion.synonyms) updates.synonyms = { $each: suggestion.synonyms };
-    if (suggestion.examples) updates.examples = { $each: suggestion.examples };
+    const updates: PushOperator<EntryDoc> = {};
+    if (suggestion.antonyms) {
+      (updates.antonyms as Record<string, unknown>) = {
+        $each: suggestion.antonyms,
+      };
+    }
+    if (suggestion.synonyms) {
+      (updates.synonyms as Record<string, unknown>) = {
+        $each: suggestion.synonyms,
+      };
+    }
+    if (suggestion.examples) {
+      (updates.examples as Record<string, unknown>) = {
+        $each: suggestion.examples,
+      };
+    }
 
     const { value: updatedEntry } = await mongo
       .db('hanji')
-      .collection('words')
+      .collection<EntryDoc>('words')
       .findOneAndUpdate(
         { _id: this.getSafeID(suggestion.entryID) },
         { $push: updates },
-        { returnOriginal: false }
+        { returnOriginal: false },
       );
 
     if (!updatedEntry) {
@@ -211,11 +223,11 @@ class DatabaseAPI extends DataSource {
     // Mark suggestion as applied
     const { value: updatedSuggestion } = await mongo
       .db('hanji')
-      .collection('words-suggestions')
+      .collection<EntrySuggestionDoc>('words-suggestions')
       .findOneAndUpdate(
         { _id: this.getSafeID(id) },
         { $set: { applied: true } },
-        { returnOriginal: false }
+        { returnOriginal: false },
       );
 
     mongo.close();
@@ -227,17 +239,20 @@ class DatabaseAPI extends DataSource {
     };
   }
 
-  async editEntrySuggestion(id, suggestionData) {
+  async editEntrySuggestion(
+    id: Id,
+    suggestionData: EntrySuggestionInput,
+  ): Promise<EntrySuggestionResponse> {
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
 
     const { value: updatedSuggestion } = await mongo
       .db('hanji')
-      .collection('words-suggestions')
+      .collection<EntrySuggestionDoc>('words-suggestions')
       .findOneAndUpdate(
         { _id: this.getSafeID(id) },
         { $set: suggestionData },
-        { returnOriginal: false }
+        { returnOriginal: false },
       );
 
     if (!updatedSuggestion) {
@@ -254,13 +269,13 @@ class DatabaseAPI extends DataSource {
     };
   }
 
-  async deleteEntrySuggestion(id) {
+  async deleteEntrySuggestion(id: Id): Promise<EntrySuggestionResponse> {
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
 
     const { value } = await mongo
       .db('hanji')
-      .collection('words-suggestions')
+      .collection<EntrySuggestionDoc>('words-suggestions')
       .findOneAndDelete({ _id: this.getSafeID(id) });
 
     if (!value) {
@@ -276,13 +291,13 @@ class DatabaseAPI extends DataSource {
     };
   }
 
-  async fetchEntrySuggestions() {
+  async fetchEntrySuggestions(): Promise<EntrySuggestion[]> {
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
 
     const array = await mongo
       .db('hanji')
-      .collection('words-suggestions')
+      .collection<EntrySuggestionDoc>('words-suggestions')
       .find()
       .toArray();
     mongo.close();
@@ -290,13 +305,13 @@ class DatabaseAPI extends DataSource {
     return array.map((a) => DatabaseAPI.entrySuggestionReducer(a));
   }
 
-  async fetchEntrySuggestion(id) {
+  async fetchEntrySuggestion(id: Id): Promise<EntrySuggestion> {
     const mongo = new MongoClient(URI, { useNewUrlParser: true });
     await mongo.connect();
 
     const array = await mongo
       .db('hanji')
-      .collection('words-suggestions')
+      .collection<EntrySuggestionDoc>('words-suggestions')
       .find({ _id: this.getSafeID(id) })
       .toArray();
     mongo.close();
@@ -306,44 +321,17 @@ class DatabaseAPI extends DataSource {
       : null;
   }
 
-  static exampleReducer(examples) {
-    let reducedExamples = [];
-    examples.forEach((example) => {
-      reducedExamples.push({
-        sentence: example.sentence,
-        translation: example.translation,
-      });
-    });
-    return reducedExamples;
-  }
-
-  static entryReducer(entry) {
-    let data = {
-      id: entry._id.toString(),
-      term: entry.term,
-      pos: entry.pos,
-      definitions: entry.definitions,
+  static entryReducer(entry: EntryDoc): Entry {
+    const { _id, ...rest } = entry;
+    return {
+      id: _id.toString(),
+      ...rest,
     };
-    if (entry.examples) {
-      data.examples = DatabaseAPI.exampleReducer(entry.examples);
-    }
-    if (entry.antonyms) {
-      data.antonyms = entry.antonyms;
-    }
-    if (entry.synonyms) {
-      data.synonyms = entry.synonyms;
-    }
-    if (entry.regular) {
-      data.regular = entry.regular;
-    }
-    if (entry.note) {
-      data.note = entry.note;
-    }
-
-    return data;
   }
 
-  static entrySuggestionReducer(entrySuggestion) {
+  static entrySuggestionReducer(
+    entrySuggestion: EntrySuggestionDoc,
+  ): EntrySuggestion {
     const { _id, entryID, applied, ...rest } = entrySuggestion;
     return {
       id: _id.toString(),
@@ -353,7 +341,7 @@ class DatabaseAPI extends DataSource {
     };
   }
 
-  static containsHangul(string) {
+  static containsHangul(string: string): boolean {
     for (let i = 0; i < string.length; i++) {
       if (hangeul.is_hangeul(string[i])) {
         return true;
@@ -362,12 +350,12 @@ class DatabaseAPI extends DataSource {
     return false;
   }
 
-  getSafeID(id) {
+  getSafeID(id: Id): ObjectId {
     // Check if id is ObjectID or old form
-    if (!DatabaseAPI.containsHangul(id)) {
-      id = new ObjectId(id);
-    }
-    return id;
+    return !DatabaseAPI.containsHangul(id as string)
+      ? new ObjectId(id)
+      : (id as ObjectId);
   }
 }
-module.exports = DatabaseAPI;
+
+export default DatabaseAPI;

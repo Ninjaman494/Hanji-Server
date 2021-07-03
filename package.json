@@ -2,12 +2,16 @@
   "name": "koreanconjugator",
   "version": "2.0.1",
   "description": "JavaScript Server for conjugating Korean verbs/adjectives. Uses Dan Bravender's source code for conjugation.",
-  "main": "src/main.js",
+  "type": "commonjs",
   "author": "Akash Eldo",
   "license": "ISC",
   "scripts": {
-    "start": "node src/main.js",
-    "test": "jest"
+    "start": "node build/main.js",
+    "build": "tsc",
+    "lint": "eslint . --ext .js,.ts,",
+    "test": "jest",
+    "dev": "ts-node-dev --transpile-only src/main.ts",
+    "gcp-build": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -32,8 +36,20 @@
     "request-promise": "^4.2.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.7",
+    "@babel/preset-typescript": "^7.14.5",
+    "@types/jest": "^26.0.23",
+    "@types/mongodb": "^3.6.18",
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.1",
     "apollo-server-testing": "2.25.0",
+    "babel-jest": "^27.0.6",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "casual": "1.6.2",
-    "jest": "27.0.4"
+    "eslint": "^7.30.0",
+    "jest": "27.0.4",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.3.5"
   }
 }
