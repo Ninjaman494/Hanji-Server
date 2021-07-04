@@ -40,7 +40,7 @@
     "@babel/preset-env": "7.14.7",
     "@babel/preset-typescript": "7.14.5",
     "@types/jest": "26.0.23",
-    "@types/mongodb": "3.6.18",
+    "@types/mongodb": "3.6.19",
     "@typescript-eslint/eslint-plugin": "4.28.1",
     "@typescript-eslint/parser": "4.28.1",
     "apollo-server-testing": "2.25.2",
@@ -48,7 +48,7 @@
     "babel-plugin-transform-es2015-modules-commonjs": "6.26.2",
     "casual": "1.6.2",
     "eslint": "7.30.0",
-    "jest": "27.0.4",
+    "jest": "27.0.6",
     "ts-node-dev": "1.1.8",
     "typescript": "4.3.5"
   }
