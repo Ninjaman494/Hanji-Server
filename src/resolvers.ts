@@ -1,3 +1,5 @@
+import { GraphQLUpload } from 'graphql-upload';
+
 export default {
   Query: {
     entries: (_, { term }, { dataSources }) =>
@@ -49,7 +51,12 @@ export default {
       dataSources.databaseAPI.editEntrySuggestion(id, suggestion),
     deleteEntrySuggestion: (_, { id, suggestion }, { dataSources }) =>
       dataSources.databaseAPI.deleteEntrySuggestion(id, suggestion),
+    sendBugReport: (_, { feedback, email, type, image }, { dataSources }) =>
+      dataSources.slackAPI.sendBugReport(feedback, type, email, image),
   },
+  // Maps the `Upload` scalar to the implementation provided
+  // by the `graphql-upload` package.
+  Upload: GraphQLUpload,
   Tense: {
     PRESENT: 'present',
     PAST: 'past',

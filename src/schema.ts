@@ -36,7 +36,18 @@ const typeDefs = gql`
     ): EntrySuggestionResponse!
     applyEntrySuggestion(id: ID!): EntrySuggestionResponse!
     deleteEntrySuggestion(id: ID!): EntrySuggestionResponse!
+    sendBugReport(
+      feedback: String!
+      email: String
+      type: BugReportType!
+      image: Upload
+    ): BugReportResponse!
   }
+
+  # The implementation for this scalar is provided by the
+  # 'GraphQLUpload' export from the 'graphql-upload' package
+  # in the resolver map
+  scalar Upload
 
   type Result {
     cursor: String
@@ -75,6 +86,12 @@ const typeDefs = gql`
     NONE
   }
 
+  enum BugReportType {
+    BUG
+    NEW_FEATURE
+    OTHER
+  }
+
   type Conjugation {
     name: String!
     conjugation: String!
@@ -101,6 +118,11 @@ const typeDefs = gql`
     message: String!
     entry: Entry
     suggestion: EntrySuggestion
+  }
+
+  type BugReportResponse {
+    success: Boolean!
+    message: String!
   }
 
   input FavInput {

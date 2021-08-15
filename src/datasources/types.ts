@@ -63,6 +63,17 @@ export type EntrySuggestionInput = {
   examples?: Example[];
 };
 
+export type BugReportResponse = {
+  success: boolean;
+  message: string;
+};
+
+export enum ReportType {
+  BUG,
+  NEW_FEATURE,
+  OTHER,
+}
+
 export enum Tense {
   PRESENT = 'present',
   PAST = 'past',
