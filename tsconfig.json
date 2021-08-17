@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
     "outDir": "build",
-    "rootDir": "src",
-    "baseUrl": "src",
+    "rootDir": "./src",
+    "baseUrl": "./src",
     "target": "es2016",
     "module": "commonjs",
     "allowJs": true,
+    "checkJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "sourceMap": true,
     "typeRoots": ["./node_modules/@types"]
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "build"]
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules", "build", "babel.config.js"]
 }

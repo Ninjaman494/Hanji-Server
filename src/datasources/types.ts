@@ -68,10 +68,18 @@ export type BugReportResponse = {
   message: string;
 };
 
+export type DeviceInfo = {
+  version: string;
+  brand: string;
+  manufacturer: string;
+  model: string;
+  sdkVersion: string;
+};
+
 export enum ReportType {
-  BUG,
-  NEW_FEATURE,
-  OTHER,
+  BUG = 'BUG',
+  NEW_FEATURE = 'NEW_FEATURE',
+  OTHER = 'OTHER',
 }
 
 export enum Tense {

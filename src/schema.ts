@@ -38,8 +38,9 @@ const typeDefs = gql`
     deleteEntrySuggestion(id: ID!): EntrySuggestionResponse!
     sendBugReport(
       feedback: String!
-      email: String
       type: BugReportType!
+      deviceInfo: DeviceInfo!
+      email: String
       image: Upload
     ): BugReportResponse!
   }
@@ -141,6 +142,14 @@ const typeDefs = gql`
   input ExampleInput {
     sentence: String!
     translation: String!
+  }
+
+  input DeviceInfo {
+    version: String!
+    brand: String!
+    manufacturer: String!
+    model: String!
+    sdkVersion: String!
   }
 `;
 
