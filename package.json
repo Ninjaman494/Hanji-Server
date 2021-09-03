@@ -40,7 +40,7 @@
     "@babel/preset-env": "7.15.4",
     "@babel/preset-typescript": "7.15.0",
     "@types/express": "4.17.13",
-    "@types/jest": "26.0.24",
+    "@types/jest": "27.0.1",
     "@types/mongodb": "3.6.20",
     "@typescript-eslint/eslint-plugin": "4.30.0",
     "@typescript-eslint/parser": "4.30.0",
