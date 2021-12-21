@@ -21,7 +21,7 @@ const createTestServer = (dataSources) => {
         createRateLimitDirective() as unknown as typeof SchemaDirectiveVisitor,
     },
     dataSources: () => dataSources,
-  });
+  } as any);
 
   return createTestClient(server as never);
 };
@@ -710,31 +710,56 @@ describe('Queries', () => {
 });
 
 describe('Mutations', () => {
-  test('Create an entry suggestion', async () => {
-    const suggestion = {
-      entryID: casual.uuid,
-      antonyms: casual.array_of_words(3),
-      synonyms: casual.array_of_words(2),
-      examples: [
-        {
-          sentence: casual.sentence,
-          translation: casual.sentence,
-        },
-      ],
-    };
-
-    const mockCreate = jest.fn();
-    mockCreate.mockReturnValue({
-      success: true,
-      message: 'Entry suggestion successfully created',
-      suggestion: {
-        id: 'id',
-        ...suggestion,
+  const suggestion = {
+    id: casual.uuid,
+    entryID: casual.uuid,
+    antonyms: casual.array_of_words(3),
+    synonyms: casual.array_of_words(2),
+    examples: [
+      {
+        sentence: casual.sentence,
+        translation: casual.sentence,
       },
-    });
-    const databaseAPI = new DatabaseAPI();
-    databaseAPI.createEntrySuggestion = mockCreate;
+    ],
+  };
+  const entry = {
+    id: casual.uuid,
+    antonyms: casual.array_of_words(3),
+    synonyms: casual.array_of_words(2),
+    examples: [
+      {
+        sentence: casual.sentence,
+        translation: casual.sentence,
+      },
+    ],
+  };
 
+  const databaseAPI = new DatabaseAPI();
+  databaseAPI.createEntrySuggestion = jest.fn().mockReturnValue({
+    success: true,
+    message: 'Entry suggestion successfully created',
+    suggestion,
+  });
+  databaseAPI.applyEntrySuggestion = jest.fn().mockReturnValue({
+    success: true,
+    message: 'Entry suggestion successfully applied',
+    entry,
+    suggestion: {
+      ...suggestion,
+      applied: true,
+    },
+  });
+  databaseAPI.editEntrySuggestion = jest.fn().mockReturnValue({
+    success: true,
+    message: 'Entry suggestion successfully edited',
+    suggestion,
+  });
+  databaseAPI.deleteEntrySuggestion = jest.fn().mockReturnValue({
+    success: true,
+    message: 'Entry suggestion successfully deleted',
+  });
+
+  test('Create an entry suggestion', async () => {
     const { mutate } = createTestServer({ databaseAPI });
     const CREATE_SUGGESTION = gql`
       mutation CreateSuggestion($suggestion: EntrySuggestionInput!) {
@@ -758,56 +783,26 @@ describe('Mutations', () => {
       }
     `;
 
-    const res = await mutate({
+    const { id, ...rest } = suggestion;
+    const {
+      data: { createEntrySuggestion },
+    } = await mutate({
       mutation: CREATE_SUGGESTION,
-      variables: { suggestion },
+      variables: { suggestion: rest },
     });
-    expect(res.data).not.toBe(null);
-    expect(res.data.createEntrySuggestion).toBeDefined();
 
-    expect(res.data.createEntrySuggestion.success).toBeTruthy();
-    expect(res.data.createEntrySuggestion.message).toEqual(
+    expect(createEntrySuggestion).toBeDefined();
+    expect(createEntrySuggestion.success).toBeTruthy();
+    expect(createEntrySuggestion.message).toEqual(
       'Entry suggestion successfully created',
     );
-    expect(res.data.createEntrySuggestion.suggestion).toEqual({
+    expect(createEntrySuggestion.suggestion).toEqual({
       id: 'id',
       ...suggestion,
     });
   });
 
   test('Apply an entry suggestion', async () => {
-    const suggestion = {
-      id: casual.uuid,
-      entryID: casual.uuid,
-      antonyms: casual.array_of_words(3),
-      synonyms: casual.array_of_words(2),
-      examples: [
-        {
-          sentence: casual.sentence,
-          translation: casual.sentence,
-        },
-      ],
-    };
-    const entry = {
-      id: casual.uuid,
-      antonyms: suggestion.antonyms,
-      synonyms: suggestion.synonyms,
-      examples: suggestion.examples,
-    };
-
-    const mockApply = jest.fn();
-    mockApply.mockReturnValue({
-      success: true,
-      message: 'Entry suggestion successfully applied',
-      entry: entry,
-      suggestion: {
-        ...suggestion,
-        applied: true,
-      },
-    });
-    const databaseAPI = new DatabaseAPI();
-    databaseAPI.applyEntrySuggestion = mockApply;
-
     const { mutate } = createTestServer({ databaseAPI });
     const APPLY_SUGGESTION = gql`
       mutation ApplySuggestion($id: ID!) {
@@ -838,47 +833,26 @@ describe('Mutations', () => {
       }
     `;
 
-    const res = await mutate({
+    const {
+      data: { applyEntrySuggestion },
+    } = await mutate({
       mutation: APPLY_SUGGESTION,
       variables: { id: suggestion.id },
     });
-    expect(res.data).not.toBe(null);
-    expect(res.data.applyEntrySuggestion).toBeDefined();
-
-    expect(res.data.applyEntrySuggestion.success).toBeTruthy();
-    expect(res.data.applyEntrySuggestion.message).toEqual(
+    expect(applyEntrySuggestion).toBeDefined();
+    expect(applyEntrySuggestion.success).toBeTruthy();
+    expect(applyEntrySuggestion.message).toEqual(
       'Entry suggestion successfully applied',
     );
-    expect(res.data.applyEntrySuggestion.entry).toEqual(entry);
-    expect(res.data.applyEntrySuggestion.suggestion).toEqual({
+
+    expect(applyEntrySuggestion.entry).toEqual(entry);
+    expect(applyEntrySuggestion.suggestion).toEqual({
       ...suggestion,
       applied: true,
     });
   });
 
   test('Edit an entry suggestion', async () => {
-    const suggestion = {
-      id: casual.uuid,
-      entryID: casual.uuid,
-      antonyms: casual.array_of_words(3),
-      synonyms: casual.array_of_words(2),
-      examples: [
-        {
-          sentence: casual.sentence,
-          translation: casual.sentence,
-        },
-      ],
-    };
-
-    const mockEdit = jest.fn();
-    mockEdit.mockReturnValue({
-      success: true,
-      message: 'Entry suggestion successfully edited',
-      suggestion: suggestion,
-    });
-    const databaseAPI = new DatabaseAPI();
-    databaseAPI.editEntrySuggestion = mockEdit;
-
     const { mutate } = createTestServer({ databaseAPI });
     const EDIT_SUGGESTION = gql`
       mutation EditSuggestion($id: ID!, $suggestion: EntrySuggestionInput!) {
@@ -900,29 +874,21 @@ describe('Mutations', () => {
     `;
 
     const { id, ...rest } = suggestion;
-    const res = await mutate({
+    const {
+      data: { editEntrySuggestion },
+    } = await mutate({
       mutation: EDIT_SUGGESTION,
-      variables: { id: id, suggestion: rest },
+      variables: { id, suggestion: rest },
     });
-    expect(res.data).not.toBe(null);
-    expect(res.data.editEntrySuggestion).toBeDefined();
-
-    expect(res.data.editEntrySuggestion.success).toBeTruthy();
-    expect(res.data.editEntrySuggestion.message).toEqual(
+    expect(editEntrySuggestion).toBeDefined();
+    expect(editEntrySuggestion.success).toBeTruthy();
+    expect(editEntrySuggestion.message).toEqual(
       'Entry suggestion successfully edited',
     );
-    expect(res.data.editEntrySuggestion.suggestion).toEqual(suggestion);
+    expect(editEntrySuggestion.suggestion).toEqual(suggestion);
   });
 
   test('Delete an entry suggestion', async () => {
-    const mockDelete = jest.fn();
-    mockDelete.mockReturnValue({
-      success: true,
-      message: 'Entry suggestion successfully deleted',
-    });
-    const databaseAPI = new DatabaseAPI();
-    databaseAPI.deleteEntrySuggestion = mockDelete;
-
     const { mutate } = createTestServer({ databaseAPI });
     const DELETE_SUGGESTION = gql`
       mutation DeleteSuggestion($id: ID!) {
@@ -933,13 +899,15 @@ describe('Mutations', () => {
       }
     `;
 
-    const res = await mutate({
+    const {
+      data: { deleteEntrySuggestion },
+    } = await mutate({
       mutation: DELETE_SUGGESTION,
       variables: { id: casual.uuid },
     });
 
-    expect(res.data?.deleteEntrySuggestion?.success).toBeTruthy();
-    expect(res.data?.deleteEntrySuggestion?.message).toEqual(
+    expect(deleteEntrySuggestion?.success).toBeTruthy();
+    expect(deleteEntrySuggestion?.message).toEqual(
       'Entry suggestion successfully deleted',
     );
   });
