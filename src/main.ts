@@ -16,6 +16,7 @@ import SearchAPI from './datasources/search';
 import resolvers from './resolvers';
 import typeDefs from './schema';
 import SlackAPI from './datasources/slack';
+import { MongoClient } from 'mongodb';
 
 // Source: https://github.com/ravangen/graphql-rate-limit/blob/master/examples/context/index.js
 // Creates a unique key based on ip address and endpoint being accessed
@@ -29,7 +30,10 @@ const keyGenerator = (directiveArgs, obj, args, context, info) =>
   )}`;
 
 const startServer = async () => {
-  const dbAPI = new DatabaseAPI();
+  const mongo = new MongoClient(process.env.MONGO_URL);
+  await mongo.connect();
+
+  const dbAPI = new DatabaseAPI(mongo);
   const apolloServer = new ApolloServer({
     typeDefs: [createRateLimitTypeDef(), typeDefs],
     resolvers,
