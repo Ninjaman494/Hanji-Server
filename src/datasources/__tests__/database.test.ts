@@ -1,14 +1,49 @@
-import DatabaseAPI from '../database';
-import { MongoClient, ObjectId } from 'mongodb';
+import DatabaseAPI, { EntryDoc, EntrySuggestionDoc } from '../database';
+import { Collection, MongoClient, ObjectId } from 'mongodb';
+
+const verbId = new ObjectId();
+const verbEntry = {
+  term: '가다',
+  pos: 'Verb',
+  definitions: ['to go'],
+  antonyms: ['오다'],
+  examples: [
+    {
+      sentence: 'I go',
+      translation: '저는 가요',
+    },
+  ],
+};
+
+const nounId = new ObjectId();
+const nounEntry = {
+  term: '사과',
+  pos: 'Noun',
+  definitions: ['apple'],
+};
+
+const suggestionId = new ObjectId();
+const suggestionEntry = {
+  entryID: verbId,
+  antonyms: verbEntry.antonyms,
+  examples: verbEntry.examples,
+};
 
 describe('DatabaseAPI Datasource', () => {
   let mongoClient: MongoClient;
   let datasource: DatabaseAPI;
+  let wordsCollection: Collection<EntryDoc>;
+  let suggestionsCollection: Collection<EntrySuggestionDoc>;
 
   beforeAll(async () => {
     mongoClient = new MongoClient((global as any).__MONGO_URI__);
     datasource = new DatabaseAPI(mongoClient);
     await mongoClient.connect();
+
+    wordsCollection = mongoClient.db('hanji').collection('words');
+    suggestionsCollection = mongoClient
+      .db('hanji')
+      .collection('words-suggestions');
   });
 
   afterAll(async () => {
@@ -16,63 +51,21 @@ describe('DatabaseAPI Datasource', () => {
   });
 
   describe('read operations', () => {
-    const verbId = new ObjectId();
-    const verbEntry = {
-      term: '가다',
-      pos: 'Verb',
-      definitions: ['to go'],
-      antonyms: ['오다'],
-      examples: [
-        {
-          sentence: 'I go',
-          translation: '저는 가요',
-        },
-      ],
-    };
-
-    const nounId = new ObjectId();
-    const nounEntry = {
-      term: '사과',
-      pos: 'Noun',
-      definitions: ['apple'],
-    };
-
-    const suggestionId = new ObjectId();
-    const suggestionEntry = {
-      entryID: verbId,
-      antonyms: verbEntry.antonyms,
-      examples: verbEntry.examples,
-    };
-
     beforeAll(async () => {
-      await mongoClient.db('hanji').collection('words').deleteMany({});
-      await mongoClient.db('hanji').collection('words').createIndex({
+      await wordsCollection.deleteMany({});
+      await suggestionsCollection.deleteMany({});
+      await wordsCollection.createIndex({
         definitions: 'text',
       });
 
-      await mongoClient
-        .db('hanji')
-        .collection('words')
-        .insertOne({
-          _id: verbId,
-          ...verbEntry,
-        });
-
-      await mongoClient
-        .db('hanji')
-        .collection('words')
-        .insertOne({
-          _id: nounId,
-          ...nounEntry,
-        });
-
-      await mongoClient
-        .db('hanji')
-        .collection('words-suggestions')
-        .insertOne({
-          _id: suggestionId,
-          ...suggestionEntry,
-        });
+      await wordsCollection.insertMany([
+        { _id: verbId, ...verbEntry },
+        { _id: nounId, ...nounEntry },
+      ]);
+      await suggestionsCollection.insertOne({
+        _id: suggestionId,
+        ...suggestionEntry,
+      });
     });
 
     test('fetchEntry', async () => {
@@ -129,6 +122,118 @@ describe('DatabaseAPI Datasource', () => {
         entryID: entryID.toString(),
         ...rest,
       });
+    });
+  });
+
+  describe('write operations', () => {
+    beforeAll(async () => {
+      await wordsCollection.deleteMany({});
+      await suggestionsCollection.deleteMany({});
+
+      await wordsCollection.insertOne({
+        _id: verbId,
+        ...verbEntry,
+      });
+    });
+
+    test('createEntrySuggestion', async () => {
+      const { success, message } = await datasource.createEntrySuggestion(
+        suggestionEntry,
+      );
+
+      const { _id, ...rest } =
+        await suggestionsCollection.findOne<EntrySuggestionDoc>();
+
+      expect(success).toBeTruthy();
+      expect(message).toEqual('Entry suggestion successfully created');
+      expect(rest).toEqual({ synonyms: null, ...suggestionEntry });
+    });
+  });
+
+  describe('edit operations', () => {
+    beforeEach(async () => {
+      await wordsCollection.deleteMany({});
+      await suggestionsCollection.deleteMany({});
+
+      await wordsCollection.insertOne({
+        _id: verbId,
+        ...verbEntry,
+      });
+      await suggestionsCollection.insertOne({
+        _id: suggestionId,
+        ...suggestionEntry,
+      });
+    });
+
+    test('applyEntrySuggestion', async () => {
+      const { success, message, entry, suggestion } =
+        await datasource.applyEntrySuggestion(suggestionId);
+
+      const updatedAntonyms = [
+        ...verbEntry.antonyms,
+        ...suggestionEntry.antonyms,
+      ];
+      const updatedExamples = [
+        ...verbEntry.examples,
+        ...suggestionEntry.examples,
+      ];
+
+      // Verify response
+      expect(success).toBeTruthy();
+      expect(message).toEqual('Entry suggestion successfully applied');
+      expect(entry).toEqual({
+        ...verbEntry,
+        id: verbId.toString(),
+        antonyms: updatedAntonyms,
+        examples: updatedExamples,
+      });
+      expect(suggestion).toEqual({
+        ...suggestionEntry,
+        id: suggestionId.toString(),
+        entryID: suggestionEntry.entryID.toString(),
+        applied: true,
+      });
+
+      // Verify database updated
+      const { applied } =
+        await suggestionsCollection.findOne<EntrySuggestionDoc>({
+          _id: suggestionId,
+        });
+      const { antonyms, examples } = await wordsCollection.findOne<EntryDoc>({
+        _id: verbId,
+      });
+
+      expect(applied).toBeTruthy();
+      expect(antonyms).toEqual(updatedAntonyms);
+      expect(examples).toEqual(updatedExamples);
+    });
+
+    test('editEntrySuggestion', async () => {
+      const updatedSynonyms = ['synonym'];
+
+      const { success, message, suggestion } =
+        await datasource.editEntrySuggestion(suggestionId, {
+          entryID: verbId,
+          synonyms: updatedSynonyms,
+        });
+
+      // Verify response
+      expect(success).toBeTruthy();
+      expect(message).toEqual('Successfully edited suggestion');
+      expect(suggestion).toEqual({
+        ...suggestionEntry,
+        id: suggestionId.toString(),
+        entryID: suggestionEntry.entryID.toString(),
+        applied: false,
+        synonyms: updatedSynonyms,
+      });
+
+      // Verify database updated
+      const { synonyms } =
+        await suggestionsCollection.findOne<EntrySuggestionDoc>({
+          _id: suggestionId,
+        });
+      expect(synonyms).toEqual(updatedSynonyms);
     });
   });
 });
