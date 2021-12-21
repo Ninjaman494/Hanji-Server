@@ -2,7 +2,7 @@ import {
   createRateLimitDirective,
   createRateLimitTypeDef,
 } from 'graphql-rate-limit-directive';
-import { ApolloServer, SchemaDirectiveVisitor } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 import { createTestClient } from 'apollo-server-testing';
 import gql from 'graphql-tag';
 import casual from 'casual';
@@ -17,8 +17,7 @@ const createTestServer = (dataSources) => {
     typeDefs: [createRateLimitTypeDef(), typeDefs],
     resolvers,
     schemaDirectives: {
-      rateLimit:
-        createRateLimitDirective() as unknown as typeof SchemaDirectiveVisitor,
+      rateLimit: createRateLimitDirective(),
     },
     dataSources: () => dataSources,
   } as any);
@@ -27,7 +26,7 @@ const createTestServer = (dataSources) => {
 };
 
 describe('Queries', () => {
-  test('Fetch single full entry', async () => {
+  test('Fetch single entry', async () => {
     const entry = {
       id: casual.uuid,
       term: casual.word,
@@ -45,7 +44,7 @@ describe('Queries', () => {
       note: casual.sentence,
     };
 
-    const databaseAPI = new DatabaseAPI();
+    const databaseAPI = new DatabaseAPI(null);
     databaseAPI.fetchEntry = () => Promise.resolve(entry);
 
     const { query } = createTestServer({ databaseAPI });
@@ -75,51 +74,6 @@ describe('Queries', () => {
     expect(res.data.entry).toEqual(entry);
   });
 
-  test('Fetch single incomplete entry', async () => {
-    const entry = {
-      id: casual.uuid,
-      term: casual.word,
-      pos: casual.word,
-      definitions: casual.array_of_words(3),
-    };
-
-    const databaseAPI = new DatabaseAPI();
-    databaseAPI.fetchEntry = () => Promise.resolve(entry);
-
-    const { query } = createTestServer({ databaseAPI });
-    const GET_ENTRY = gql`
-      query getEntry($id: ID!) {
-        entry(id: $id) {
-          id
-          term
-          pos
-          definitions
-          antonyms
-          synonyms
-          examples {
-            sentence
-            translation
-          }
-          regular
-          note
-        }
-      }
-    `;
-
-    const res = await query({ query: GET_ENTRY, variables: { id: 1 } });
-    expect(res.data).not.toBe(null);
-    expect(res.data.entry).not.toBe(null);
-    expect(res.data.entry).not.toBe(undefined);
-    expect(res.data.entry).toEqual({
-      ...entry,
-      antonyms: null,
-      synonyms: null,
-      examples: null,
-      regular: null,
-      note: null,
-    });
-  });
-
   test('Fetch multiple entries', async () => {
     const term = {
       id: casual.uuid,
@@ -138,7 +92,7 @@ describe('Queries', () => {
       note: casual.sentence,
     };
 
-    const databaseAPI = new DatabaseAPI();
+    const databaseAPI = new DatabaseAPI(null);
     databaseAPI.fetchEntries = () => Promise.resolve([term, term, term]);
 
     const { query } = createTestServer({ databaseAPI });
@@ -175,94 +129,6 @@ describe('Queries', () => {
     });
   });
 
-  test('Fetch multiple entries where some are incomplete', async () => {
-    const terms = [
-      {
-        id: casual.uuid,
-        term: casual.word,
-        pos: casual.word,
-        definitions: casual.array_of_words(3),
-        examples: [
-          {
-            sentence: casual.sentence,
-            translation: casual.sentence,
-          },
-        ],
-        antonyms: casual.array_of_words(3),
-        synonyms: casual.array_of_words(3),
-        regular: casual.boolean,
-        note: casual.sentence,
-      },
-      {
-        id: casual.uuid,
-        term: casual.word,
-        pos: casual.word,
-        definitions: casual.array_of_words(3),
-        examples: [
-          {
-            sentence: casual.sentence,
-            translation: casual.sentence,
-          },
-        ],
-      },
-      {
-        id: casual.uuid,
-        term: casual.word,
-        pos: casual.word,
-        definitions: casual.array_of_words(3),
-        note: casual.sentence,
-      },
-    ];
-
-    const databaseAPI = new DatabaseAPI();
-    databaseAPI.fetchEntries = () => Promise.resolve(terms);
-
-    const { query } = createTestServer({ databaseAPI });
-    const GET_ENTRIES = gql`
-      query getEntries($term: String!) {
-        entries(term: $term) {
-          id
-          term
-          pos
-          definitions
-          antonyms
-          synonyms
-          examples {
-            sentence
-            translation
-          }
-          regular
-          note
-        }
-      }
-    `;
-
-    const res = await query({
-      query: GET_ENTRIES,
-      variables: { term: 'term' },
-    });
-    expect(res.data).not.toBe(null);
-    expect(res.data).not.toBe(undefined);
-    expect(res.data.entries).not.toBe(null);
-    expect(res.data.entries).not.toBe(undefined);
-
-    expect(res.data.entries[0]).toEqual(terms[0]);
-    expect(res.data.entries[1]).toEqual({
-      ...terms[1],
-      antonyms: null,
-      synonyms: null,
-      regular: null,
-      note: null,
-    });
-    expect(res.data.entries[2]).toEqual({
-      ...terms[2],
-      examples: null,
-      antonyms: null,
-      synonyms: null,
-      regular: null,
-    });
-  });
-
   test('Fetch examples', async () => {
     const examples = [
       { sentence: casual.sentence, translation: casual.sentence },
@@ -270,7 +136,7 @@ describe('Queries', () => {
       { sentence: casual.sentence, translation: casual.sentence },
     ];
 
-    const databaseAPI = new DatabaseAPI();
+    const databaseAPI = new DatabaseAPI(null);
     databaseAPI.fetchExamples = () => Promise.resolve(examples);
 
     const { query } = createTestServer({ databaseAPI });
@@ -493,7 +359,7 @@ describe('Queries', () => {
       note: casual.sentence,
     };
 
-    const databaseAPI = new DatabaseAPI();
+    const databaseAPI = new DatabaseAPI(null);
     databaseAPI.fetchWordoftheDay = () => Promise.resolve(wod);
 
     const { query } = createTestServer({ databaseAPI });
@@ -672,7 +538,7 @@ describe('Queries', () => {
       },
     ];
 
-    const databaseAPI = new DatabaseAPI();
+    const databaseAPI = new DatabaseAPI(null);
     databaseAPI.fetchEntrySuggestions = () => Promise.resolve(suggestions);
 
     const { query } = createTestServer({ databaseAPI });
@@ -734,7 +600,7 @@ describe('Mutations', () => {
     ],
   };
 
-  const databaseAPI = new DatabaseAPI();
+  const databaseAPI = new DatabaseAPI(null);
   databaseAPI.createEntrySuggestion = jest.fn().mockReturnValue({
     success: true,
     message: 'Entry suggestion successfully created',
