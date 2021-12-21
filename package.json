@@ -20,6 +20,7 @@
   "dependencies": {
     "@google-cloud/debug-agent": "5.2.8",
     "@slack/web-api": "6.5.1",
+    "apollo-datasource": "^3.3.0",
     "apollo-server": "3.0.1",
     "apollo-server-express": "3.0.1",
     "async": "3.2.2",
