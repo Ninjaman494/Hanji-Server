@@ -39,29 +39,27 @@ export default class SlackAPI extends DataSource {
     if (image) {
       const file = (await image).createReadStream();
 
-      const res = await this.slackClient.files.upload({
+      const { ok, error } = await this.slackClient.files.upload({
         channels: typeMap[type],
         initial_comment: message,
         file: file,
       });
       return {
-        success: res.ok,
-        message: res.ok
+        success: ok,
+        message: ok
           ? 'Report and screenshot sent successfully'
-          : res.error ?? 'An error occured',
+          : error ?? 'An error occured',
       };
     }
 
-    const res = await this.slackClient.chat.postMessage({
+    const { ok, error } = await this.slackClient.chat.postMessage({
       channel: typeMap[type],
       text: message,
     });
 
     return {
-      success: res.ok,
-      message: res.ok
-        ? 'Report sent successfully'
-        : res.error ?? 'An error occured',
+      success: ok,
+      message: ok ? 'Report sent successfully' : error ?? 'An error occured',
     };
   }
 }
