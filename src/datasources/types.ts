@@ -63,6 +63,25 @@ export type EntrySuggestionInput = {
   examples?: Example[];
 };
 
+export type BugReportResponse = {
+  success: boolean;
+  message: string;
+};
+
+export type DeviceInfo = {
+  version: string;
+  brand: string;
+  manufacturer: string;
+  model: string;
+  sdkVersion: string;
+};
+
+export enum ReportType {
+  BUG = 'BUG',
+  NEW_FEATURE = 'NEW_FEATURE',
+  OTHER = 'OTHER',
+}
+
 export enum Tense {
   PRESENT = 'present',
   PAST = 'past',
