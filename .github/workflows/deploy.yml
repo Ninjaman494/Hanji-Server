@@ -13,10 +13,10 @@ jobs:
           node-version: 14.x
       - run: npm ci
       - name: Create env file
-        run: echo $ENV_SECRETS > .env
-        env:
-          ENV_SECRETS: ${{ secrets.ENV_SECRETS }}
-
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_MONGO_URL: ${{ secrets.MONGO_URL }}
+          envkey_SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }
       - name: Deploy to Google App Engine
         uses: google-github-actions/deploy-appengine@main
         with:
