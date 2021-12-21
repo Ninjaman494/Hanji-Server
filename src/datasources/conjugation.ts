@@ -11,7 +11,7 @@ export default class ConjugationAPI extends DataSource {
     isAdj: boolean,
     honorific: boolean,
     regular: boolean,
-    conjugationNames: string[],
+    conjugationNames?: string[],
   ): Conjugation[] {
     if (regular === null || regular === undefined) {
       // returns either 'regular verb' or type of irregular

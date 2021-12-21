@@ -13,6 +13,8 @@ export default {
     'conjugator.js',
     'geulja.js',
   ],
+  testPathIgnorePatterns: ['__mocks__'],
   modulePathIgnorePatterns: ['/build'],
   watchPathIgnorePatterns: ['globalConfig'],
+  collectCoverageFrom: ['src/**/*.ts', 'src/**/*.js', '!src/scripts/*'],
 };
