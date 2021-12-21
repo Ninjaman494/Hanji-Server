@@ -39,7 +39,7 @@ class DatabaseAPI extends DataSource {
   }
 
   async fetchEntries(term: string): Promise<Entry[]> {
-    const mongo = new MongoClient(URI, { useNewUrlParser: true });
+    const mongo = new MongoClient(URI);
     await mongo.connect();
     const results = await mongo
       .db('hanji')
@@ -54,7 +54,7 @@ class DatabaseAPI extends DataSource {
   async fetchEntry(id: Id): Promise<Entry> {
     id = this.getSafeID(id);
 
-    const mongo = new MongoClient(URI, { useNewUrlParser: true });
+    const mongo = new MongoClient(URI);
     await mongo.connect();
     const results = await mongo
       .db('hanji')
@@ -69,7 +69,7 @@ class DatabaseAPI extends DataSource {
   async fetchExamples(id: Id): Promise<Example[]> {
     id = this.getSafeID(id);
 
-    const mongo = new MongoClient(URI, { useNewUrlParser: true });
+    const mongo = new MongoClient(URI);
     await mongo.connect();
     const results = await mongo
       .db('hanji')
@@ -82,7 +82,7 @@ class DatabaseAPI extends DataSource {
   }
 
   async searchEnglish(query: string, cursor?: number): Promise<SearchResult> {
-    const mongo = new MongoClient(URI, { useNewUrlParser: true });
+    const mongo = new MongoClient(URI);
     await mongo.connect();
     if (!cursor) {
       cursor = 0;
@@ -90,9 +90,9 @@ class DatabaseAPI extends DataSource {
 
     const array = await mongo
       .db('hanji')
-      .collection<EntryDoc>('words')
+      .collection('words')
       .find({ $text: { $search: query } }, { limit: PAGE_COUNT, skip: cursor })
-      .project({ score: { $meta: 'textScore' } })
+      .project<EntryDoc>({ score: { $meta: 'textScore' } })
       .sort({ score: { $meta: 'textScore' } })
       .toArray();
     mongo.close();
@@ -107,7 +107,7 @@ class DatabaseAPI extends DataSource {
   }
 
   async fetchWordoftheDay(): Promise<Entry> {
-    const mongo = new MongoClient(URI, { useNewUrlParser: true });
+    const mongo = new MongoClient(URI);
     await mongo.connect();
     const hourDiff =
       Math.abs(new Date().getTime() - this.lastFetched.getTime()) / 36e5;
@@ -116,8 +116,8 @@ class DatabaseAPI extends DataSource {
       // fetch new Word of the Day
       const result = await mongo
         .db('hanji')
-        .collection<EntryDoc>('words')
-        .aggregate([{ $sample: { size: 1 } }])
+        .collection('words')
+        .aggregate<EntryDoc>([{ $sample: { size: 1 } }])
         .toArray();
       this.lastWOD = result[0];
       this.lastFetched = new Date();
@@ -139,10 +139,10 @@ class DatabaseAPI extends DataSource {
       };
     }
 
-    const mongo = new MongoClient(URI, { useNewUrlParser: true });
+    const mongo = new MongoClient(URI);
     await mongo.connect();
 
-    const { ops } = await mongo
+    const { insertedId } = await mongo
       .db('hanji')
       .collection<EntrySuggestionDoc>('words-suggestions')
       .insertOne({
@@ -155,7 +155,7 @@ class DatabaseAPI extends DataSource {
       });
     mongo.close();
 
-    if (ops.length !== 1) {
+    if (!insertedId) {
       return {
         success: false,
         message: 'Failed to insert suggestion into database',
@@ -165,12 +165,11 @@ class DatabaseAPI extends DataSource {
     return {
       success: true,
       message: 'Entry suggestion successfully created',
-      suggestion: DatabaseAPI.entrySuggestionReducer(ops[0]),
     };
   }
 
   async applyEntrySuggestion(id: Id): Promise<EntrySuggestionResponse> {
-    const mongo = new MongoClient(URI, { useNewUrlParser: true });
+    const mongo = new MongoClient(URI);
     await mongo.connect();
 
     // Fetch suggestion, check it's not already applied
@@ -210,7 +209,7 @@ class DatabaseAPI extends DataSource {
       .findOneAndUpdate(
         { _id: this.getSafeID(suggestion.entryID) },
         { $push: updates },
-        { returnOriginal: false },
+        { returnDocument: 'after' },
       );
 
     if (!updatedEntry) {
@@ -227,7 +226,7 @@ class DatabaseAPI extends DataSource {
       .findOneAndUpdate(
         { _id: this.getSafeID(id) },
         { $set: { applied: true } },
-        { returnOriginal: false },
+        { returnDocument: 'after' },
       );
 
     mongo.close();
@@ -243,7 +242,7 @@ class DatabaseAPI extends DataSource {
     id: Id,
     suggestionData: EntrySuggestionInput,
   ): Promise<EntrySuggestionResponse> {
-    const mongo = new MongoClient(URI, { useNewUrlParser: true });
+    const mongo = new MongoClient(URI);
     await mongo.connect();
 
     const { value: updatedSuggestion } = await mongo
@@ -252,7 +251,7 @@ class DatabaseAPI extends DataSource {
       .findOneAndUpdate(
         { _id: this.getSafeID(id) },
         { $set: suggestionData },
-        { returnOriginal: false },
+        { returnDocument: 'after' },
       );
 
     if (!updatedSuggestion) {
@@ -270,7 +269,7 @@ class DatabaseAPI extends DataSource {
   }
 
   async deleteEntrySuggestion(id: Id): Promise<EntrySuggestionResponse> {
-    const mongo = new MongoClient(URI, { useNewUrlParser: true });
+    const mongo = new MongoClient(URI);
     await mongo.connect();
 
     const { value } = await mongo
@@ -292,7 +291,7 @@ class DatabaseAPI extends DataSource {
   }
 
   async fetchEntrySuggestions(): Promise<EntrySuggestion[]> {
-    const mongo = new MongoClient(URI, { useNewUrlParser: true });
+    const mongo = new MongoClient(URI);
     await mongo.connect();
 
     const array = await mongo
@@ -306,7 +305,7 @@ class DatabaseAPI extends DataSource {
   }
 
   async fetchEntrySuggestion(id: Id): Promise<EntrySuggestion> {
-    const mongo = new MongoClient(URI, { useNewUrlParser: true });
+    const mongo = new MongoClient(URI);
     await mongo.connect();
 
     const array = await mongo

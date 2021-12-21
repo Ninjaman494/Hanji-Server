@@ -3,7 +3,7 @@
 require('dotenv').config();
 import { start } from '@google-cloud/debug-agent';
 import express from 'express';
-import { ApolloServer, SchemaDirectiveVisitor } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 import {
   createRateLimitDirective,
   createRateLimitTypeDef,
@@ -37,7 +37,7 @@ const startServer = async () => {
     schemaDirectives: {
       rateLimit: createRateLimitDirective({
         keyGenerator,
-      }) as unknown as typeof SchemaDirectiveVisitor,
+      }),
     },
     dataSources: () => ({
       databaseAPI: dbAPI,
@@ -45,7 +45,7 @@ const startServer = async () => {
       searchAPI: new SearchAPI(dbAPI),
       slackAPI: new SlackAPI(),
     }),
-  });
+  } as any);
 
   await apolloServer.start();
 
