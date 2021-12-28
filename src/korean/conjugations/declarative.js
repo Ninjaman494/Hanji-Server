@@ -15,7 +15,7 @@ conjugations.declarative_present_informal_low = function(infinitive, regular, fu
         conjugator.reasons.push('르 irregular stem change [' + infinitive + ' -> 일러]');
         return '일러';
     }
-    if (conjugator.is_l_euh_irregular(infinitive, regular)) {
+    if (conjugator.is_l_euh_irregular(infinitive, regular) && infinitive.length >= 2) {
         new_base = infinitive.substring(0, infinitive.length-2) +
             hangeul.join(hangeul.lead(infinitive[infinitive.length-2]),
                 hangeul.vowel(infinitive[infinitive.length-2]),

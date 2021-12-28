@@ -69,6 +69,7 @@ export const generate_stems = (verb: string): string[] => {
 
   if (
     (joined === '라' || joined === '러') &&
+    verb.length >= 2 &&
     hangeul.padchim(verb[verb.length - 2]) === 'ᆯ'
   ) {
     let char = verb[verb.length - 2];
