@@ -17,7 +17,9 @@ jobs:
         with:
           envkey_MONGO_URL: ${{ secrets.MONGO_URL }}
           envkey_SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: '${{ secrets.GCP_SECRET }}'
       - name: Deploy to Google App Engine
         uses: google-github-actions/deploy-appengine@main
-        with:
-          credentials: ${{ secrets.GCP_SECRET }}
