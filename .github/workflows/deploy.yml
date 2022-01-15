@@ -3,6 +3,18 @@ name: Deploy
 on: workflow_dispatch
 
 jobs:
+  permissions:
+    actions: read|write
+    checks: read|write
+    contents: read|write
+    deployments: read|write
+    issues: read|write
+    packages: read|write
+    pull-requests: read|write
+    repository-projects: read|write
+    security-events: read|write
+    statuses: read|write
+
   deploy:
     runs-on: ubuntu-latest
 
