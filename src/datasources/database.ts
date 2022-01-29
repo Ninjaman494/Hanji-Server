@@ -1,5 +1,5 @@
 import { DataSource } from 'apollo-datasource';
-import { InsertOneResult, MongoClient, ObjectId, PushOperator } from 'mongodb';
+import { MongoClient, ObjectId, PushOperator } from 'mongodb';
 import {
   Entry,
   EntrySuggestion,
