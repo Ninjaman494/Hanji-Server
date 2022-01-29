@@ -4,6 +4,8 @@ require('dotenv').config();
 import { start } from '@google-cloud/debug-agent';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
+import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
+import { createServer } from 'http';
 import {
   createRateLimitDirective,
   createRateLimitTypeDef,
@@ -30,6 +32,9 @@ const keyGenerator = (directiveArgs, obj, args, context, info) =>
   )}`;
 
 const startServer = async () => {
+  const expressApp = express();
+  const httpServer = createServer(expressApp);
+
   const mongo = new MongoClient(process.env.MONGO_URL);
   await mongo.connect();
 
@@ -37,6 +42,7 @@ const startServer = async () => {
   const apolloServer = new ApolloServer({
     typeDefs: [createRateLimitTypeDef(), typeDefs],
     resolvers,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     context: ({ req }) => ({ ip: req.ip }),
     schemaDirectives: {
       rateLimit: createRateLimitDirective({
@@ -54,7 +60,6 @@ const startServer = async () => {
   await apolloServer.start();
 
   // Required for min_instances
-  const expressApp = express();
   expressApp.get('/_ah/warmup', (req, res) => {
     res.send('All warmed up!');
   });
@@ -67,7 +72,7 @@ const startServer = async () => {
   apolloServer.applyMiddleware({ app: expressApp });
 
   const PORT = process.env.PORT || 4000;
-  expressApp.listen({ port: PORT }, () => {
+  httpServer.listen({ port: PORT }, () => {
     console.log('Server ready');
   });
 };
