@@ -10,8 +10,8 @@ on:
     branches: [master]
 
 jobs:
+  runs-on: ubuntu-latest
   test:
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -20,7 +20,6 @@ jobs:
       - run: npm ci
       - run: npm test
   validate-renovate:
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -29,7 +28,6 @@ jobs:
       - run: npm i -g renovate
       - run: renovate-config-validator
   lint:
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -37,3 +35,11 @@ jobs:
           node-version: 14.x
       - run: npm ci
       - run: npm run lint
+  typecheck:
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+      - run: npm ci
+      - run: npx tsc --noEmit
