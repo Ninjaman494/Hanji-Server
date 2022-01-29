@@ -124,9 +124,10 @@ class DatabaseAPI extends DataSource {
       };
     }
 
+    // Omit required to avoid TS error with mongodb@4.3
     const { insertedId } = await this.mongo
       .db('hanji')
-      .collection<EntrySuggestionDoc>('words-suggestions')
+      .collection<Omit<EntrySuggestionDoc, '_id'>>('words-suggestions')
       .insertOne({
         entryID: this.getSafeID(suggestionData.entryID),
         antonyms: suggestionData.antonyms?.filter((a) => a.length > 0),
