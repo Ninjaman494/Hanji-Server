@@ -7,6 +7,7 @@ import {
   EntrySuggestionResponse,
   Example,
   SearchResult,
+  SurveySubmission,
 } from './types';
 import * as hangeul from '../korean/hangeul';
 
@@ -282,6 +283,25 @@ class DatabaseAPI extends DataSource {
     return array.length > 0
       ? DatabaseAPI.entrySuggestionReducer(array[0])
       : null;
+  }
+
+  async createSurveySubmission(submission: SurveySubmission) {
+    const { insertedId } = await this.mongo
+      .db('hanji')
+      .collection<{ submission: SurveySubmission }>('survey-submissions')
+      .insertOne({ submission });
+
+    if (!insertedId) {
+      return {
+        success: false,
+        message: 'Failed to insert submission into database',
+      };
+    }
+
+    return {
+      success: true,
+      message: 'Submission successfully created',
+    };
   }
 
   static entryReducer(entry: EntryDoc): Entry {

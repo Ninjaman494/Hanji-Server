@@ -63,6 +63,8 @@ export default {
         email,
         image,
       ),
+    createSurveySubmission: (_, { submission }, { dataSources }) =>
+      dataSources.databaseAPI.createSurveySubmission(submission),
   },
   // Maps the `Upload` scalar to the implementation provided
   // by the `graphql-upload` package.

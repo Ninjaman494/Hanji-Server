@@ -43,6 +43,7 @@ const typeDefs = gql`
       email: String
       image: Upload
     ): BugReportResponse!
+    createSurveySubmission(submission: [Question]!): BugReportResponse!
   }
 
   # The implementation for this scalar is provided by the
@@ -150,6 +151,11 @@ const typeDefs = gql`
     manufacturer: String!
     model: String!
     sdkVersion: String!
+  }
+
+  input Question {
+    question: String!
+    response: String
   }
 `;
 
