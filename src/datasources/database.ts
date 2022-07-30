@@ -26,9 +26,8 @@ export type EntrySuggestionDoc = Omit<
   applied?: boolean;
 };
 
-export type SurveySubmissionDoc = {
+export type SurveySubmissionDoc = Record<string, string> & {
   _id: ObjectId;
-  submission: SurveySubmission;
 };
 
 export type Id = ObjectId | string; // scraped entries have string ids
@@ -291,10 +290,18 @@ class DatabaseAPI extends DataSource {
   }
 
   async createSurveySubmission(submission: SurveySubmission) {
+    const flattened = submission.reduce(
+      (prev, curr) => ({
+        ...prev,
+        [curr.question]: curr.response,
+      }),
+      {},
+    );
+
     const { insertedId } = await this.mongo
       .db('hanji')
       .collection<Omit<SurveySubmissionDoc, '_id'>>('survey-submissions')
-      .insertOne({ submission });
+      .insertOne(flattened);
 
     if (!insertedId) {
       return {

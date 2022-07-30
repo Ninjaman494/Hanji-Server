@@ -158,10 +158,11 @@ describe('DatabaseAPI Datasource', () => {
     });
 
     test('createSurveySubmission', async () => {
-      const submission = [...Array(10)].map(() => ({
-        question: casual.sentence,
-        response: casual.word,
-      }));
+      const submission = [
+        { question: casual.sentence, response: casual.word },
+        { question: casual.sentence, response: casual.word },
+        { question: casual.sentence, response: casual.word },
+      ];
 
       const { success, message } = await datasource.createSurveySubmission(
         submission,
@@ -171,7 +172,11 @@ describe('DatabaseAPI Datasource', () => {
 
       expect(success).toBeTruthy();
       expect(message).toEqual('Submission successfully created');
-      expect(rest).toEqual({ submission });
+      expect(rest).toEqual({
+        [submission[0].question]: submission[0].response,
+        [submission[1].question]: submission[1].response,
+        [submission[2].question]: submission[2].response,
+      });
     });
   });
 
