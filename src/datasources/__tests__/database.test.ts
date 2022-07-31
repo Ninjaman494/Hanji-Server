@@ -1,5 +1,10 @@
-import DatabaseAPI, { EntryDoc, EntrySuggestionDoc } from '../database';
+import DatabaseAPI, {
+  EntryDoc,
+  EntrySuggestionDoc,
+  SurveySubmissionDoc,
+} from '../database';
 import { Collection, MongoClient, ObjectId } from 'mongodb';
+import casual from 'casual';
 
 const verbId = new ObjectId();
 const verbEntry = {
@@ -34,6 +39,7 @@ describe('DatabaseAPI Datasource', () => {
   let datasource: DatabaseAPI;
   let wordsCollection: Collection<EntryDoc>;
   let suggestionsCollection: Collection<EntrySuggestionDoc>;
+  let surveyCollection: Collection<SurveySubmissionDoc>;
 
   beforeAll(async () => {
     mongoClient = new MongoClient((global as any).__MONGO_URI__);
@@ -44,6 +50,7 @@ describe('DatabaseAPI Datasource', () => {
     suggestionsCollection = mongoClient
       .db('hanji')
       .collection('words-suggestions');
+    surveyCollection = mongoClient.db('hanji').collection('survey-submissions');
   });
 
   afterAll(async () => {
@@ -129,6 +136,7 @@ describe('DatabaseAPI Datasource', () => {
     beforeAll(async () => {
       await wordsCollection.deleteMany({});
       await suggestionsCollection.deleteMany({});
+      await surveyCollection.deleteMany({});
 
       await wordsCollection.insertOne({
         _id: verbId,
@@ -147,6 +155,28 @@ describe('DatabaseAPI Datasource', () => {
       expect(success).toBeTruthy();
       expect(message).toEqual('Entry suggestion successfully created');
       expect(rest).toEqual({ synonyms: null, ...suggestionEntry });
+    });
+
+    test('createSurveySubmission', async () => {
+      const submission = [
+        { question: casual.sentence, response: casual.word },
+        { question: casual.sentence, response: casual.word },
+        { question: casual.sentence, response: casual.word },
+      ];
+
+      const { success, message } = await datasource.createSurveySubmission(
+        submission,
+      );
+      const { _id, ...rest } =
+        await surveyCollection.findOne<SurveySubmissionDoc>();
+
+      expect(success).toBeTruthy();
+      expect(message).toEqual('Submission successfully created');
+      expect(rest).toEqual({
+        [submission[0].question]: submission[0].response,
+        [submission[1].question]: submission[1].response,
+        [submission[2].question]: submission[2].response,
+      });
     });
   });
 

@@ -624,6 +624,10 @@ describe('Mutations', () => {
     success: true,
     message: 'Entry suggestion successfully deleted',
   });
+  databaseAPI.createSurveySubmission = jest.fn().mockReturnValue({
+    success: true,
+    message: 'Submission successfully created',
+  });
 
   test('Create an entry suggestion', async () => {
     const { mutate } = createTestServer({ databaseAPI });
@@ -666,6 +670,36 @@ describe('Mutations', () => {
       id: 'id',
       ...suggestion,
     });
+  });
+
+  test('Create a survey submission', async () => {
+    const { mutate } = createTestServer({ databaseAPI });
+    const CREATE_SUBMISSION = gql`
+      mutation CreateSubmission($submission: [Question]!) {
+        createSurveySubmission(submission: $submission) {
+          success
+          message
+        }
+      }
+    `;
+
+    const submission = [...Array(10)].map(() => ({
+      question: casual.sentence,
+      response: casual.word,
+    }));
+
+    const {
+      data: { createSurveySubmission },
+    } = await mutate({
+      mutation: CREATE_SUBMISSION,
+      variables: { submission },
+    });
+
+    expect(createSurveySubmission).toBeDefined();
+    expect(createSurveySubmission.success).toBeTruthy();
+    expect(createSurveySubmission.message).toEqual(
+      'Submission successfully created',
+    );
   });
 
   test('Apply an entry suggestion', async () => {

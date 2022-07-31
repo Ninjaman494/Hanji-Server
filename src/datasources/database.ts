@@ -7,6 +7,7 @@ import {
   EntrySuggestionResponse,
   Example,
   SearchResult,
+  Question,
 } from './types';
 import * as hangeul from '../korean/hangeul';
 
@@ -23,6 +24,10 @@ export type EntrySuggestionDoc = Omit<
   _id: ObjectId;
   entryID: Id;
   applied?: boolean;
+};
+
+export type SurveySubmissionDoc = Record<string, string> & {
+  _id: ObjectId;
 };
 
 export type Id = ObjectId | string; // scraped entries have string ids
@@ -282,6 +287,33 @@ class DatabaseAPI extends DataSource {
     return array.length > 0
       ? DatabaseAPI.entrySuggestionReducer(array[0])
       : null;
+  }
+
+  async createSurveySubmission(submission: Question[]) {
+    const flattened = submission.reduce(
+      (prev, curr) => ({
+        ...prev,
+        [curr.question]: curr.response,
+      }),
+      {},
+    );
+
+    const { insertedId } = await this.mongo
+      .db('hanji')
+      .collection<Omit<SurveySubmissionDoc, '_id'>>('survey-submissions')
+      .insertOne(flattened);
+
+    if (!insertedId) {
+      return {
+        success: false,
+        message: 'Failed to insert submission into database',
+      };
+    }
+
+    return {
+      success: true,
+      message: 'Submission successfully created',
+    };
   }
 
   static entryReducer(entry: EntryDoc): Entry {
