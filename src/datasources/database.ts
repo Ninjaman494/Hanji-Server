@@ -7,7 +7,7 @@ import {
   EntrySuggestionResponse,
   Example,
   SearchResult,
-  SurveySubmission,
+  Question,
 } from './types';
 import * as hangeul from '../korean/hangeul';
 
@@ -289,7 +289,7 @@ class DatabaseAPI extends DataSource {
       : null;
   }
 
-  async createSurveySubmission(submission: SurveySubmission) {
+  async createSurveySubmission(submission: Question[]) {
     const flattened = submission.reduce(
       (prev, curr) => ({
         ...prev,

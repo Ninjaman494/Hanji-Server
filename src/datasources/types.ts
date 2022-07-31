@@ -68,7 +68,7 @@ export type BugReportResponse = {
   message: string;
 };
 
-export type SurveySubmission = { question: string; response: string }[];
+export type Question = { question: string; response: string };
 
 export type DeviceInfo = {
   version: string;
