@@ -1,0 +1,1 @@
+Combine `conjugations` and `favorites` endpoints into one

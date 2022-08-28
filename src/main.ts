@@ -19,6 +19,35 @@ import resolvers from './resolvers';
 import typeDefs from './schema';
 import SlackAPI from './datasources/slack';
 import { MongoClient } from 'mongodb';
+import {
+  BugReport,
+  bugReportResolvers,
+  conjugationResolvers,
+  Conjugations,
+  Entry,
+  entryResolvers,
+  EntrySuggestion,
+  entrySuggestionResolvers,
+  Example,
+  exampleResolvers,
+  Favorite,
+  favoriteResolvers,
+  Search,
+  searchResolvers,
+  Survey,
+  surveyResolvers,
+  WOD,
+  wodResolvers,
+} from './features';
+
+const Query = `
+  type Query {
+    _empty: String
+  }
+  type Mutation {
+    _empty: String
+  }
+`;
 
 // Source: https://github.com/ravangen/graphql-rate-limit/blob/master/examples/context/index.js
 // Creates a unique key based on ip address and endpoint being accessed
@@ -40,8 +69,30 @@ const startServer = async () => {
 
   const dbAPI = new DatabaseAPI(mongo);
   const apolloServer = new ApolloServer({
-    typeDefs: [createRateLimitTypeDef(), typeDefs],
-    resolvers,
+    typeDefs: [
+      createRateLimitTypeDef(),
+      Query,
+      BugReport,
+      Conjugations,
+      Entry,
+      EntrySuggestion,
+      Example,
+      Favorite,
+      Search,
+      Survey,
+      WOD,
+    ],
+    resolvers: {
+      ...bugReportResolvers,
+      ...conjugationResolvers,
+      ...entryResolvers,
+      ...entrySuggestionResolvers,
+      ...exampleResolvers,
+      ...favoriteResolvers,
+      ...searchResolvers,
+      ...surveyResolvers,
+      ...wodResolvers,
+    },
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     context: ({ req }) => ({ ip: req.ip }),
     schemaDirectives: {
