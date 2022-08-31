@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server';
 
-export const typeDef = gql`
+const typeDef = gql`
   extend type Query {
     search(query: String!, cursor: Int): Result!
   }
@@ -11,8 +11,4 @@ export const typeDef = gql`
   }
 `;
 
-export const resolvers = {
-  Query: {
-    search: () => {},
-  },
-};
+export default typeDef;

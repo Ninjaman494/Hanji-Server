@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server';
 
-export const typeDef = gql`
+const typeDef = gql`
   extend type Mutation {
     sendBugReport(
       feedback: String!
@@ -36,8 +36,4 @@ export const typeDef = gql`
   }
 `;
 
-export const resolvers = {
-  Mutation: {
-    sendBugReport: () => {},
-  },
-};
+export default typeDef;

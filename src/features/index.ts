@@ -1,21 +1,21 @@
 export {
-  typeDef as BugReport,
   resolvers as bugReportResolvers,
+  typeDefs as BugReport,
 } from './bugReport';
 export {
-  typeDef as Conjugations,
   resolvers as conjugationResolvers,
+  typeDefs as Conjugation,
 } from './conjugation';
-export { typeDef as Entry, resolvers as entryResolvers } from './entry';
+export { resolvers as entryResolvers, typeDefs as Entry } from './entry';
 export {
-  typeDef as EntrySuggestion,
   resolvers as entrySuggestionResolvers,
+  typeDefs as EntrySuggestion,
 } from './entrySuggestion';
-export { typeDef as Example, resolvers as exampleResolvers } from './example';
+export { resolvers as exampleResolvers, typeDefs as Example } from './example';
 export {
-  typeDef as Favorite,
   resolvers as favoriteResolvers,
+  typeDefs as Favorite,
 } from './favorite';
-export { typeDef as Search, resolvers as searchResolvers } from './search';
-export { typeDef as Survey, resolvers as surveyResolvers } from './survey';
-export { typeDef as WOD, resolvers as wodResolvers } from './wod';
+export { resolvers as searchResolvers, typeDefs as Search } from './search';
+export { resolvers as surveyResolvers, typeDefs as Survey } from './survey';
+export { resolvers as wodResolvers, typeDefs as WOD } from './wod';

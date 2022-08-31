@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server';
 
-export const typeDef = gql`
+const typeDef = gql`
   extend type Query {
     favorites(
       stem: String!
@@ -17,8 +17,4 @@ export const typeDef = gql`
   }
 `;
 
-export const resolvers = {
-  Query: {
-    favorites: () => {},
-  },
-};
+export default typeDef;

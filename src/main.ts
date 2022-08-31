@@ -21,24 +21,24 @@ import SlackAPI from './datasources/slack';
 import { MongoClient } from 'mongodb';
 import {
   BugReport,
+  Entry,
+  EntrySuggestion,
+  Example,
+  Favorite,
+  Search,
+  Survey,
+  WOD,
   bugReportResolvers,
   conjugationResolvers,
-  Conjugations,
-  Entry,
   entryResolvers,
-  EntrySuggestion,
   entrySuggestionResolvers,
-  Example,
   exampleResolvers,
-  Favorite,
   favoriteResolvers,
-  Search,
   searchResolvers,
-  Survey,
   surveyResolvers,
-  WOD,
   wodResolvers,
-} from './features';
+  Conjugation,
+} from 'features';
 
 const Query = `
   type Query {
@@ -73,7 +73,7 @@ const startServer = async () => {
       createRateLimitTypeDef(),
       Query,
       BugReport,
-      Conjugations,
+      Conjugation,
       Entry,
       EntrySuggestion,
       Example,

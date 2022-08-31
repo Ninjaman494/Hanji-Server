@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server';
 
-export const typeDef = gql`
+const typeDef = gql`
   extend type Query {
     entrySuggestions: [EntrySuggestion]!
     entrySuggestion(id: ID!): EntrySuggestion!
@@ -42,15 +42,4 @@ export const typeDef = gql`
   }
 `;
 
-export const resolvers = {
-  Query: {
-    entrySuggestions: () => {},
-    entrySuggestion: () => {},
-  },
-  Mutation: {
-    createEntrySuggestion: () => {},
-    editEntrySuggestion: () => {},
-    applyEntrySuggestion: () => {},
-    deleteEntrySuggestion: () => {},
-  },
-};
+export default typeDef;

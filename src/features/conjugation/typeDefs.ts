@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server';
 
-export const typeDef = gql`
+const typeDef = gql`
   extend type Query {
     conjugations(
       stem: String!
@@ -42,11 +42,4 @@ export const typeDef = gql`
   }
 `;
 
-export const resolvers = {
-  Query: {
-    conjugations: () => {},
-    conjugationTypes: () => {},
-    conjugationNames: () => {},
-    stems: () => {},
-  },
-};
+export default typeDef;

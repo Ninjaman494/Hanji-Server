@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server';
 
-export const typeDef = gql`
+const typeDef = gql`
   extend type Mutation {
     createSurveySubmission(submission: [Question]!): BugReportResponse!
   }
@@ -11,8 +11,4 @@ export const typeDef = gql`
   }
 `;
 
-export const resolvers = {
-  Mutation: {
-    createSurveySubmission: () => {},
-  },
-};
+export default typeDef;

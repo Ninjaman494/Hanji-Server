@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server';
 
-export const typeDef = gql`
+const typeDef = gql`
   extend type Query {
     examples(id: ID!): [Example]!
   }
@@ -16,8 +16,4 @@ export const typeDef = gql`
   }
 `;
 
-export const resolvers = {
-  Query: {
-    examples: () => {},
-  },
-};
+export default typeDef;
