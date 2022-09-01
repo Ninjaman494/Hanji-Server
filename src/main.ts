@@ -40,6 +40,7 @@ import {
   Conjugation,
 } from 'features';
 import { merge } from 'lodash';
+import { connectDB } from 'datasources/databaseWrapper';
 
 const Query = `
   type Query {
@@ -65,8 +66,7 @@ const startServer = async () => {
   const expressApp = express();
   const httpServer = createServer(expressApp);
 
-  const mongo = new MongoClient(process.env.MONGO_URL);
-  await mongo.connect();
+  const mongo = await connectDB();
 
   const dbAPI = new DatabaseAPI(mongo);
   const apolloServer = new ApolloServer({
