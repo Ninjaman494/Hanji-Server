@@ -1,9 +1,12 @@
-const resolvers = {
+import { Resolvers } from 'generated/graphql';
+import conjugator from 'korean/conjugator';
+
+const resolvers: Resolvers = {
   Query: {
-    conjugations: () => {},
-    conjugationTypes: () => {},
-    conjugationNames: () => {},
-    stems: () => {},
+    conjugations: () => [],
+    conjugationTypes: () => Array.from(conjugator.getTypes()),
+    conjugationNames: () => [],
+    stems: () => [],
   },
 };
 

@@ -39,6 +39,7 @@ import {
   wodResolvers,
   Conjugation,
 } from 'features';
+import { merge } from 'lodash';
 
 const Query = `
   type Query {
@@ -82,17 +83,17 @@ const startServer = async () => {
       Survey,
       WOD,
     ],
-    resolvers: {
-      ...bugReportResolvers,
-      ...conjugationResolvers,
-      ...entryResolvers,
-      ...entrySuggestionResolvers,
-      ...exampleResolvers,
-      ...favoriteResolvers,
-      ...searchResolvers,
-      ...surveyResolvers,
-      ...wodResolvers,
-    },
+    resolvers: merge(
+      bugReportResolvers,
+      conjugationResolvers,
+      entryResolvers,
+      entrySuggestionResolvers,
+      exampleResolvers,
+      favoriteResolvers,
+      searchResolvers,
+      surveyResolvers,
+      wodResolvers,
+    ),
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     context: ({ req }) => ({ ip: req.ip }),
     schemaDirectives: {
