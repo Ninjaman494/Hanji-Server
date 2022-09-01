@@ -1,3 +1,5 @@
+import { Tense } from 'datasources/types';
+import { SpeechLevel } from 'datasources/types';
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -5,6 +7,7 @@ export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K]
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
+export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -12,6 +15,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
 
@@ -225,20 +229,9 @@ export type Result = {
   results: Array<Maybe<Entry>>;
 };
 
-export enum SpeechLevel {
-  FormalHigh = 'FORMAL_HIGH',
-  FormalLow = 'FORMAL_LOW',
-  InformalHigh = 'INFORMAL_HIGH',
-  InformalLow = 'INFORMAL_LOW',
-  None = 'NONE'
-}
+export { SpeechLevel };
 
-export enum Tense {
-  Future = 'FUTURE',
-  None = 'NONE',
-  Past = 'PAST',
-  Present = 'PRESENT'
-}
+export { Tense };
 
 export type AdditionalEntityFields = {
   path?: InputMaybe<Scalars['String']>;
@@ -505,6 +498,10 @@ export type ResultResolvers<ContextType = any, ParentType extends ResolversParen
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SpeechLevelResolvers = EnumResolverSignature<{ FORMAL_HIGH?: any, FORMAL_LOW?: any, INFORMAL_HIGH?: any, INFORMAL_LOW?: any, NONE?: any }, ResolversTypes['SpeechLevel']>;
+
+export type TenseResolvers = EnumResolverSignature<{ FUTURE?: any, NONE?: any, PAST?: any, PRESENT?: any }, ResolversTypes['Tense']>;
+
 export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
   name: 'Upload';
 }
@@ -519,6 +516,8 @@ export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Result?: ResultResolvers<ContextType>;
+  SpeechLevel?: SpeechLevelResolvers;
+  Tense?: TenseResolvers;
   Upload?: GraphQLScalarType;
 };
 

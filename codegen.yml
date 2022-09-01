@@ -3,10 +3,11 @@ schema: "http://localhost:4000/graphql"
 documents: null
 generates:
   src/generated/graphql.ts:
+    config:
+      enumValues:
+        Tense: datasources/types#Tense
+        SpeechLevel: datasources/types#SpeechLevel
     plugins:
       - "typescript"
       - "typescript-resolvers"
       - "typescript-mongodb"
-  ./graphql.schema.json:
-    plugins:
-      - "introspection"
