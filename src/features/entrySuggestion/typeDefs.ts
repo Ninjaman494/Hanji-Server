@@ -1,21 +1,16 @@
 import { gql } from 'apollo-server';
 
+/**
+ * This feature is deprecated. We're only
+ * supporting createEntrySuggestions
+ * because it's used in older versions of
+ * the app
+ */
 const typeDef = gql`
-  extend type Query {
-    entrySuggestions: [EntrySuggestion]!
-    entrySuggestion(id: ID!): EntrySuggestion!
-  }
-
   extend type Mutation {
     createEntrySuggestion(
       suggestion: EntrySuggestionInput!
     ): EntrySuggestionResponse!
-    editEntrySuggestion(
-      id: ID!
-      suggestion: EntrySuggestionInput!
-    ): EntrySuggestionResponse!
-    applyEntrySuggestion(id: ID!): EntrySuggestionResponse!
-    deleteEntrySuggestion(id: ID!): EntrySuggestionResponse!
   }
 
   type EntrySuggestion {

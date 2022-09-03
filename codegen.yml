@@ -10,4 +10,3 @@ generates:
     plugins:
       - "typescript"
       - "typescript-resolvers"
-      - "typescript-mongodb"

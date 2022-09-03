@@ -15,7 +15,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The `Upload` scalar type represents a file upload. */
   Upload: any;
 };
 
@@ -110,17 +109,9 @@ export type FavInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   _empty?: Maybe<Scalars['String']>;
-  applyEntrySuggestion: EntrySuggestionResponse;
   createEntrySuggestion: EntrySuggestionResponse;
   createSurveySubmission: BugReportResponse;
-  deleteEntrySuggestion: EntrySuggestionResponse;
-  editEntrySuggestion: EntrySuggestionResponse;
   sendBugReport: BugReportResponse;
-};
-
-
-export type MutationApplyEntrySuggestionArgs = {
-  id: Scalars['ID'];
 };
 
 
@@ -131,17 +122,6 @@ export type MutationCreateEntrySuggestionArgs = {
 
 export type MutationCreateSurveySubmissionArgs = {
   submission: Array<InputMaybe<Question>>;
-};
-
-
-export type MutationDeleteEntrySuggestionArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationEditEntrySuggestionArgs = {
-  id: Scalars['ID'];
-  suggestion: EntrySuggestionInput;
 };
 
 
@@ -161,9 +141,6 @@ export type Query = {
   conjugations: Array<Maybe<Conjugation>>;
   entries: Array<Maybe<Entry>>;
   entry?: Maybe<Entry>;
-  entrySuggestion: EntrySuggestion;
-  entrySuggestions: Array<Maybe<EntrySuggestion>>;
-  examples: Array<Maybe<Example>>;
   favorites: Array<Maybe<Conjugation>>;
   search: Result;
   stems: Array<Maybe<Scalars['String']>>;
@@ -186,16 +163,6 @@ export type QueryEntriesArgs = {
 
 
 export type QueryEntryArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryEntrySuggestionArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryExamplesArgs = {
   id: Scalars['ID'];
 };
 
@@ -232,11 +199,6 @@ export type Result = {
 export { SpeechLevel };
 
 export { Tense };
-
-export type AdditionalEntityFields = {
-  path?: InputMaybe<Scalars['String']>;
-  type?: InputMaybe<Scalars['String']>;
-};
 
 
 
@@ -307,53 +269,51 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  BugReportResponse: ResolverTypeWrapper<BugReportResponse>;
-  String: ResolverTypeWrapper<Scalars['String']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  BugReportResponse: ResolverTypeWrapper<BugReportResponse>;
   BugReportType: BugReportType;
   Conjugation: ResolverTypeWrapper<Conjugation>;
   DeviceInfo: DeviceInfo;
   Entry: ResolverTypeWrapper<Entry>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
   EntrySuggestion: ResolverTypeWrapper<EntrySuggestion>;
   EntrySuggestionInput: EntrySuggestionInput;
   EntrySuggestionResponse: ResolverTypeWrapper<EntrySuggestionResponse>;
   Example: ResolverTypeWrapper<Example>;
   ExampleInput: ExampleInput;
   FavInput: FavInput;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   Question: Question;
   Result: ResolverTypeWrapper<Result>;
   SpeechLevel: SpeechLevel;
+  String: ResolverTypeWrapper<Scalars['String']>;
   Tense: Tense;
   Upload: ResolverTypeWrapper<Scalars['Upload']>;
-  AdditionalEntityFields: AdditionalEntityFields;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  BugReportResponse: BugReportResponse;
-  String: Scalars['String'];
   Boolean: Scalars['Boolean'];
+  BugReportResponse: BugReportResponse;
   Conjugation: Conjugation;
   DeviceInfo: DeviceInfo;
   Entry: Entry;
-  ID: Scalars['ID'];
   EntrySuggestion: EntrySuggestion;
   EntrySuggestionInput: EntrySuggestionInput;
   EntrySuggestionResponse: EntrySuggestionResponse;
   Example: Example;
   ExampleInput: ExampleInput;
   FavInput: FavInput;
+  ID: Scalars['ID'];
+  Int: Scalars['Int'];
   Mutation: {};
   Query: {};
-  Int: Scalars['Int'];
   Question: Question;
   Result: Result;
+  String: Scalars['String'];
   Upload: Scalars['Upload'];
-  AdditionalEntityFields: AdditionalEntityFields;
 };
 
 export type RateLimitDirectiveArgs = {
@@ -362,53 +322,6 @@ export type RateLimitDirectiveArgs = {
 };
 
 export type RateLimitDirectiveResolver<Result, Parent, ContextType = any, Args = RateLimitDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type UnionDirectiveArgs = {
-  discriminatorField?: Maybe<Scalars['String']>;
-  additionalFields?: Maybe<Array<Maybe<AdditionalEntityFields>>>;
-};
-
-export type UnionDirectiveResolver<Result, Parent, ContextType = any, Args = UnionDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type AbstractEntityDirectiveArgs = {
-  discriminatorField: Scalars['String'];
-  additionalFields?: Maybe<Array<Maybe<AdditionalEntityFields>>>;
-};
-
-export type AbstractEntityDirectiveResolver<Result, Parent, ContextType = any, Args = AbstractEntityDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type EntityDirectiveArgs = {
-  embedded?: Maybe<Scalars['Boolean']>;
-  additionalFields?: Maybe<Array<Maybe<AdditionalEntityFields>>>;
-};
-
-export type EntityDirectiveResolver<Result, Parent, ContextType = any, Args = EntityDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type ColumnDirectiveArgs = {
-  overrideType?: Maybe<Scalars['String']>;
-};
-
-export type ColumnDirectiveResolver<Result, Parent, ContextType = any, Args = ColumnDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type IdDirectiveArgs = { };
-
-export type IdDirectiveResolver<Result, Parent, ContextType = any, Args = IdDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type LinkDirectiveArgs = {
-  overrideType?: Maybe<Scalars['String']>;
-};
-
-export type LinkDirectiveResolver<Result, Parent, ContextType = any, Args = LinkDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type EmbeddedDirectiveArgs = { };
-
-export type EmbeddedDirectiveResolver<Result, Parent, ContextType = any, Args = EmbeddedDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type MapDirectiveArgs = {
-  path: Scalars['String'];
-};
-
-export type MapDirectiveResolver<Result, Parent, ContextType = any, Args = MapDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type BugReportResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['BugReportResponse'] = ResolversParentTypes['BugReportResponse']> = {
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -468,11 +381,8 @@ export type ExampleResolvers<ContextType = any, ParentType extends ResolversPare
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  applyEntrySuggestion?: Resolver<ResolversTypes['EntrySuggestionResponse'], ParentType, ContextType, RequireFields<MutationApplyEntrySuggestionArgs, 'id'>>;
   createEntrySuggestion?: Resolver<ResolversTypes['EntrySuggestionResponse'], ParentType, ContextType, RequireFields<MutationCreateEntrySuggestionArgs, 'suggestion'>>;
   createSurveySubmission?: Resolver<ResolversTypes['BugReportResponse'], ParentType, ContextType, RequireFields<MutationCreateSurveySubmissionArgs, 'submission'>>;
-  deleteEntrySuggestion?: Resolver<ResolversTypes['EntrySuggestionResponse'], ParentType, ContextType, RequireFields<MutationDeleteEntrySuggestionArgs, 'id'>>;
-  editEntrySuggestion?: Resolver<ResolversTypes['EntrySuggestionResponse'], ParentType, ContextType, RequireFields<MutationEditEntrySuggestionArgs, 'id' | 'suggestion'>>;
   sendBugReport?: Resolver<ResolversTypes['BugReportResponse'], ParentType, ContextType, RequireFields<MutationSendBugReportArgs, 'deviceInfo' | 'feedback' | 'type'>>;
 };
 
@@ -483,9 +393,6 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   conjugations?: Resolver<Array<Maybe<ResolversTypes['Conjugation']>>, ParentType, ContextType, RequireFields<QueryConjugationsArgs, 'honorific' | 'isAdj' | 'stem'>>;
   entries?: Resolver<Array<Maybe<ResolversTypes['Entry']>>, ParentType, ContextType, RequireFields<QueryEntriesArgs, 'term'>>;
   entry?: Resolver<Maybe<ResolversTypes['Entry']>, ParentType, ContextType, RequireFields<QueryEntryArgs, 'id'>>;
-  entrySuggestion?: Resolver<ResolversTypes['EntrySuggestion'], ParentType, ContextType, RequireFields<QueryEntrySuggestionArgs, 'id'>>;
-  entrySuggestions?: Resolver<Array<Maybe<ResolversTypes['EntrySuggestion']>>, ParentType, ContextType>;
-  examples?: Resolver<Array<Maybe<ResolversTypes['Example']>>, ParentType, ContextType, RequireFields<QueryExamplesArgs, 'id'>>;
   favorites?: Resolver<Array<Maybe<ResolversTypes['Conjugation']>>, ParentType, ContextType, RequireFields<QueryFavoritesArgs, 'favorites' | 'isAdj' | 'stem'>>;
   search?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<QuerySearchArgs, 'query'>>;
   stems?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType, RequireFields<QueryStemsArgs, 'term'>>;
@@ -523,14 +430,4 @@ export type Resolvers<ContextType = any> = {
 
 export type DirectiveResolvers<ContextType = any> = {
   rateLimit?: RateLimitDirectiveResolver<any, any, ContextType>;
-  union?: UnionDirectiveResolver<any, any, ContextType>;
-  abstractEntity?: AbstractEntityDirectiveResolver<any, any, ContextType>;
-  entity?: EntityDirectiveResolver<any, any, ContextType>;
-  column?: ColumnDirectiveResolver<any, any, ContextType>;
-  id?: IdDirectiveResolver<any, any, ContextType>;
-  link?: LinkDirectiveResolver<any, any, ContextType>;
-  embedded?: EmbeddedDirectiveResolver<any, any, ContextType>;
-  map?: MapDirectiveResolver<any, any, ContextType>;
 };
-
-import { ObjectId } from 'mongodb';

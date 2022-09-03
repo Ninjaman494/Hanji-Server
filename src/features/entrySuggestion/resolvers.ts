@@ -1,13 +1,8 @@
-const resolvers = {
-  Query: {
-    entrySuggestions: () => {},
-    entrySuggestion: () => {},
-  },
+import { Resolvers } from 'generated/graphql';
+
+const resolvers: Resolvers = {
   Mutation: {
     createEntrySuggestion: () => {},
-    editEntrySuggestion: () => {},
-    applyEntrySuggestion: () => {},
-    deleteEntrySuggestion: () => {},
   },
 };
 
