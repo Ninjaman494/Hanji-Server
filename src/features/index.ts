@@ -11,7 +11,6 @@ export {
   resolvers as entrySuggestionResolvers,
   typeDefs as EntrySuggestion,
 } from './entrySuggestion';
-export { resolvers as exampleResolvers, typeDefs as Example } from './example';
 export {
   resolvers as favoriteResolvers,
   typeDefs as Favorite,

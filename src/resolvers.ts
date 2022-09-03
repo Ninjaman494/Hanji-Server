@@ -1,7 +1,5 @@
 export default {
   Query: {
-    examples: (_, { id }, { dataSources }) =>
-      dataSources.databaseAPI.fetchExamples(id),
     favorites: (_, { stem, isAdj, regular, favorites }, { dataSources }) =>
       dataSources.conjugationAPI.fetchFavorites(
         stem,

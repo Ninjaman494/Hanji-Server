@@ -40,6 +40,11 @@ const typeDef = gql`
     synonyms: [String]
     examples: [ExampleInput]
   }
+
+  input ExampleInput {
+    sentence: String!
+    translation: String!
+  }
 `;
 
 export default typeDef;

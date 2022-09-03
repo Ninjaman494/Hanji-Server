@@ -20,9 +20,6 @@ const resolvers: Resolvers = {
       return !!results ? entryReducer(results[0]) : null;
     },
   },
-  // Entry: {
-  //   examples: async () => {},
-  // },
 };
 
 export default resolvers;

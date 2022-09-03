@@ -17,6 +17,11 @@ const typeDef = gql`
     regular: Boolean
     note: String
   }
+
+  type Example {
+    sentence: String!
+    translation: String!
+  }
 `;
 
 export default typeDef;
