@@ -18,9 +18,11 @@ export const wordsCollection = () => {
   return mongo.db(DB_NAME).collection<EntryDoc>('words');
 };
 
-export const entrySuggestionsCollection = async () => {
+export const entrySuggestionsCollection = () => {
   if (!mongo) throw new Error('Database not connected');
-  return mongo.db(DB_NAME).collection<EntrySuggestionDoc>('words-suggestions');
+  return mongo
+    .db(DB_NAME)
+    .collection<Omit<EntrySuggestionDoc, '_id'>>('words-suggestions');
 };
 
 export const surveySubmissionsCollection = async () => {
