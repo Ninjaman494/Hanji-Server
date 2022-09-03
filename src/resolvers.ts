@@ -1,9 +1,5 @@
 export default {
   Query: {
-    entries: (_, { term }, { dataSources }) =>
-      dataSources.databaseAPI.fetchEntries(term),
-    entry: (_, { id }, { dataSources }) =>
-      dataSources.databaseAPI.fetchEntry(id),
     examples: (_, { id }, { dataSources }) =>
       dataSources.databaseAPI.fetchExamples(id),
     favorites: (_, { stem, isAdj, regular, favorites }, { dataSources }) =>
