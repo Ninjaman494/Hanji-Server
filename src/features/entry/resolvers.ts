@@ -1,12 +1,6 @@
-import { EntryDoc } from 'datasources/database';
 import { wordsCollection } from 'datasources/databaseWrapper';
-import { getSafeID } from 'features/utils';
-import { Entry, Resolvers } from 'generated/graphql';
-
-const entryReducer = ({ _id, ...rest }: EntryDoc): Entry => ({
-  id: _id.toString(),
-  ...rest,
-});
+import { entryReducer, getSafeID } from 'features/utils';
+import { Resolvers } from 'generated/graphql';
 
 const resolvers: Resolvers = {
   Query: {
