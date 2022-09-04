@@ -11,7 +11,7 @@ const typeDef = gql`
   }
 
   input FavInput {
-    name: String!
+    name: String # Unused, but have to keep b/c in old schema
     conjugationName: String!
     honorific: Boolean!
   }

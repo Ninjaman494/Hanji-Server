@@ -1,50 +1,37 @@
-import { Conjugation, Resolvers, SpeechLevel, Tense } from 'generated/graphql';
-import conjugator, { Conjugation as RawConjugation } from 'korean/conjugator';
+import { getConjugations } from 'features/favorite/resolvers';
+import { conjugationReducer } from 'features/utils';
+import {
+  Conjugation,
+  FavInput,
+  Resolvers,
+  SpeechLevel,
+  Tense,
+} from 'generated/graphql';
+import conjugator from 'korean/conjugator';
 import * as stemmer from 'korean/stemmer';
-
-const conjugationReducer = (conjugation: RawConjugation): Conjugation => {
-  const {
-    conjugation_name,
-    conjugated,
-    romanized,
-    tense,
-    speechLevel,
-    ...rest
-  } = conjugation;
-
-  return {
-    name: conjugation_name,
-    conjugation: conjugated,
-    romanization: romanized,
-    tense: tense as Tense,
-    speechLevel: speechLevel as SpeechLevel,
-    ...rest,
-  };
-};
 
 const resolvers: Resolvers = {
   Query: {
     conjugations: (_, { stem, isAdj, honorific, regular, conjugations }) => {
+      // Use favorites' method to get specific conjugations because it's more performant
+      if (!!conjugations) {
+        const conjArgs: FavInput[] = conjugations.map((conjugationName) => ({
+          conjugationName,
+          honorific,
+          regular,
+        }));
+        return getConjugations(stem, isAdj, regular, conjArgs);
+      }
+
       if (regular === null || regular === undefined) {
         // returns either 'regular verb' or type of irregular
         regular = conjugator.verb_type(stem, false) === 'regular verb';
       }
 
-      const conjNames = conjugations?.map((name) => name.toLowerCase());
-
       const data: Conjugation[] = [];
-      conjugator.conjugate(stem, regular, isAdj, honorific, (conjugations) => {
-        conjugations.forEach((c) => {
-          const conjugation = conjugationReducer(c);
-          // If a list of conjugations was provided, check if this conjugation is part of the list
-          if (conjNames != null && conjNames.includes(conjugation.name)) {
-            data.push(conjugation);
-          } else if (conjNames == null) {
-            // No list was provided, add all conjugations
-            data.push(conjugation);
-          }
-        });
-      });
+      conjugator.conjugate(stem, regular, isAdj, honorific, (conjugations) =>
+        conjugations.forEach((c) => data.push(conjugationReducer(c))),
+      );
       return data;
     },
     conjugationTypes: () => Array.from(conjugator.getTypes()),

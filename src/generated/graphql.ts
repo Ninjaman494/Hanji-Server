@@ -103,7 +103,7 @@ export type ExampleInput = {
 export type FavInput = {
   conjugationName: Scalars['String'];
   honorific: Scalars['Boolean'];
-  name: Scalars['String'];
+  name?: InputMaybe<Scalars['String']>;
 };
 
 export type Mutation = {
