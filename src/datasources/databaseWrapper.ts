@@ -25,9 +25,9 @@ export const entrySuggestionsCollection = () => {
     .collection<Omit<EntrySuggestionDoc, '_id'>>('words-suggestions');
 };
 
-export const surveySubmissionsCollection = async () => {
+export const surveySubmissionsCollection = () => {
   if (!mongo) throw new Error('Database not connected');
   return mongo
     .db(DB_NAME)
-    .collection<SurveySubmissionDoc>('survey-submissions');
+    .collection<Omit<SurveySubmissionDoc, '_id'>>('survey-submissions');
 };
