@@ -1,5 +1,5 @@
-import { EntryDoc } from 'datasources/database';
 import { wordsCollection } from 'datasources/databaseWrapper';
+import { EntryDoc } from 'datasources/types';
 import { entryReducer } from 'features/utils';
 import { Resolvers } from 'generated/graphql';
 

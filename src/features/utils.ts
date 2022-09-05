@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb';
 import { is_hangeul } from 'korean/hangeul';
 import { Conjugation as RawConjugation } from 'korean/conjugator';
-import { EntryDoc, Id } from 'datasources/database';
 import { Conjugation, Entry, SpeechLevel, Tense } from 'generated/graphql';
+import { EntryDoc, Id } from 'datasources/types';
 
 /** Check if id is ObjectID or old form */
 export const getSafeID = (id: Id): ObjectId => {

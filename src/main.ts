@@ -12,13 +12,7 @@ import {
   defaultKeyGenerator,
 } from 'graphql-rate-limit-directive';
 import { graphqlUploadExpress } from 'graphql-upload';
-import DatabaseAPI from './datasources/database';
-import ConjugationAPI from './datasources/conjugation';
-import SearchAPI from './datasources/search';
-import resolvers from './resolvers';
 import typeDefs from './schema';
-import SlackAPI from './datasources/slack';
-import { MongoClient } from 'mongodb';
 import {
   BugReport,
   Entry,
@@ -66,7 +60,6 @@ const startServer = async () => {
 
   const mongo = await connectDB();
 
-  const dbAPI = new DatabaseAPI(mongo);
   const apolloServer = new ApolloServer({
     typeDefs: [
       createRateLimitTypeDef(),
@@ -97,12 +90,6 @@ const startServer = async () => {
         keyGenerator,
       }),
     },
-    dataSources: () => ({
-      databaseAPI: dbAPI,
-      conjugationAPI: new ConjugationAPI(),
-      searchAPI: new SearchAPI(dbAPI),
-      slackAPI: new SlackAPI(),
-    }),
   } as any);
 
   await apolloServer.start();

@@ -1,8 +1,7 @@
 import { MongoClient } from 'mongodb';
-import { EntryDoc, EntrySuggestionDoc, SurveySubmissionDoc } from './database';
+import { EntryDoc, EntrySuggestionDoc, SurveySubmissionDoc } from './types';
 
 const DB_NAME = 'hanji';
-
 let mongo: MongoClient;
 
 export const connectDB = async () => {
