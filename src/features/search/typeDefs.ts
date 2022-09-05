@@ -6,7 +6,7 @@ const typeDef = gql`
   }
 
   type Result {
-    cursor: String
+    cursor: Int
     results: [Entry]!
   }
 `;
