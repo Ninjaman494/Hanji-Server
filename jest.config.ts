@@ -17,4 +17,5 @@ export default {
   modulePathIgnorePatterns: ['/build'],
   watchPathIgnorePatterns: ['globalConfig'],
   collectCoverageFrom: ['src/**/*.ts', 'src/**/*.js', '!src/scripts/*'],
+  modulePaths: ['<rootDir>/src'],
 };
