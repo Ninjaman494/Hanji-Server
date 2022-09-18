@@ -11,7 +11,7 @@ const resolvers: Resolvers = {
     entry: async (_, { id }) => {
       const _id = getSafeID(id);
       const results = await wordsCollection().find({ _id }).toArray();
-      return !!results ? entryReducer(results[0]) : null;
+      return results?.length ? entryReducer(results[0]) : null;
     },
   },
 };
