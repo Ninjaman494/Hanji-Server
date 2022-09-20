@@ -16,6 +16,7 @@ export const entryReducer = ({ _id, ...rest }: EntryDoc): Entry => ({
 export const conjugationReducer = ({
   conjugation_name,
   conjugated,
+  infinitive, // Not exposed in API
   romanized,
   tense,
   speechLevel,
