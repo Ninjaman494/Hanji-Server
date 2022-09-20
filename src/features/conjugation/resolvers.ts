@@ -13,7 +13,9 @@ import * as stemmer from 'korean/stemmer';
 const resolvers: Resolvers = {
   Query: {
     conjugations: (_, { stem, isAdj, honorific, regular, conjugations }) => {
-      // Use favorites' method to get specific conjugations because it's more performant
+      // Use favorites' method to get specific conjugations because it's
+      // more performant.
+      // TODO - In the future favorites should be merged with conjugations
       if (!!conjugations) {
         const conjArgs: FavInput[] = conjugations.map((conjugationName) => ({
           conjugationName,
