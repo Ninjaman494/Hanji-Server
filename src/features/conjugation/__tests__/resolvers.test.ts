@@ -1,4 +1,4 @@
-import { CONJUGATIONS } from 'datasources/__tests__/__mocks__/conjugationsSnapshot';
+import { CONJUGATIONS } from './conjugationsSnapshot';
 import conjugator from 'korean/conjugator';
 import resolvers from '../resolvers';
 
