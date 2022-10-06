@@ -1,3 +1,5 @@
+import { gql } from 'apollo-server';
+
 export {
   resolvers as bugReportResolvers,
   typeDefs as BugReport,
@@ -18,3 +20,12 @@ export {
 export { resolvers as searchResolvers, typeDefs as Search } from './search';
 export { resolvers as surveyResolvers, typeDefs as Survey } from './survey';
 export { resolvers as wodResolvers, typeDefs as WOD } from './wod';
+
+export const General = gql`
+  type Query {
+    _empty: String
+  }
+  type Mutation {
+    _empty: String
+  }
+`;
