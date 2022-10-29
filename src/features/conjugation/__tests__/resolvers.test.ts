@@ -1,5 +1,9 @@
-import { CONJUGATIONS } from './conjugationsSnapshot';
-import conjugator from 'korean/conjugator';
+import {
+  CONJUGATIONS,
+  CONJUGATION_NAMES,
+  CONJUGATION_TYPES,
+  STEMS,
+} from './conjugationsSnapshot';
 import resolvers from '../resolvers';
 
 describe('conjugation resolver', () => {
@@ -39,12 +43,12 @@ describe('conjugation resolver', () => {
 
   it('resolves conjugationTypes queries', () => {
     const response = (resolvers.Query.conjugationTypes as any)();
-    expect(response).toEqual(Array.from(conjugator.getTypes()));
+    expect(response).toEqual(CONJUGATION_TYPES);
   });
 
   it('resolves conjugationNames queries', () => {
     const response = (resolvers.Query.conjugationNames as any)();
-    expect(response).toEqual(Array.from(conjugator.getNames()));
+    expect(response).toEqual(CONJUGATION_NAMES);
   });
 
   it('resolves stems queries', () => {
@@ -56,6 +60,6 @@ describe('conjugation resolver', () => {
     const multipleStems = (resolvers.Query.stems as any)(null, {
       term: '갈 거예요',
     });
-    expect(multipleStems).toEqual(['갈다', '갛다', '가다']);
+    expect(multipleStems).toEqual(STEMS);
   });
 });
