@@ -37,63 +37,97 @@ describe('search resolver', () => {
 
   afterAll(async () => await mongoClient.close());
 
-  it('resolves English search queries', async () => {
-    const { results, cursor } = await (resolvers.Query.search as any)(null, {
-      query: 'kimchi',
+  describe('English', () => {
+    it('resolves search queries', async () => {
+      const { results, cursor } = await (resolvers.Query.search as any)(null, {
+        query: 'kimchi',
+      });
+
+      const { _id, ...rest } = entries[0];
+      expect(results.length).toEqual(1);
+      expect(cursor).toEqual(1);
+      expect(omit(results[0], ['score'])).toEqual({
+        id: _id.toString(),
+        ...rest,
+      });
     });
 
-    const { _id, ...rest } = entries[0];
-    expect(results.length).toEqual(1);
-    expect(cursor).toEqual(1);
-    expect(omit(results[0], ['score'])).toEqual({
-      id: _id.toString(),
-      ...rest,
+    it('can paginate search results', async () => {
+      // First page
+      const { results, cursor } = await (resolvers.Query.search as any)(null, {
+        query: 'to go',
+      });
+
+      const toGoEntry = omit(entries[1], ['score', '_id']);
+      const toGoOutEntry = omit(entries[2], ['score', '_id']);
+
+      expect(results.length).toEqual(20);
+      expect(cursor).toEqual(20);
+      expect(omit(results[0], ['score', 'id'])).toEqual(toGoEntry);
+      expect(omit(results[1], ['score', 'id'])).toEqual(toGoOutEntry);
+
+      // Second page
+      const { results: paginatedResults, cursor: paginatedCursor } = await (
+        resolvers.Query.search as any
+      )(null, { query: 'to go', cursor });
+
+      expect(paginatedResults.length).toEqual(1);
+      expect(paginatedCursor).toEqual(21);
+      expect(omit(paginatedResults[0], ['score', 'id'])).toEqual(toGoOutEntry);
+
+      // Last page, should be empty
+      const { results: noResults, cursor: noCursor } = await (
+        resolvers.Query.search as any
+      )(null, { query: 'to go', cursor: paginatedCursor });
+
+      expect(noResults.length).toEqual(0);
+      expect(noCursor).toEqual(-1);
     });
   });
 
-  it('resolves Korean search queries', async () => {
-    const { results, cursor } = await (resolvers.Query.search as any)(null, {
-      query: '김지',
+  describe('Korean', () => {
+    it('resolves search queries', async () => {
+      const { results, cursor } = await (resolvers.Query.search as any)(null, {
+        query: '김지',
+      });
+
+      const { _id, ...rest } = entries[0];
+      expect(results.length).toEqual(1);
+      expect(cursor).toEqual(1);
+      expect(omit(results[0], ['score'])).toEqual({
+        id: _id.toString(),
+        ...rest,
+      });
     });
 
-    const { _id, ...rest } = entries[0];
-    expect(results.length).toEqual(1);
-    expect(cursor).toEqual(1);
-    expect(omit(results[0], ['score'])).toEqual({
-      id: _id.toString(),
-      ...rest,
+    it('can paginate search results', async () => {
+      // First page
+      const { results, cursor } = await (resolvers.Query.search as any)(null, {
+        query: '오다',
+      });
+
+      const entry = omit(entries[2], ['score', '_id']);
+
+      expect(results.length).toEqual(20);
+      expect(cursor).toEqual(20);
+      expect(omit(results[0], ['score', 'id'])).toEqual(entry);
+
+      // Second page (start at 19)
+      const { results: paginatedResults, cursor: paginatedCursor } = await (
+        resolvers.Query.search as any
+      )(null, { query: '오다', cursor: cursor - 1 });
+
+      expect(paginatedResults.length).toEqual(1);
+      expect(paginatedCursor).toEqual(20);
+      expect(omit(paginatedResults[0], ['score', 'id'])).toEqual(entry);
+
+      // Last page, should be empty
+      const { results: noResults, cursor: noCursor } = await (
+        resolvers.Query.search as any
+      )(null, { query: '오다', cursor: paginatedCursor });
+
+      expect(noResults.length).toEqual(0);
+      expect(noCursor).toEqual(-1);
     });
-  });
-
-  it('can paginate search results', async () => {
-    // First page
-    const { results, cursor } = await (resolvers.Query.search as any)(null, {
-      query: 'to go',
-    });
-
-    const toGoEntry = omit(entries[1], ['score', '_id']);
-    const toGoOutEntry = omit(entries[2], ['score', '_id']);
-
-    expect(results.length).toEqual(20);
-    expect(cursor).toEqual(20);
-    expect(omit(results[0], ['score', 'id'])).toEqual(toGoEntry);
-    expect(omit(results[1], ['score', 'id'])).toEqual(toGoOutEntry);
-
-    // Second page
-    const { results: paginatedResults, cursor: paginatedCursor } = await (
-      resolvers.Query.search as any
-    )(null, { query: 'to go', cursor });
-
-    expect(paginatedResults.length).toEqual(1);
-    expect(paginatedCursor).toEqual(21);
-    expect(omit(paginatedResults[0], ['score', 'id'])).toEqual(toGoOutEntry);
-
-    // Last page, should be empty
-    const { results: noResults, cursor: noCursor } = await (
-      resolvers.Query.search as any
-    )(null, { query: 'to go', cursor: paginatedCursor });
-
-    expect(noResults.length).toEqual(0);
-    expect(noCursor).toEqual(-1);
   });
 });
