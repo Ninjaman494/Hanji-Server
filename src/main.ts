@@ -12,7 +12,6 @@ import {
   defaultKeyGenerator,
 } from 'graphql-rate-limit-directive';
 import { graphqlUploadExpress } from 'graphql-upload';
-import typeDefs from './schema';
 import {
   BugReport,
   Entry,
@@ -30,18 +29,10 @@ import {
   surveyResolvers,
   wodResolvers,
   Conjugation,
+  General,
 } from 'features';
 import { merge } from 'lodash';
 import { connectDB } from 'datasources/databaseWrapper';
-
-const Query = `
-  type Query {
-    _empty: String
-  }
-  type Mutation {
-    _empty: String
-  }
-`;
 
 // Source: https://github.com/ravangen/graphql-rate-limit/blob/master/examples/context/index.js
 // Creates a unique key based on ip address and endpoint being accessed
@@ -58,12 +49,12 @@ const startServer = async () => {
   const expressApp = express();
   const httpServer = createServer(expressApp);
 
-  const mongo = await connectDB();
+  await connectDB();
 
   const apolloServer = new ApolloServer({
     typeDefs: [
       createRateLimitTypeDef(),
-      Query,
+      General,
       BugReport,
       Conjugation,
       Entry,
@@ -108,7 +99,7 @@ const startServer = async () => {
 
   const PORT = process.env.PORT || 4000;
   httpServer.listen({ port: PORT }, () => {
-    console.log('Server ready');
+    console.log(`Server ready on port ${PORT}`);
   });
 };
 

@@ -1,5 +1,4 @@
 import { ObjectId } from 'mongodb';
-import { is_hangeul } from 'korean/hangeul';
 import { Conjugation as RawConjugation } from 'korean/conjugator';
 import { Conjugation, Entry, SpeechLevel, Tense } from 'generated/graphql';
 import { EntryDoc, Id } from 'datasources/types';
@@ -16,7 +15,7 @@ export const entryReducer = ({ _id, ...rest }: EntryDoc): Entry => ({
 export const conjugationReducer = ({
   conjugation_name,
   conjugated,
-  infinitive, // Not exposed in API
+  infinitive, // eslint-disable-line @typescript-eslint/no-unused-vars -- Not exposed in API
   romanized,
   tense,
   speechLevel,
