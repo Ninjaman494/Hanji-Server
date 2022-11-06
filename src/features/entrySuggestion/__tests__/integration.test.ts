@@ -1,18 +1,10 @@
 import { ApolloServer, gql } from 'apollo-server';
-import {
-  connectDB,
-  entrySuggestionsCollection,
-} from 'datasources/databaseWrapper';
+import { entrySuggestionsCollection } from 'datasources/databaseWrapper';
 import { Entry, EntrySuggestion, General } from 'features';
-import { MongoClient, ObjectId } from 'mongodb';
+import { ENTRIES, setupMockDB, teardownDB } from 'tests/utils';
 import resolvers from '../resolvers';
 
-const entry = {
-  _id: new ObjectId(),
-  term: '가다',
-  pos: 'Verb',
-  definitions: ['to go'],
-};
+const entryID = ENTRIES[0]._id;
 
 const suggestion = {
   antonyms: ['오다'],
@@ -29,18 +21,10 @@ const server = new ApolloServer({
   resolvers,
 });
 
-let mongoClient: MongoClient;
-
 describe('entrySuggestion feature', () => {
-  beforeAll(async () => {
-    process.env.MONGO_URL = (global as any).__MONGO_URI__;
-    mongoClient = await connectDB();
-    const wordsCollection = mongoClient.db('hanji').collection('words');
-    await wordsCollection.createIndex({ definitions: 'text' });
-    await wordsCollection.insertOne(entry);
-  });
+  beforeAll(async () => await setupMockDB());
 
-  afterAll(async () => await mongoClient.close());
+  afterAll(async () => await teardownDB());
 
   it('handles createEntrySuggestion mutations', async () => {
     const query = gql`
@@ -57,7 +41,7 @@ describe('entrySuggestion feature', () => {
       variables: {
         suggestion: {
           ...suggestion,
-          entryID: entry._id.toString(),
+          entryID: entryID.toString(),
         },
       },
     });
@@ -75,7 +59,7 @@ describe('entrySuggestion feature', () => {
     expect(docs[0]).toEqual({
       ...suggestion,
       _id: expect.anything(),
-      entryID: entry._id,
+      entryID: entryID,
       synonyms: null,
     });
   });

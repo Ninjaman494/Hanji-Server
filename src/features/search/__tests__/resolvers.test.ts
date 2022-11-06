@@ -1,6 +1,6 @@
-import { connectDB } from 'datasources/databaseWrapper';
 import { omit } from 'lodash';
-import { MongoClient, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
+import { setupMockDB, teardownDB } from 'tests/utils';
 import resolvers from '../resolvers';
 
 const entries = [
@@ -24,18 +24,10 @@ const entries = [
   })),
 ];
 
-let mongoClient: MongoClient;
-
 describe('search resolver', () => {
-  beforeAll(async () => {
-    process.env.MONGO_URL = (global as any).__MONGO_URI__;
-    mongoClient = await connectDB();
-    const wordsCollection = mongoClient.db('hanji').collection('words');
-    await wordsCollection.createIndex({ definitions: 'text' });
-    await wordsCollection.insertMany(entries);
-  });
+  beforeAll(async () => await setupMockDB(entries));
 
-  afterAll(async () => await mongoClient.close());
+  afterAll(teardownDB);
 
   describe('English', () => {
     it('resolves search queries', async () => {

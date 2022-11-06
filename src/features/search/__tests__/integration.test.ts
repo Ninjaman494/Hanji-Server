@@ -1,31 +1,8 @@
 import { ApolloServer, gql } from 'apollo-server';
-import { connectDB } from 'datasources/databaseWrapper';
 import { Entry, General, Search } from 'features';
 import { omit } from 'lodash';
-import { MongoClient, ObjectId } from 'mongodb';
+import { ENTRIES, setupMockDB, teardownDB } from 'tests/utils';
 import resolvers from '../resolvers';
-
-const entries = [
-  {
-    _id: new ObjectId(),
-    term: '김지',
-    pos: 'Verb',
-    definitions: ['kimchi'],
-  },
-  {
-    _id: new ObjectId(),
-    term: '가다',
-    pos: 'Verb',
-    definitions: ['to go'],
-    antonyms: ['오다'],
-  },
-  {
-    _id: new ObjectId(),
-    term: '오다',
-    pos: 'Verb',
-    definitions: ['to go out'],
-  },
-];
 
 const query = gql`
   query Search($query: String!) {
@@ -54,18 +31,10 @@ const server = new ApolloServer({
   resolvers,
 });
 
-let mongoClient: MongoClient;
-
 describe('search feature', () => {
-  beforeAll(async () => {
-    process.env.MONGO_URL = (global as any).__MONGO_URI__;
-    mongoClient = await connectDB();
-    const wordsCollection = mongoClient.db('hanji').collection('words');
-    await wordsCollection.createIndex({ definitions: 'text' });
-    await wordsCollection.insertMany(entries);
-  });
+  beforeAll(async () => await setupMockDB());
 
-  afterAll(async () => await mongoClient.close());
+  afterAll(teardownDB);
 
   it('handles search queries in English', async () => {
     const { errors, data } = await server.executeOperation({
@@ -79,16 +48,16 @@ describe('search feature', () => {
       cursor: 2,
       results: [
         {
-          id: entries[1]._id.toString(),
-          ...omit(entries[1], ['_id']),
+          id: ENTRIES[1]._id.toString(),
+          ...omit(ENTRIES[1], ['_id']),
           synonyms: null,
           examples: null,
           note: null,
           regular: null,
         },
         {
-          id: entries[2]._id.toString(),
-          ...omit(entries[2], ['_id']),
+          id: ENTRIES[2]._id.toString(),
+          ...omit(ENTRIES[2], ['_id']),
           antonyms: null,
           synonyms: null,
           examples: null,
@@ -111,8 +80,9 @@ describe('search feature', () => {
       cursor: 1,
       results: [
         {
-          id: entries[1]._id.toString(),
-          ...omit(entries[1], ['_id']),
+          id: ENTRIES[1]._id.toString(),
+          ...omit(ENTRIES[1], ['_id']),
+          antonyms: null,
           synonyms: null,
           examples: null,
           note: null,

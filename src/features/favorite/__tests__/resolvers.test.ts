@@ -7,7 +7,6 @@ const FAVORITES = [
     romanization: 'gah-myuhn',
     tense: 'none',
     speechLevel: 'none',
-    infinitive: '가다다',
     pronunciation: '가면',
     reasons: ['join (가 + 면 -> 가면)'],
     type: 'connective',
@@ -19,7 +18,6 @@ const FAVORITES = [
     romanization: 'gah-syuh',
     tense: 'present',
     speechLevel: 'informal low',
-    infinitive: '가다다',
     pronunciation: '가셔',
     reasons: [
       'join (가 + 시 -> 가시)',
@@ -34,7 +32,6 @@ const FAVORITES = [
     romanization: 'gah',
     tense: 'present',
     speechLevel: 'informal low',
-    infinitive: '가다다',
     pronunciation: '가',
     reasons: ['vowel contraction [ㅏ ㅏ -> ㅏ] (가 + 아 -> 가)'],
     type: 'propositive',

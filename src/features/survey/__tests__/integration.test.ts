@@ -1,11 +1,8 @@
 import { ApolloServer, gql } from 'apollo-server';
 import casual from 'casual';
-import {
-  connectDB,
-  surveySubmissionsCollection,
-} from 'datasources/databaseWrapper';
+import { surveySubmissionsCollection } from 'datasources/databaseWrapper';
 import { BugReport, General, Survey } from 'features';
-import { MongoClient } from 'mongodb';
+import { setupMockDB, teardownDB } from 'tests/utils';
 import resolvers from '../resolvers';
 
 const submission = [
@@ -19,15 +16,10 @@ const server = new ApolloServer({
   resolvers,
 });
 
-let mongoClient: MongoClient;
-
 describe('survey feature', () => {
-  beforeAll(async () => {
-    process.env.MONGO_URL = (global as any).__MONGO_URI__;
-    mongoClient = await connectDB();
-  });
+  beforeAll(async () => await setupMockDB());
 
-  afterAll(async () => await mongoClient.close());
+  afterAll(async () => await teardownDB());
 
   it('handles createSurveySubmission mutations', async () => {
     const query = gql`
