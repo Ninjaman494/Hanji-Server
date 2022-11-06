@@ -1,6 +1,7 @@
 export type Conjugation = {
   conjugation_name: string;
   conjugated: string;
+  infinitive: string;
   type: string;
   tense: string;
   speechLevel: string;

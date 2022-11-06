@@ -12,13 +12,27 @@ import {
   defaultKeyGenerator,
 } from 'graphql-rate-limit-directive';
 import { graphqlUploadExpress } from 'graphql-upload';
-import DatabaseAPI from './datasources/database';
-import ConjugationAPI from './datasources/conjugation';
-import SearchAPI from './datasources/search';
-import resolvers from './resolvers';
-import typeDefs from './schema';
-import SlackAPI from './datasources/slack';
-import { MongoClient } from 'mongodb';
+import {
+  BugReport,
+  Entry,
+  EntrySuggestion,
+  Favorite,
+  Search,
+  Survey,
+  WOD,
+  bugReportResolvers,
+  conjugationResolvers,
+  entryResolvers,
+  entrySuggestionResolvers,
+  favoriteResolvers,
+  searchResolvers,
+  surveyResolvers,
+  wodResolvers,
+  Conjugation,
+  General,
+} from 'features';
+import { merge } from 'lodash';
+import { connectDB } from 'datasources/databaseWrapper';
 
 // Source: https://github.com/ravangen/graphql-rate-limit/blob/master/examples/context/index.js
 // Creates a unique key based on ip address and endpoint being accessed
@@ -35,13 +49,31 @@ const startServer = async () => {
   const expressApp = express();
   const httpServer = createServer(expressApp);
 
-  const mongo = new MongoClient(process.env.MONGO_URL);
-  await mongo.connect();
+  await connectDB();
 
-  const dbAPI = new DatabaseAPI(mongo);
   const apolloServer = new ApolloServer({
-    typeDefs: [createRateLimitTypeDef(), typeDefs],
-    resolvers,
+    typeDefs: [
+      createRateLimitTypeDef(),
+      General,
+      BugReport,
+      Conjugation,
+      Entry,
+      EntrySuggestion,
+      Favorite,
+      Search,
+      Survey,
+      WOD,
+    ],
+    resolvers: merge(
+      bugReportResolvers,
+      conjugationResolvers,
+      entryResolvers,
+      entrySuggestionResolvers,
+      favoriteResolvers,
+      searchResolvers,
+      surveyResolvers,
+      wodResolvers,
+    ),
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     context: ({ req }) => ({ ip: req.ip }),
     schemaDirectives: {
@@ -49,12 +81,6 @@ const startServer = async () => {
         keyGenerator,
       }),
     },
-    dataSources: () => ({
-      databaseAPI: dbAPI,
-      conjugationAPI: new ConjugationAPI(),
-      searchAPI: new SearchAPI(dbAPI),
-      slackAPI: new SlackAPI(),
-    }),
   } as any);
 
   await apolloServer.start();
@@ -73,7 +99,7 @@ const startServer = async () => {
 
   const PORT = process.env.PORT || 4000;
   httpServer.listen({ port: PORT }, () => {
-    console.log('Server ready');
+    console.log(`Server ready on port ${PORT}`);
   });
 };
 

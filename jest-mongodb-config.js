@@ -7,6 +7,7 @@ module.exports = {
     instance: {
       dbName: 'hanji',
     },
+    useSharedDBForAllJestWorkers: false,
     autoStart: false,
   },
 };

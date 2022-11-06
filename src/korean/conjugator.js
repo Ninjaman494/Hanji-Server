@@ -481,8 +481,8 @@ conjugator.conjugate_one = function(infinitive, regular, isAdj, honorific, name)
     conjugator.reasons.length = 0;
 
     const r = {};
-    r.conjugated = conjugator[conjugation](infinitive, regular, isAdj, honorific);
-    if(r.conjugated === undefined){ // this conjugation doesn't exist for this word (ex. determiner past for adj.)
+    r.conjugated = conjugator[conjugation]?.(infinitive, regular, isAdj, honorific);
+    if(r.conjugated === undefined){ // this conjugation doesn't exist (ex. determiner past for adj., invalid conjugation)
         return;
     }
 
