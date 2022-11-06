@@ -34,7 +34,7 @@ const server = new ApolloServer({
 describe('search feature', () => {
   beforeAll(async () => await setupMockDB());
 
-  afterAll(teardownDB);
+  afterAll(async () => await teardownDB());
 
   it('handles search queries in English', async () => {
     const { errors, data } = await server.executeOperation({
@@ -50,6 +50,7 @@ describe('search feature', () => {
         {
           id: ENTRIES[1]._id.toString(),
           ...omit(ENTRIES[1], ['_id']),
+          antonyms: null,
           synonyms: null,
           examples: null,
           note: null,

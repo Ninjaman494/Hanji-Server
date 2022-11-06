@@ -20,7 +20,7 @@ const entries = [
     _id: new ObjectId(),
     term: '오다',
     pos: 'Verb',
-    definitions: ['to go out'],
+    definitions: ['to come and go'],
   })),
 ];
 

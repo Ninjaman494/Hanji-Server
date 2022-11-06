@@ -19,6 +19,4 @@ export default {
   collectCoverageFrom: ['src/**/*.ts', 'src/**/*.js', '!src/scripts/*'],
   modulePaths: ['<rootDir>/src'],
   testMatch: ['**/?(*.)test.(ts|js)'],
-  setupFiles: ['./src/testSetup.ts'],
-  // globalTeardown: './src/testTeardown.ts',
 };

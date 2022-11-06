@@ -1,4 +1,6 @@
-import { ObjectId } from 'mongodb';
+import { connectDB, wordsCollection } from 'datasources/databaseWrapper';
+import { Entry } from 'generated/graphql';
+import { MongoClient, ObjectId } from 'mongodb';
 
 export const ENTRIES = [
   {
@@ -17,27 +19,26 @@ export const ENTRIES = [
     _id: new ObjectId(),
     term: '오다',
     pos: 'Verb',
-    definitions: ['to go out'],
+    definitions: ['to come and go'],
   },
 ];
 
-// let mongoClient: MongoClient;
+let mongoClient: MongoClient;
 
-// /** Sets up mock DB and collections. Use only in tests */
-// export const setupMockDB = async (
-//   entries?: (Omit<Entry, 'id'> & { _id: ObjectId })[],
-// ) => {
-//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   process.env.MONGO_URL = (global as any).__MONGO_URI__;
-//   mongoClient = await connectDB();
-//   const wordsCollection = mongoClient.db('hanji').collection('words');
-//   await wordsCollection.createIndex({ definitions: 'text' });
-//   await wordsCollection.insertMany(entries ?? ENTRIES);
+/** Sets up mock DB and collections. Use only in tests */
+export const setupMockDB = async (
+  entries?: (Omit<Entry, 'id'> & { _id: ObjectId })[],
+) => {
+  mongoClient = await connectDB();
 
-//   return mongoClient;
-// };
+  const collection = wordsCollection();
+  await collection.createIndex({ definitions: 'text' });
+  await collection.insertMany(entries ?? ENTRIES);
 
-// /** Tears down mock DB. Use only in tests */
-// export const teardownDB = async () => {
-//   await mongoClient.close();
-// };
+  return mongoClient;
+};
+
+/** Tears down mock DB. Use only in tests */
+export const teardownDB = async () => {
+  await mongoClient.close();
+};

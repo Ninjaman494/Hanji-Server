@@ -2,6 +2,7 @@ import { ApolloServer, gql } from 'apollo-server';
 import { wordsCollection } from 'datasources/databaseWrapper';
 import { Entry, General, WOD } from 'features';
 import { map } from 'lodash';
+import { ObjectId } from 'mongodb';
 import { ENTRIES, setupMockDB, teardownDB } from 'tests/utils';
 import resolvers from '../resolvers';
 
@@ -81,26 +82,26 @@ describe('wod feature', () => {
     `;
 
     const { errors, data } = await server.executeOperation({ query });
+    const wod = data.wordOfTheDay;
 
     expect(errors).toBeUndefined();
     expect(data).toBeDefined();
-    expect(map(ENTRIES, ({ term }) => term)).toContain(data.wordOfTheDay.term);
+    expect(map(ENTRIES, ({ term }) => term)).toContain(wod.term);
 
     // Delete so it doesn't pick the same wod twice
-    await wordsCollection().deleteOne({ _id: data._id });
+    spy.mockRestore();
+    await wordsCollection().deleteOne({ _id: new ObjectId(wod.id) });
 
     // Move forward 25 hours and refetch
-    spy.mockRestore();
     mockDate(new Date('2000-01-02T01:00:00'));
     const { errors: newErrors, data: newData } = await server.executeOperation({
       query,
     });
+    const newWod = newData.wordOfTheDay;
 
     expect(newErrors).toBeUndefined();
     expect(newData).toBeDefined();
-    expect(newData.wordOfTheDay).not.toEqual(data.wordOfTheDay);
-    expect(map(ENTRIES, ({ term }) => term)).toContain(
-      newData.wordOfTheDay.term,
-    );
+    expect(newWod).not.toEqual(wod);
+    expect(map(ENTRIES, ({ term }) => term)).toContain(newWod.term);
   });
 });

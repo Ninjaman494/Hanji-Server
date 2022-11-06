@@ -1,7 +1,7 @@
 import { ApolloServer, gql } from 'apollo-server';
 import { Entry, General } from 'features';
 import { omit } from 'lodash';
-import { ENTRIES } from 'tests/utils';
+import { ENTRIES, setupMockDB, teardownDB } from 'tests/utils';
 import resolvers from '../resolvers';
 
 const server = new ApolloServer({
@@ -10,6 +10,9 @@ const server = new ApolloServer({
 });
 
 describe('entry feature', () => {
+  beforeAll(async () => await setupMockDB());
+  afterAll(async () => await teardownDB());
+
   it('handles entries queries', async () => {
     const query = gql`
       query Entries($term: String!) {
