@@ -8,6 +8,7 @@ const resolvers: Resolvers = {
   Query: {
     search: async (_, { query, cursor }) => {
       if (!cursor || cursor < 0) cursor = 0;
+      if (!query.trim()) return { cursor, results: [] };
 
       let results: Entry[];
       if (is_hangeul_string(query)) {

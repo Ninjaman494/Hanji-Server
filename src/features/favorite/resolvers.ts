@@ -8,6 +8,8 @@ export const getConjugations = (
   regular: boolean,
   conjugations: FavInput[],
 ) => {
+  if (!stem.trim()) return [];
+
   if (regular === null || regular === undefined) {
     // returns either 'regular verb' or type of irregular
     regular = conjugator.verb_type(stem, false) === 'regular verb';

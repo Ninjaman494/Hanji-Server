@@ -64,6 +64,16 @@ describe('favorites resolver', () => {
     expect(conjugations.length).toEqual(0);
   });
 
+  it('returns an empty array when stem is empty', () => {
+    const conjugations = (resolvers.Query.favorites as any)(null, {
+      stem: '',
+      isAdj: false,
+      favorites: [{ conjugationName: 'foobar', honorific: false }],
+    });
+
+    expect(conjugations.length).toEqual(0);
+  });
+
   it('omits conjugations that cannnot be found', () => {
     const conjugations = (resolvers.Query.favorites as any)(null, {
       stem: '가다',

@@ -29,6 +29,15 @@ describe('search resolver', () => {
 
   afterAll(teardownDB);
 
+  it('returns no results when query is empty', async () => {
+    const { results, cursor } = await (resolvers.Query.search as any)(null, {
+      query: '  ',
+    });
+
+    expect(results.length).toEqual(0);
+    expect(cursor).toEqual(0);
+  });
+
   describe('English', () => {
     it('resolves search queries', async () => {
       const { results, cursor } = await (resolvers.Query.search as any)(null, {
