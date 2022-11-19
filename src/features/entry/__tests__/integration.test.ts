@@ -1,7 +1,13 @@
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer } from '@apollo/server';
+import gql from 'graphql-tag';
 import { Entry, General } from 'features';
 import { omit } from 'lodash';
-import { ENTRIES, setupMockDB, teardownDB } from 'tests/utils';
+import {
+  ENTRIES,
+  executeOperation,
+  setupMockDB,
+  teardownDB,
+} from 'tests/utils';
 import resolvers from '../resolvers';
 
 const server = new ApolloServer({
@@ -33,9 +39,8 @@ describe('entry feature', () => {
       }
     `;
 
-    const { errors, data } = await server.executeOperation({
-      query,
-      variables: { term: '가다' },
+    const { errors, data } = await executeOperation(server, query, {
+      term: '가다',
     });
 
     expect(errors).toBeUndefined();
@@ -75,9 +80,8 @@ describe('entry feature', () => {
 
     const { _id, ...rest } = ENTRIES[0];
 
-    const { errors, data } = await server.executeOperation({
-      query,
-      variables: { id: _id.toString() },
+    const { errors, data } = await executeOperation(server, query, {
+      id: _id.toString(),
     });
 
     expect(errors).toBeUndefined();

@@ -1,8 +1,9 @@
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer } from '@apollo/server';
+import gql from 'graphql-tag';
 import casual from 'casual';
 import { surveySubmissionsCollection } from 'datasources/databaseWrapper';
 import { BugReport, General, Survey } from 'features';
-import { setupMockDB, teardownDB } from 'tests/utils';
+import { executeOperation, setupMockDB, teardownDB } from 'tests/utils';
 import resolvers from '../resolvers';
 
 const submission = [
@@ -31,9 +32,8 @@ describe('survey feature', () => {
       }
     `;
 
-    const { errors, data } = await server.executeOperation({
-      query,
-      variables: { submission },
+    const { errors, data } = await executeOperation(server, query, {
+      submission,
     });
 
     expect(errors).toBeUndefined();

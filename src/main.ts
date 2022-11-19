@@ -3,8 +3,9 @@
 require('dotenv').config();
 import { start } from '@google-cloud/debug-agent';
 import express from 'express';
-import { ApolloServer } from 'apollo-server-express';
-import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { createServer } from 'http';
 import {
   createRateLimitDirective,
@@ -32,6 +33,7 @@ import {
   General,
 } from 'features';
 import { merge } from 'lodash';
+import bodyParser from 'body-parser';
 import { connectDB } from 'datasources/databaseWrapper';
 
 // Source: https://github.com/ravangen/graphql-rate-limit/blob/master/examples/context/index.js
@@ -86,16 +88,20 @@ const startServer = async () => {
   await apolloServer.start();
 
   // Required for min_instances
-  expressApp.get('/_ah/warmup', (req, res) => {
+  expressApp.get('/_ah/warmup', (_, res) => {
     res.send('All warmed up!');
   });
 
-  expressApp.get('/uptime', (req, res) => {
+  expressApp.get('/uptime', (_, res) => {
     res.send('Still up!');
   });
 
-  expressApp.use(graphqlUploadExpress());
-  apolloServer.applyMiddleware({ app: expressApp });
+  expressApp.use(
+    '/graphql',
+    bodyParser.json(),
+    expressMiddleware(apolloServer),
+    graphqlUploadExpress(),
+  );
 
   const PORT = process.env.PORT || 4000;
   httpServer.listen({ port: PORT }, () => {

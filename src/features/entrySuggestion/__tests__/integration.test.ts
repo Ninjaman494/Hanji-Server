@@ -1,7 +1,13 @@
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer } from '@apollo/server';
+import gql from 'graphql-tag';
 import { entrySuggestionsCollection } from 'datasources/databaseWrapper';
 import { Entry, EntrySuggestion, General } from 'features';
-import { ENTRIES, setupMockDB, teardownDB } from 'tests/utils';
+import {
+  ENTRIES,
+  executeOperation,
+  setupMockDB,
+  teardownDB,
+} from 'tests/utils';
 import resolvers from '../resolvers';
 
 const entryID = ENTRIES[0]._id;
@@ -36,13 +42,10 @@ describe('entrySuggestion feature', () => {
       }
     `;
 
-    const { errors, data } = await server.executeOperation({
-      query,
-      variables: {
-        suggestion: {
-          ...suggestion,
-          entryID: entryID.toString(),
-        },
+    const { errors, data } = await executeOperation(server, query, {
+      suggestion: {
+        ...suggestion,
+        entryID: entryID.toString(),
       },
     });
 

@@ -1,4 +1,5 @@
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer } from '@apollo/server';
+import gql from 'graphql-tag';
 import { Conjugation, General } from 'features';
 import resolvers from '../resolvers';
 import {
@@ -7,6 +8,7 @@ import {
   CONJUGATION_TYPES,
   STEMS,
 } from './conjugationsSnapshot';
+import { executeOperation } from 'tests/utils';
 
 const server = new ApolloServer({
   typeDefs: [General, Conjugation],
@@ -43,13 +45,10 @@ describe('conjugation feature', () => {
       }
     `;
 
-    const { errors, data } = await server.executeOperation({
-      query,
-      variables: {
-        stem: '가다',
-        isAdj: false,
-        honorific: false,
-      },
+    const { errors, data } = await executeOperation(server, query, {
+      stem: '가다',
+      isAdj: false,
+      honorific: false,
     });
 
     expect(errors).toBeUndefined();
@@ -64,7 +63,7 @@ describe('conjugation feature', () => {
       }
     `;
 
-    const { errors, data } = await server.executeOperation({ query });
+    const { errors, data } = await executeOperation(server, query);
 
     expect(errors).toBeUndefined();
     expect(data).toBeDefined();
@@ -78,7 +77,7 @@ describe('conjugation feature', () => {
       }
     `;
 
-    const { errors, data } = await server.executeOperation({ query });
+    const { errors, data } = await executeOperation(server, query);
 
     expect(errors).toBeUndefined();
     expect(data).toBeDefined();
@@ -92,9 +91,8 @@ describe('conjugation feature', () => {
       }
     `;
 
-    const { errors, data } = await server.executeOperation({
-      query,
-      variables: { term: '갈 거예요' },
+    const { errors, data } = await executeOperation(server, query, {
+      term: '갈 거예요',
     });
 
     expect(errors).toBeUndefined();

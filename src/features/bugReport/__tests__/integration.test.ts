@@ -1,10 +1,12 @@
 import { WebClient } from '@slack/web-api';
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer } from '@apollo/server';
+import gql from 'graphql-tag';
 import casual from 'casual';
 import { values } from 'lodash';
 import { BugReportType } from 'generated/graphql';
 import resolvers from '../resolvers';
 import { General, BugReport } from 'features';
+import { executeOperation } from 'tests/utils';
 
 jest.mock('@slack/web-api', () => {
   const postMessage = jest.fn().mockResolvedValue({ ok: true });
@@ -62,10 +64,8 @@ describe('bugReport feature', () => {
       text: expect.stringContaining(str),
     });
 
-    const { errors, data } = await server.executeOperation({
-      query,
-      variables: report,
-    });
+    const { data, errors } = await executeOperation(server, query, report);
+
     const { success, message } = data.sendBugReport;
 
     expect(mockPostMessage).toHaveBeenCalledWith(expected(report.feedback));
@@ -85,10 +85,7 @@ describe('bugReport feature', () => {
       error: 'ruh roh',
     });
 
-    const { errors, data } = await server.executeOperation({
-      query,
-      variables: report,
-    });
+    const { errors, data } = await executeOperation(server, query, report);
     const { success, message } = data.sendBugReport;
 
     expect(mockPostMessage).toHaveBeenCalled();
