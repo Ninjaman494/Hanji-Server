@@ -39,6 +39,17 @@ describe('conjugation resolver', () => {
       });
       expect(response).toEqual(expectedConjugations);
     });
+
+    it('returns no results when stem is empty', () => {
+      const response = (resolvers.Query.conjugations as any)(null, {
+        stem: '  ',
+        isAdj: false,
+        honorific: false,
+        regular: true,
+      });
+
+      expect(response.length).toEqual(0);
+    });
   });
 
   it('resolves conjugationTypes queries', () => {
@@ -51,15 +62,25 @@ describe('conjugation resolver', () => {
     expect(response).toEqual(CONJUGATION_NAMES);
   });
 
-  it('resolves stems queries', () => {
-    const infinitive = (resolvers.Query.stems as any)(null, {
-      term: '들다',
-    });
-    expect(infinitive).toEqual(['들다']);
+  describe('stems query', () => {
+    it('resolves stems queries', () => {
+      const infinitive = (resolvers.Query.stems as any)(null, {
+        term: '들다',
+      });
+      expect(infinitive).toEqual(['들다']);
 
-    const multipleStems = (resolvers.Query.stems as any)(null, {
-      term: '갈 거예요',
+      const multipleStems = (resolvers.Query.stems as any)(null, {
+        term: '갈 거예요',
+      });
+      expect(multipleStems).toEqual(STEMS);
     });
-    expect(multipleStems).toEqual(STEMS);
+
+    it('returns no results when term is empty', () => {
+      const response = (resolvers.Query.stems as any)(null, {
+        term: '  ',
+      });
+
+      expect(response.length).toEqual(0);
+    });
   });
 });

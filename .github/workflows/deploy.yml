@@ -22,4 +22,4 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCP_SECRET }}'
       - name: Deploy to Google App Engine
-        uses: google-github-actions/deploy-appengine@main
+        uses: google-github-actions/deploy-appengine@v1
