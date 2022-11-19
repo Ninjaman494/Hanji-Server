@@ -1,9 +1,15 @@
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer } from '@apollo/server';
+import gql from 'graphql-tag';
 import { wordsCollection } from 'datasources/databaseWrapper';
 import { Entry, General, WOD } from 'features';
 import { map } from 'lodash';
 import { ObjectId } from 'mongodb';
-import { ENTRIES, setupMockDB, teardownDB } from 'tests/utils';
+import {
+  ENTRIES,
+  executeOperation,
+  setupMockDB,
+  teardownDB,
+} from 'tests/utils';
 import resolvers from '../resolvers';
 
 const server = new ApolloServer({
@@ -41,7 +47,7 @@ describe('wod feature', () => {
       }
     `;
 
-    const { errors, data } = await server.executeOperation({ query });
+    const { errors, data } = await executeOperation(server, query);
 
     expect(errors).toBeUndefined();
     expect(data).toBeDefined();
@@ -50,9 +56,10 @@ describe('wod feature', () => {
     // Move forward 23 hours and refetch
     spy.mockRestore();
     mockDate(new Date('2000-01-01T23:00:00'));
-    const { errors: newErrors, data: newData } = await server.executeOperation({
+    const { errors: newErrors, data: newData } = await executeOperation(
+      server,
       query,
-    });
+    );
 
     expect(newErrors).toBeUndefined();
     expect(newData).toBeDefined();
@@ -81,7 +88,7 @@ describe('wod feature', () => {
       }
     `;
 
-    const { errors, data } = await server.executeOperation({ query });
+    const { errors, data } = await executeOperation(server, query);
     const wod = data.wordOfTheDay;
 
     expect(errors).toBeUndefined();
@@ -94,9 +101,10 @@ describe('wod feature', () => {
 
     // Move forward 25 hours and refetch
     mockDate(new Date('2000-01-02T01:00:00'));
-    const { errors: newErrors, data: newData } = await server.executeOperation({
+    const { errors: newErrors, data: newData } = await executeOperation(
+      server,
       query,
-    });
+    );
     const newWod = newData.wordOfTheDay;
 
     expect(newErrors).toBeUndefined();

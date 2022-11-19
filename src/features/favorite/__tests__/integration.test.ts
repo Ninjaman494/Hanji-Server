@@ -1,4 +1,5 @@
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer } from '@apollo/server';
+import gql from 'graphql-tag';
 import {
   Conjugation,
   conjugationResolvers,
@@ -6,6 +7,7 @@ import {
   Favorite,
   General,
 } from 'features';
+import { executeOperation } from 'tests/utils';
 
 const EXPECTED_FAVS = [
   {
@@ -80,30 +82,27 @@ describe('favorite feature', () => {
       }
     `;
 
-    const { errors, data } = await server.executeOperation({
-      query,
-      variables: {
-        stem: '가다',
-        isAdj: false,
-        honorific: false,
-        favorites: [
-          {
-            name: 'fav1',
-            conjugationName: 'connective if',
-            honorific: false,
-          },
-          {
-            name: 'fav2',
-            conjugationName: 'declarative present informal low',
-            honorific: true,
-          },
-          {
-            name: 'fav3',
-            conjugationName: 'propositive informal low',
-            honorific: false,
-          },
-        ],
-      },
+    const { errors, data } = await executeOperation(server, query, {
+      stem: '가다',
+      isAdj: false,
+      honorific: false,
+      favorites: [
+        {
+          name: 'fav1',
+          conjugationName: 'connective if',
+          honorific: false,
+        },
+        {
+          name: 'fav2',
+          conjugationName: 'declarative present informal low',
+          honorific: true,
+        },
+        {
+          name: 'fav3',
+          conjugationName: 'propositive informal low',
+          honorific: false,
+        },
+      ],
     });
 
     expect(errors).toBeUndefined();

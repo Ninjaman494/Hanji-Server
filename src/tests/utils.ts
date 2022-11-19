@@ -1,5 +1,7 @@
+import { ApolloServer } from '@apollo/server';
 import { connectDB, wordsCollection } from 'datasources/databaseWrapper';
 import { Entry } from 'generated/graphql';
+import { DocumentNode } from 'graphql';
 import { MongoClient, ObjectId } from 'mongodb';
 
 export const ENTRIES = [
@@ -41,4 +43,21 @@ export const setupMockDB = async (
 /** Tears down mock DB. Use only in tests */
 export const teardownDB = async () => {
   await mongoClient.close();
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const executeOperation = async <TData = any, Targs = any>(
+  server: ApolloServer,
+  query: DocumentNode,
+  variables?: Targs,
+) => {
+  const { body } = await server.executeOperation<TData, Targs>({
+    query,
+    variables,
+  });
+
+  if (body.kind === 'incremental')
+    throw new Error('response kind is incremental');
+
+  return body.singleResult;
 };
