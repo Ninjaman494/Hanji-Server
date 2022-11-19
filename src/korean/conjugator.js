@@ -7,18 +7,19 @@ const romanization  = require('./romanization');
 const glob = require( 'glob' );
 const path = require( 'path' );
 
-// import and add conjugations
+// import and add conjugations, glob requires forward slashes
 let conjugator = {};
-let arr = glob.sync( __dirname + '/conjugations/*.js' );
-arr.forEach( function( file ) {
-    let conjugations = require( path.resolve( file ) );
+const dirname = __dirname.split(path.sep).join('/');
+let arr = glob.sync(`${dirname}/conjugations/*.js`);
+arr.forEach(function( file ) {
+    let conjugations = require(path.resolve( file ));
     for(let c in conjugations){
         conjugator[c] = conjugations[c];
     }
 });
-arr = glob.sync( __dirname + '/conjugations/honorifics/*.js' );
-arr.forEach( function( file ) {
-    let conjugations = require( path.resolve( file ) );
+arr = glob.sync(`${dirname}/conjugations/honorifics/*.js`);
+arr.forEach(function( file ) {
+    let conjugations = require(path.resolve( file ));
     for(let c in conjugations){
         conjugator[c] = conjugations[c];
     }
