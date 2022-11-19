@@ -13,6 +13,8 @@ import * as stemmer from 'korean/stemmer';
 const resolvers: Resolvers = {
   Query: {
     conjugations: (_, { stem, isAdj, honorific, regular, conjugations }) => {
+      if (!stem.trim()) return [];
+
       // Use favorites' method to get specific conjugations because it's
       // more performant.
       // TODO - In the future favorites should be merged with conjugations
@@ -39,6 +41,8 @@ const resolvers: Resolvers = {
     conjugationTypes: () => Array.from(conjugator.getTypes()),
     conjugationNames: () => Array.from(conjugator.getNames()),
     stems: (_, { term }) => {
+      if (!term.trim()) return [];
+
       const stems = stemmer.stem(term);
       // in case term is already in infinitive form
       if (term[term.length - 1] === '다') stems.add(term);
