@@ -12,6 +12,7 @@
 .gitignore
 .prettier*
 *.md
+*.test.ts
 babel.config.ts
 jest.config.ts
 renovate.json
