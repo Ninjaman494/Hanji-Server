@@ -1,3 +1,39 @@
+export const SPECIFIC_CONJUGATIONS = [
+  {
+    name: 'connective if',
+    conjugation: '가면',
+    type: 'connective',
+    tense: 'none',
+    speechLevel: 'none',
+    honorific: false,
+    pronunciation: '가면',
+    romanization: 'gah-myuhn',
+    reasons: ['join (가 + 면 -> 가면)'],
+  },
+  {
+    name: 'declarative present informal high',
+    conjugation: '가세요',
+    type: 'declarative present',
+    tense: 'present',
+    speechLevel: 'informal high',
+    honorific: true,
+    pronunciation: '가세요',
+    romanization: 'gah-sae-yoh',
+    reasons: ['join (가 + 세요 -> 가세요)'],
+  },
+  {
+    name: 'propositive informal low',
+    conjugation: '가',
+    type: 'propositive',
+    tense: 'present',
+    speechLevel: 'informal low',
+    honorific: false,
+    pronunciation: '가',
+    romanization: 'gah',
+    reasons: ['vowel contraction [ㅏ ㅏ -> ㅏ] (가 + 아 -> 가)'],
+  },
+];
+
 export const CONJUGATIONS = [
   {
     name: 'connective if',
@@ -482,6 +518,47 @@ export const CONJUGATIONS = [
     reasons: ['join (가 + 겠습니다 -> 가겠습니다)'],
     type: 'suppositive',
     honorific: false,
+  },
+];
+
+/**
+ * The integration version passes through enum
+ * modifications (i.e. `formal low` to `FORMAL_LOW`)
+ * and is what the API returns in production
+ */
+export const SPECIFIC_CONJUGATIONS_INTEGRATION = [
+  {
+    name: 'connective if',
+    conjugation: '가면',
+    type: 'connective',
+    tense: 'NONE',
+    speechLevel: 'NONE',
+    honorific: false,
+    pronunciation: '가면',
+    romanization: 'gah-myuhn',
+    reasons: ['join (가 + 면 -> 가면)'],
+  },
+  {
+    name: 'declarative present informal high',
+    conjugation: '가세요',
+    type: 'declarative present',
+    tense: 'PRESENT',
+    speechLevel: 'INFORMAL_HIGH',
+    honorific: true,
+    pronunciation: '가세요',
+    romanization: 'gah-sae-yoh',
+    reasons: ['join (가 + 세요 -> 가세요)'],
+  },
+  {
+    name: 'propositive informal low',
+    conjugation: '가',
+    type: 'propositive',
+    tense: 'PRESENT',
+    speechLevel: 'INFORMAL_LOW',
+    honorific: false,
+    pronunciation: '가',
+    romanization: 'gah',
+    reasons: ['vowel contraction [ㅏ ㅏ -> ㅏ] (가 + 아 -> 가)'],
   },
 ];
 
