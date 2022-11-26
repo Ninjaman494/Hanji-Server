@@ -7,11 +7,16 @@ const typeDef = gql`
       isAdj: Boolean!
       honorific: Boolean!
       regular: Boolean
-      conjugations: [String]
+      conjugations: [ConjugationInput]
     ): [Conjugation]!
     conjugationTypes: [String]!
     conjugationNames: [String]!
     stems(term: String!): [String]!
+  }
+
+  input ConjugationInput {
+    name: String!
+    honorific: Boolean!
   }
 
   type Conjugation {

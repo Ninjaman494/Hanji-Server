@@ -43,6 +43,11 @@ export type Conjugation = {
   type: Scalars['String'];
 };
 
+export type ConjugationInput = {
+  honorific: Scalars['Boolean'];
+  name: Scalars['String'];
+};
+
 export type DeviceInfo = {
   brand: Scalars['String'];
   manufacturer: Scalars['String'];
@@ -149,7 +154,7 @@ export type Query = {
 
 
 export type QueryConjugationsArgs = {
-  conjugations?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  conjugations?: InputMaybe<Array<InputMaybe<ConjugationInput>>>;
   honorific: Scalars['Boolean'];
   isAdj: Scalars['Boolean'];
   regular?: InputMaybe<Scalars['Boolean']>;
@@ -273,6 +278,7 @@ export type ResolversTypes = {
   BugReportResponse: ResolverTypeWrapper<BugReportResponse>;
   BugReportType: BugReportType;
   Conjugation: ResolverTypeWrapper<Conjugation>;
+  ConjugationInput: ConjugationInput;
   DeviceInfo: DeviceInfo;
   Entry: ResolverTypeWrapper<Entry>;
   EntrySuggestion: ResolverTypeWrapper<EntrySuggestion>;
@@ -298,6 +304,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   BugReportResponse: BugReportResponse;
   Conjugation: Conjugation;
+  ConjugationInput: ConjugationInput;
   DeviceInfo: DeviceInfo;
   Entry: Entry;
   EntrySuggestion: EntrySuggestion;
