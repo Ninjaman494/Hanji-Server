@@ -1,12 +1,12 @@
 import { conjugationReducer } from 'features/utils';
-import { Conjugation, Resolvers } from 'generated/graphql';
+import { Conjugation, Resolvers, FavInput } from 'generated/graphql';
 import conjugator from 'korean/conjugator';
 
 export const getConjugations = (
   stem: string,
   isAdj: boolean,
   regular: boolean,
-  conjugations: { conjugationName: string; honorific: boolean }[],
+  conjugations: FavInput[],
 ) => {
   if (!stem.trim()) return [];
 
