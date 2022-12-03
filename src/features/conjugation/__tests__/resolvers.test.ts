@@ -2,6 +2,7 @@ import {
   CONJUGATIONS,
   CONJUGATION_NAMES,
   CONJUGATION_TYPES,
+  SPECIFIC_CONJUGATIONS,
   STEMS,
 } from './conjugationsSnapshot';
 import resolvers from '../resolvers';
@@ -49,6 +50,37 @@ describe('conjugation resolver', () => {
       });
 
       expect(response.length).toEqual(0);
+    });
+  });
+
+  describe('getConjugations query', () => {
+    it('fetches conjugations', () => {
+      const response = (resolvers.Query.getConjugations as any)(null, {
+        input: {
+          stem: '가다',
+          isAdj: false,
+          honorific: false,
+          regular: true,
+        },
+      });
+      expect(response).toEqual(CONJUGATIONS);
+    });
+
+    it('fetches specific conjugations', () => {
+      const conjugations = [
+        { name: 'connective if', honorific: false },
+        { name: 'declarative present informal high', honorific: true },
+        { name: 'propositive informal low', honorific: false },
+      ];
+
+      const response = (resolvers.Query.getConjugations as any)(null, {
+        input: {
+          stem: '가다',
+          isAdj: false,
+          conjugations,
+        },
+      });
+      expect(response).toEqual(SPECIFIC_CONJUGATIONS);
     });
   });
 
