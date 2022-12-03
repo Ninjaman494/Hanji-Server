@@ -43,6 +43,14 @@ export type Conjugation = {
   type: Scalars['String'];
 };
 
+export type ConjugationsInput = {
+  conjugations?: InputMaybe<Array<InputMaybe<SpecificConjugation>>>;
+  honorific?: InputMaybe<Scalars['Boolean']>;
+  isAdj: Scalars['Boolean'];
+  regular?: InputMaybe<Scalars['Boolean']>;
+  stem: Scalars['String'];
+};
+
 export type DeviceInfo = {
   brand: Scalars['String'];
   manufacturer: Scalars['String'];
@@ -142,6 +150,7 @@ export type Query = {
   entries: Array<Maybe<Entry>>;
   entry?: Maybe<Entry>;
   favorites: Array<Maybe<Conjugation>>;
+  getConjugations: Array<Maybe<Conjugation>>;
   search: Result;
   stems: Array<Maybe<Scalars['String']>>;
   wordOfTheDay: Entry;
@@ -175,6 +184,11 @@ export type QueryFavoritesArgs = {
 };
 
 
+export type QueryGetConjugationsArgs = {
+  input: ConjugationsInput;
+};
+
+
 export type QuerySearchArgs = {
   cursor?: InputMaybe<Scalars['Int']>;
   query: Scalars['String'];
@@ -194,6 +208,11 @@ export type Result = {
   __typename?: 'Result';
   cursor?: Maybe<Scalars['Int']>;
   results: Array<Maybe<Entry>>;
+};
+
+export type SpecificConjugation = {
+  honorific: Scalars['Boolean'];
+  name: Scalars['String'];
 };
 
 export { SpeechLevel };
@@ -273,6 +292,7 @@ export type ResolversTypes = {
   BugReportResponse: ResolverTypeWrapper<BugReportResponse>;
   BugReportType: BugReportType;
   Conjugation: ResolverTypeWrapper<Conjugation>;
+  ConjugationsInput: ConjugationsInput;
   DeviceInfo: DeviceInfo;
   Entry: ResolverTypeWrapper<Entry>;
   EntrySuggestion: ResolverTypeWrapper<EntrySuggestion>;
@@ -287,6 +307,7 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Question: Question;
   Result: ResolverTypeWrapper<Result>;
+  SpecificConjugation: SpecificConjugation;
   SpeechLevel: SpeechLevel;
   String: ResolverTypeWrapper<Scalars['String']>;
   Tense: Tense;
@@ -298,6 +319,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   BugReportResponse: BugReportResponse;
   Conjugation: Conjugation;
+  ConjugationsInput: ConjugationsInput;
   DeviceInfo: DeviceInfo;
   Entry: Entry;
   EntrySuggestion: EntrySuggestion;
@@ -312,6 +334,7 @@ export type ResolversParentTypes = {
   Query: {};
   Question: Question;
   Result: Result;
+  SpecificConjugation: SpecificConjugation;
   String: Scalars['String'];
   Upload: Scalars['Upload'];
 };
@@ -394,6 +417,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   entries?: Resolver<Array<Maybe<ResolversTypes['Entry']>>, ParentType, ContextType, RequireFields<QueryEntriesArgs, 'term'>>;
   entry?: Resolver<Maybe<ResolversTypes['Entry']>, ParentType, ContextType, RequireFields<QueryEntryArgs, 'id'>>;
   favorites?: Resolver<Array<Maybe<ResolversTypes['Conjugation']>>, ParentType, ContextType, RequireFields<QueryFavoritesArgs, 'favorites' | 'isAdj' | 'stem'>>;
+  getConjugations?: Resolver<Array<Maybe<ResolversTypes['Conjugation']>>, ParentType, ContextType, RequireFields<QueryGetConjugationsArgs, 'input'>>;
   search?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<QuerySearchArgs, 'query'>>;
   stems?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType, RequireFields<QueryStemsArgs, 'term'>>;
   wordOfTheDay?: Resolver<ResolversTypes['Entry'], ParentType, ContextType>;

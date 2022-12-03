@@ -9,9 +9,23 @@ const typeDef = gql`
       regular: Boolean
       conjugations: [String]
     ): [Conjugation]!
+    getConjugations(input: ConjugationsInput!): [Conjugation]!
     conjugationTypes: [String]!
     conjugationNames: [String]!
     stems(term: String!): [String]!
+  }
+
+  input ConjugationsInput {
+    stem: String!
+    isAdj: Boolean!
+    honorific: Boolean
+    regular: Boolean
+    conjugations: [SpecificConjugation]
+  }
+
+  input SpecificConjugation {
+    name: String!
+    honorific: Boolean!
   }
 
   type Conjugation {
