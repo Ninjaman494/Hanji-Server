@@ -6,6 +6,7 @@ import {
   CONJUGATIONS_INTEGRATION,
   CONJUGATION_NAMES,
   CONJUGATION_TYPES,
+  SPECIFIC_CONJUGATIONS_INTEGRATION,
   STEMS,
 } from './conjugationsSnapshot';
 import { executeOperation } from 'tests/utils';
@@ -16,6 +17,73 @@ const server = new ApolloServer({
 });
 
 describe('conjugation feature', () => {
+  describe('getConjugations query', () => {
+    it('fetches conjugations', async () => {
+      const query = gql`
+        query GetConjugations($input: ConjugationsInput!) {
+          getConjugations(input: $input) {
+            name
+            conjugation
+            type
+            tense
+            speechLevel
+            honorific
+            pronunciation
+            romanization
+            reasons
+          }
+        }
+      `;
+
+      const { errors, data } = await executeOperation(server, query, {
+        input: {
+          stem: '가다',
+          isAdj: false,
+          honorific: false,
+        },
+      });
+
+      expect(errors).toBeUndefined();
+      expect(data).toBeDefined();
+      expect(data.getConjugations).toEqual(CONJUGATIONS_INTEGRATION);
+    });
+
+    it('fetches specific conjugations', async () => {
+      const query = gql`
+        query GetConjugations($input: ConjugationsInput!) {
+          getConjugations(input: $input) {
+            name
+            conjugation
+            type
+            tense
+            speechLevel
+            honorific
+            pronunciation
+            romanization
+            reasons
+          }
+        }
+      `;
+
+      const { errors, data } = await executeOperation(server, query, {
+        input: {
+          stem: '가다',
+          isAdj: false,
+          honorific: false,
+          conjugations: [
+            { name: 'connective if', honorific: false },
+            { name: 'declarative present informal high', honorific: true },
+            { name: 'propositive informal low', honorific: false },
+          ],
+        },
+      });
+
+      expect(errors).toBeUndefined();
+      expect(data).toBeDefined();
+      expect(data.getConjugations).toEqual(SPECIFIC_CONJUGATIONS_INTEGRATION);
+    });
+  });
+
   it('handles conjugations queries', async () => {
     const query = gql`
       query Conjugations(
