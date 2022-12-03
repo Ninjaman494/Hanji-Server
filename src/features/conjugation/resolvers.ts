@@ -17,11 +17,11 @@ const resolvers: Resolvers = {
 
       // Use favorites' method to get specific conjugations because it's
       // more performant.
-      // TODO - Delete favorites feature once enough people have upgraded
+      // TODO - In the future favorites should be merged with conjugations
       if (!!conjugations) {
-        const conjArgs: FavInput[] = conjugations.map((c) => ({
-          conjugationName: c.name,
-          honorific: c.honorific,
+        const conjArgs: FavInput[] = conjugations.map((conjugationName) => ({
+          conjugationName,
+          honorific,
           regular,
         }));
         return getConjugations(stem, isAdj, regular, conjArgs);

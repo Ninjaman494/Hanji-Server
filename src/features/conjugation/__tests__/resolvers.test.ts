@@ -2,7 +2,6 @@ import {
   CONJUGATIONS,
   CONJUGATION_NAMES,
   CONJUGATION_TYPES,
-  SPECIFIC_CONJUGATIONS,
   STEMS,
 } from './conjugationsSnapshot';
 import resolvers from '../resolvers';
@@ -21,10 +20,15 @@ describe('conjugation resolver', () => {
 
     it('fetches specific conjugations', () => {
       const conjugations = [
-        { name: 'connective if', honorific: false },
-        { name: 'declarative present informal high', honorific: true },
-        { name: 'propositive informal low', honorific: false },
+        'connective if',
+        'declarative present informal low',
+        'propositive informal low',
       ];
+      const expectedConjugations = CONJUGATIONS.reduce(
+        (prev, val) =>
+          conjugations.includes(val.name) ? [...prev, val] : prev,
+        [],
+      );
 
       const response = (resolvers.Query.conjugations as any)(null, {
         stem: '가다',
@@ -33,7 +37,7 @@ describe('conjugation resolver', () => {
         regular: true,
         conjugations,
       });
-      expect(response).toEqual(SPECIFIC_CONJUGATIONS);
+      expect(response).toEqual(expectedConjugations);
     });
 
     it('returns no results when stem is empty', () => {

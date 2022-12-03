@@ -6,7 +6,6 @@ import {
   CONJUGATIONS_INTEGRATION,
   CONJUGATION_NAMES,
   CONJUGATION_TYPES,
-  SPECIFIC_CONJUGATIONS_INTEGRATION,
   STEMS,
 } from './conjugationsSnapshot';
 import { executeOperation } from 'tests/utils';
@@ -17,14 +16,14 @@ const server = new ApolloServer({
 });
 
 describe('conjugation feature', () => {
-  describe('conjugations query', () => {
+  it('handles conjugations queries', async () => {
     const query = gql`
       query Conjugations(
         $stem: String!
         $isAdj: Boolean!
         $honorific: Boolean!
         $regular: Boolean
-        $conjugations: [ConjugationInput]
+        $conjugations: [String]
       ) {
         conjugations(
           stem: $stem
@@ -45,34 +44,16 @@ describe('conjugation feature', () => {
         }
       }
     `;
-    it('fetches conjugations', async () => {
-      const { errors, data } = await executeOperation(server, query, {
-        stem: '가다',
-        isAdj: false,
-        honorific: false,
-      });
 
-      expect(errors).toBeUndefined();
-      expect(data).toBeDefined();
-      expect(data.conjugations).toEqual(CONJUGATIONS_INTEGRATION);
+    const { errors, data } = await executeOperation(server, query, {
+      stem: '가다',
+      isAdj: false,
+      honorific: false,
     });
 
-    it('fetches specific conjugations', async () => {
-      const { errors, data } = await executeOperation(server, query, {
-        stem: '가다',
-        isAdj: false,
-        honorific: false,
-        conjugations: [
-          { name: 'connective if', honorific: false },
-          { name: 'declarative present informal high', honorific: true },
-          { name: 'propositive informal low', honorific: false },
-        ],
-      });
-
-      expect(errors).toBeUndefined();
-      expect(data).toBeDefined();
-      expect(data.conjugations).toEqual(SPECIFIC_CONJUGATIONS_INTEGRATION);
-    });
+    expect(errors).toBeUndefined();
+    expect(data).toBeDefined();
+    expect(data.conjugations).toEqual(CONJUGATIONS_INTEGRATION);
   });
 
   it('handles conjugationTypes queries', async () => {
