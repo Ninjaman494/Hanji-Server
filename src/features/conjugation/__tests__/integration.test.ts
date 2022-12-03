@@ -17,14 +17,81 @@ const server = new ApolloServer({
 });
 
 describe('conjugation feature', () => {
-  describe('conjugations query', () => {
+  describe('getConjugations query', () => {
+    it('fetches conjugations', async () => {
+      const query = gql`
+        query GetConjugations($input: ConjugationsInput!) {
+          getConjugations(input: $input) {
+            name
+            conjugation
+            type
+            tense
+            speechLevel
+            honorific
+            pronunciation
+            romanization
+            reasons
+          }
+        }
+      `;
+
+      const { errors, data } = await executeOperation(server, query, {
+        input: {
+          stem: '가다',
+          isAdj: false,
+          honorific: false,
+        },
+      });
+
+      expect(errors).toBeUndefined();
+      expect(data).toBeDefined();
+      expect(data.getConjugations).toEqual(CONJUGATIONS_INTEGRATION);
+    });
+
+    it('fetches specific conjugations', async () => {
+      const query = gql`
+        query GetConjugations($input: ConjugationsInput!) {
+          getConjugations(input: $input) {
+            name
+            conjugation
+            type
+            tense
+            speechLevel
+            honorific
+            pronunciation
+            romanization
+            reasons
+          }
+        }
+      `;
+
+      const { errors, data } = await executeOperation(server, query, {
+        input: {
+          stem: '가다',
+          isAdj: false,
+          honorific: false,
+          conjugations: [
+            { name: 'connective if', honorific: false },
+            { name: 'declarative present informal high', honorific: true },
+            { name: 'propositive informal low', honorific: false },
+          ],
+        },
+      });
+
+      expect(errors).toBeUndefined();
+      expect(data).toBeDefined();
+      expect(data.getConjugations).toEqual(SPECIFIC_CONJUGATIONS_INTEGRATION);
+    });
+  });
+
+  it('handles conjugations queries', async () => {
     const query = gql`
       query Conjugations(
         $stem: String!
         $isAdj: Boolean!
         $honorific: Boolean!
         $regular: Boolean
-        $conjugations: [ConjugationInput]
+        $conjugations: [String]
       ) {
         conjugations(
           stem: $stem
@@ -45,34 +112,16 @@ describe('conjugation feature', () => {
         }
       }
     `;
-    it('fetches conjugations', async () => {
-      const { errors, data } = await executeOperation(server, query, {
-        stem: '가다',
-        isAdj: false,
-        honorific: false,
-      });
 
-      expect(errors).toBeUndefined();
-      expect(data).toBeDefined();
-      expect(data.conjugations).toEqual(CONJUGATIONS_INTEGRATION);
+    const { errors, data } = await executeOperation(server, query, {
+      stem: '가다',
+      isAdj: false,
+      honorific: false,
     });
 
-    it('fetches specific conjugations', async () => {
-      const { errors, data } = await executeOperation(server, query, {
-        stem: '가다',
-        isAdj: false,
-        honorific: false,
-        conjugations: [
-          { name: 'connective if', honorific: false },
-          { name: 'declarative present informal high', honorific: true },
-          { name: 'propositive informal low', honorific: false },
-        ],
-      });
-
-      expect(errors).toBeUndefined();
-      expect(data).toBeDefined();
-      expect(data.conjugations).toEqual(SPECIFIC_CONJUGATIONS_INTEGRATION);
-    });
+    expect(errors).toBeUndefined();
+    expect(data).toBeDefined();
+    expect(data.conjugations).toEqual(CONJUGATIONS_INTEGRATION);
   });
 
   it('handles conjugationTypes queries', async () => {
