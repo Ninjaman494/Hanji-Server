@@ -7,8 +7,10 @@ import { stem } from 'korean/stemmer';
 const resolvers: Resolvers = {
   Query: {
     search: async (_, { query, cursor }) => {
+      query = query.trim();
+
       if (!cursor || cursor < 0) cursor = 0;
-      if (!query.trim()) return { cursor, results: [] };
+      if (!query) return { cursor, results: [] };
 
       let results: Entry[];
       if (is_hangeul_string(query)) {
