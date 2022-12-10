@@ -38,6 +38,20 @@ describe('search resolver', () => {
     expect(cursor).toEqual(0);
   });
 
+  it('trims extra whitespace from queries', async () => {
+    const { results, cursor } = await (resolvers.Query.search as any)(null, {
+      query: '   김지   ',
+    });
+
+    const { _id, ...rest } = entries[0];
+    expect(results.length).toEqual(1);
+    expect(cursor).toEqual(1);
+    expect(omit(results[0], ['score'])).toEqual({
+      id: _id.toString(),
+      ...rest,
+    });
+  });
+
   describe('English', () => {
     it('resolves search queries', async () => {
       const { results, cursor } = await (resolvers.Query.search as any)(null, {
