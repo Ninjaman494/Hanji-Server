@@ -1,6 +1,6 @@
 {
   "name": "hanji-server",
-  "version": "2.4.0",
+  "version": "2.5.1",
   "description": "JavaScript Server for conjugating Korean verbs/adjectives. Uses Dan Bravender's source code for conjugation.",
   "type": "commonjs",
   "author": "Akash Eldo",
