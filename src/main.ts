@@ -99,8 +99,8 @@ const startServer = async () => {
   expressApp.use(
     '/graphql',
     bodyParser.json(),
-    expressMiddleware(apolloServer),
     graphqlUploadExpress(),
+    expressMiddleware(apolloServer),
   );
 
   const PORT = process.env.PORT || 4000;
