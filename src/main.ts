@@ -35,6 +35,7 @@ import {
 import { merge } from 'lodash';
 import bodyParser from 'body-parser';
 import { connectDB } from 'datasources/databaseWrapper';
+import refreshWOD from 'features/wod/refreshWOD';
 
 // Source: https://github.com/ravangen/graphql-rate-limit/blob/master/examples/context/index.js
 // Creates a unique key based on ip address and endpoint being accessed
@@ -94,6 +95,11 @@ const startServer = async () => {
 
   expressApp.get('/uptime', (_, res) => {
     res.send('Still up!');
+  });
+
+  expressApp.get('/wod', async (_, res) => {
+    await refreshWOD();
+    res.send('Updated!');
   });
 
   expressApp.use(

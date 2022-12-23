@@ -1,4 +1,8 @@
 cron:
-  - description: "uptime"
+  - description: 'uptime'
     url: /uptime
     schedule: every 1 minutes
+  - description: 'refresh wod'
+    url: /wod
+    schedule: every day 4:00
+    timezone: Etc/UTC
