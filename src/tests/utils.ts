@@ -1,5 +1,9 @@
 import { ApolloServer } from '@apollo/server';
-import { connectDB, wordsCollection } from 'datasources/databaseWrapper';
+import {
+  connectDB,
+  globalCollection,
+  wordsCollection,
+} from 'datasources/databaseWrapper';
 import { Entry } from 'generated/graphql';
 import { DocumentNode } from 'graphql';
 import { MongoClient, ObjectId } from 'mongodb';
@@ -36,6 +40,12 @@ export const setupMockDB = async (
   const collection = wordsCollection();
   await collection.createIndex({ definitions: 'text' });
   await collection.insertMany(entries ?? ENTRIES);
+
+  await globalCollection().insertOne({
+    _id: 'wod' as any,
+    entryID: ENTRIES[0]._id,
+    updated: new Date(),
+  });
 
   return mongoClient;
 };
