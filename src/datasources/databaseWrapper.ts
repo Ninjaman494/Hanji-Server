@@ -30,3 +30,8 @@ export const surveySubmissionsCollection = () => {
     .db(DB_NAME)
     .collection<Omit<SurveySubmissionDoc, '_id'>>('survey-submissions');
 };
+
+export const globalCollection = () => {
+  if (!mongo) throw new Error('Database not connected');
+  return mongo.db(DB_NAME).collection('global');
+};
