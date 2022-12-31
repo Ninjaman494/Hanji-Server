@@ -1,6 +1,6 @@
 import { globalCollection, wordsCollection } from 'datasources/databaseWrapper';
 import { EntryDoc } from 'datasources/types';
-import { getMessaging } from 'firebase-admin/messaging';
+import { getMessaging, Message } from 'firebase-admin/messaging';
 
 const refreshWOD = async () => {
   const result = await wordsCollection()
@@ -20,20 +20,19 @@ const refreshWOD = async () => {
   );
 
   try {
-    const message = {
+    const message: Message = {
       token:
-        'd66KUA5aRdWb-ht4qNACmc:APA91bGI6HeNw1KcQ4qnkMYRhGhesEEjHHcB6LFvronBRomlV_tSknQIis0sb0oruVEpy2irPD57EbqoFuEsQXdDo4WAgZM-SBigT4yDoF651tzLZuX0Hudz9awwoeSCRKqix2yW1Vmz',
+        'cjBxH-BsRoWdqbddjOJ9ke:APA91bF7P9V18sIAmEnBQa58VM9nDJmR-88aO-tU9VAF1X_Fg6UPJoIup87oI4CSTL8IQCrIqYYrzZgVQIAgBHlkW6-iDnfIaGqhLGbM4LLa99iQaoagIBNRXKkCiFyeIaxNp6QYYihs',
+      notification: {
+        title: `Today's word is ${newWOD.term}`,
+        body: `Do you know what ${newWOD.term} means?`,
+      },
+      android: {
+        notification: { channelId: 'wod' },
+      },
       data: {
-        notifee: JSON.stringify({
-          title: `Today's word is ${newWOD.term}`,
-          body: `Do you know what ${newWOD.term} means?`,
-          android: {
-            channelId: 'wod',
-            pressAction: {
-              id: 'default',
-            },
-          },
-        }),
+        type: 'wod',
+        entryId: newWOD._id.toString(),
       },
     };
     const response = await getMessaging().send(message);
