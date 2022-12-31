@@ -21,8 +21,7 @@ const refreshWOD = async () => {
 
   try {
     const message: Message = {
-      token:
-        'cjBxH-BsRoWdqbddjOJ9ke:APA91bF7P9V18sIAmEnBQa58VM9nDJmR-88aO-tU9VAF1X_Fg6UPJoIup87oI4CSTL8IQCrIqYYrzZgVQIAgBHlkW6-iDnfIaGqhLGbM4LLa99iQaoagIBNRXKkCiFyeIaxNp6QYYihs',
+      topic: 'all',
       notification: {
         title: `Today's word is ${newWOD.term}`,
         body: `Do you know what ${newWOD.term} means?`,
