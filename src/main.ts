@@ -13,7 +13,7 @@ import {
   defaultKeyGenerator,
 } from 'graphql-rate-limit-directive';
 import { graphqlUploadExpress } from 'graphql-upload';
-import { applicationDefault, initializeApp } from 'firebase-admin/app';
+import { cert, initializeApp } from 'firebase-admin/app';
 import {
   BugReport,
   Entry,
@@ -53,7 +53,7 @@ const startServer = async () => {
   const expressApp = express();
   const httpServer = createServer(expressApp);
 
-  initializeApp({ credential: applicationDefault() });
+  initializeApp({ credential: cert('hanji-bd63d-849ae0babd80.json') });
 
   await connectDB();
 
