@@ -1,6 +1,12 @@
 name: Deploy
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+    inputs:
+      promote:
+        description: 'Promote deployment to receive all traffic'
+        required: true
+        type: boolean
 
 jobs:
   deploy:
@@ -17,9 +23,15 @@ jobs:
         with:
           envkey_MONGO_URL: ${{ secrets.MONGO_URL }}
           envkey_SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      - name: Create Firebase json
+        run: echo $FIREBASE_JSON >> hanji-bd63d-849ae0babd80.json
+        env:
+          FIREBASE_JSON: ${{ secrets.FIREBASE_JSON }}
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v1
         with:
           credentials_json: '${{ secrets.GCP_SECRET }}'
       - name: Deploy to Google App Engine
         uses: google-github-actions/deploy-appengine@v1
+        with:
+          promote: ${{ inputs.promote }}

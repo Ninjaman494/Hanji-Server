@@ -13,6 +13,7 @@ import {
   defaultKeyGenerator,
 } from 'graphql-rate-limit-directive';
 import { graphqlUploadExpress } from 'graphql-upload';
+import { cert, initializeApp } from 'firebase-admin/app';
 import {
   BugReport,
   Entry,
@@ -51,6 +52,8 @@ const keyGenerator = (directiveArgs, obj, args, context, info) =>
 const startServer = async () => {
   const expressApp = express();
   const httpServer = createServer(expressApp);
+
+  initializeApp({ credential: cert('hanji-bd63d-849ae0babd80.json') });
 
   await connectDB();
 
