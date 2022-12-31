@@ -1,11 +1,12 @@
 name: Deploy
 
-on: workflow_dispatch
-  inputs:
-    promote:
-      description: 'Promote deployment to receive all traffic'
-      required: true
-      type: boolean
+on: 
+  workflow_dispatch:
+    inputs:
+      promote:
+        description: 'Promote deployment to receive all traffic'
+        required: true
+        type: boolean
 
 jobs:
   deploy:
