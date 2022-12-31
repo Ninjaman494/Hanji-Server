@@ -24,7 +24,9 @@ jobs:
           envkey_MONGO_URL: ${{ secrets.MONGO_URL }}
           envkey_SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       - name: Create Firebase json
-        run: echo ${{ secrets.FIREBASE_JSON }} >> hanji-bd63d-849ae0babd80.json
+        run: echo $FIREBASE_JSON  >> hanji-bd63d-849ae0babd80.json
+        env:
+          FIREBASE_JSON: ${{ secrets.FIREBASE_JSON }}
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v1
         with:
