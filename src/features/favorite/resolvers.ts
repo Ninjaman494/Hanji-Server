@@ -5,7 +5,7 @@ import conjugator from 'korean/conjugator';
 export const getConjugations = (
   stem: string,
   isAdj: boolean,
-  regular: boolean,
+  regular: boolean | null,
   conjugations: FavInput[],
 ) => {
   if (!stem.trim()) return [];
