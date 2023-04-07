@@ -16,8 +16,8 @@ import * as stemmer from 'korean/stemmer';
 const resolveConjugations = (
   stem: string,
   isAdj: boolean,
-  honorific: boolean | null,
-  regular: boolean,
+  honorific: boolean,
+  regular: boolean | null,
   conjugations?: SpecificConjugation[],
 ) => {
   if (!stem.trim()) return [];
