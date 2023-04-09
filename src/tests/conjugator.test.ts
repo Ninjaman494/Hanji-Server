@@ -35,6 +35,29 @@ test('merge function', async () => {
   equal(conjugator.merge('해', '었'), '했');
 });
 
+test('isAlwaysHonorific function', async () => {
+  // Always honorific verbs/adj. should return true
+  expect(conjugator.isAlwaysHonorific('계시다', false)).toBeTruthy();
+  expect(conjugator.isAlwaysHonorific('드시다', false)).toBeTruthy();
+
+  // Missing 다 case
+  expect(conjugator.isAlwaysHonorific('계시', false)).toBeTruthy();
+
+  // Regular verbs/adj should return false
+  expect(conjugator.isAlwaysHonorific('있다', false)).toBeFalsy();
+  expect(conjugator.isAlwaysHonorific('가', false)).toBeFalsy();
+  expect(conjugator.isAlwaysHonorific('들다', false)).toBeFalsy();
+});
+
+test('add_honorific function', async () => {
+  expect(conjugator.add_honorific('가다', false)).toEqual('가시');
+  expect(conjugator.add_honorific('들다', false)).toEqual('드시');
+  expect(conjugator.add_honorific('묻다', true)).toEqual('묻으시');
+
+  // Always honorific verbs/adjs shouldn't be changed
+  expect(conjugator.add_honorific('계시다', false)).toEqual('계시');
+});
+
 test('irregular functions', async () => {
   equal(conjugator.after_last_space('시작을 하다'), '하다');
 
