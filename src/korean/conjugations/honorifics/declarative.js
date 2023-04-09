@@ -14,6 +14,11 @@ conjugations.declarative_present_informal_low.speechLevel = 'informal low';
 conjugations.declarative_present_informal_low.honorific = true;
 
 conjugations.declarative_present_informal_high = function(infinitive, regular) {
+    // if always honorific, drop 시
+    if(conjugator.isAlwaysHonorific(infinitive, regular)) {
+        infinitive = infinitive.replace('시', '');
+    }
+
     if (conjugator.is_l_irregular(conjugator.base(infinitive, regular))) {
         return conjugator.drop_l(conjugator.base3(infinitive, regular), '세요');
     }

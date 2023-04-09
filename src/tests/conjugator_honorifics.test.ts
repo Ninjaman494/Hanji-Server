@@ -95,6 +95,16 @@ test('declarative present', async () => {
     '쓰세요',
   );
 
+  // Always honorific words. They shouldn't add an extra 시
+  equal(
+    conjugator.declarative_present_informal_high_honorific('계시다'),
+    '계세요',
+  );
+  equal(
+    conjugator.declarative_present_informal_high_honorific('드시다'),
+    '드세요',
+  );
+
   equal(
     conjugator.declarative_present_formal_low_honorific('부르다', true, true),
     '부르시다',
@@ -266,6 +276,10 @@ test('propositive', async () => {
   equal(conjugator.propositive_informal_low_honorific('가다'), '가셔'); // same as declarative
   equal(conjugator.propositive_informal_high_honorific('가다'), '가세요'); // same as declarative
 
+  // Always honorific words. They shouldn't add an extra 시
+  equal(conjugator.propositive_informal_high_honorific('계시다'), '계세요');
+  equal(conjugator.propositive_informal_high_honorific('드시다'), '드세요');
+
   equal(conjugator.propositive_formal_low_honorific('가다'), '가시자');
   equal(conjugator.propositive_formal_low_honorific('듣다'), '들으시자');
   equal(conjugator.propositive_formal_low_honorific('살다'), '사시자');
@@ -302,6 +316,16 @@ test('interrogative present', async () => {
     conjugator.interrogative_present_informal_high_honorific('열다'),
     '여세요',
   ); // same as declarative
+
+  // Always honorific words. They shouldn't add an extra 시
+  equal(
+    conjugator.interrogative_present_informal_high_honorific('계시다'),
+    '계세요',
+  );
+  equal(
+    conjugator.interrogative_present_informal_high_honorific('드시다'),
+    '드세요',
+  );
 
   equal(
     conjugator.interrogative_present_formal_low_honorific('열다'),
@@ -392,6 +416,10 @@ test('imperative', async () => {
 
   equal(conjugator.imperative_informal_high_honorific('가다'), '가세요');
   equal(conjugator.imperative_informal_high_honorific('살다'), '사세요');
+
+  // Always honorific words. They shouldn't add an extra 시
+  equal(conjugator.imperative_informal_high_honorific('계시다'), '계세요');
+  equal(conjugator.imperative_informal_high_honorific('드시다'), '드세요');
 
   equal(conjugator.imperative_formal_low_honorific('가다'), '가셔라');
   equal(conjugator.imperative_formal_low_honorific('굽다'), '구우셔라');
