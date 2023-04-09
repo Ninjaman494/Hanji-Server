@@ -92,66 +92,101 @@ test('verb type functions', async () => {
   equal(conjugator.verb_type('가다'), 'regular verb');
 });
 
-test('conjugation_one function', () => {
-  // regular
-  let conjugation = conjugator.conjugate_one(
-    '가다',
-    false,
-    false,
-    false,
-    'declarative present informal high',
-  );
+describe('conjugate_one function', () => {
+  it('conjugates regular verbs', () => {
+    const conjugation = conjugator.conjugate_one(
+      '가다',
+      false,
+      false,
+      false,
+      'declarative present informal high',
+    );
 
-  expect(conjugation.conjugated).toEqual('가요');
-  expect(conjugation.conjugation_name).toEqual(
-    'declarative present informal high',
-  );
-  expect(conjugation.pronunciation).toEqual('가요');
-  expect(conjugation.romanized).toEqual('gah-yoh');
-  expect(conjugation.type).toEqual('declarative present');
-  expect(conjugation.tense).toEqual('present');
-  expect(conjugation.speechLevel).toEqual('informal high');
-  expect(conjugation.honorific).toBeFalsy();
-  expect(conjugation.reasons).toEqual([
-    'vowel contraction [ㅏ ㅏ -> ㅏ] (가 + 아 -> 가)',
-    'join (가 + 요 -> 가요)',
-  ]);
+    expect(conjugation.conjugated).toEqual('가요');
+    expect(conjugation.conjugation_name).toEqual(
+      'declarative present informal high',
+    );
+    expect(conjugation.pronunciation).toEqual('가요');
+    expect(conjugation.romanized).toEqual('gah-yoh');
+    expect(conjugation.type).toEqual('declarative present');
+    expect(conjugation.tense).toEqual('present');
+    expect(conjugation.speechLevel).toEqual('informal high');
+    expect(conjugation.honorific).toBeFalsy();
+    expect(conjugation.reasons).toEqual([
+      'vowel contraction [ㅏ ㅏ -> ㅏ] (가 + 아 -> 가)',
+      'join (가 + 요 -> 가요)',
+    ]);
+  });
 
-  conjugation = conjugator.conjugate_one(
-    '가다',
-    false,
-    false,
-    true,
-    'declarative future informal high',
-  );
+  it('conjugates honorifics', () => {
+    const conjugation = conjugator.conjugate_one(
+      '가다',
+      false,
+      false,
+      true,
+      'declarative future informal high',
+    );
 
-  // honorific
-  expect(conjugation.conjugated).toEqual('가실 거예요');
-  expect(conjugation.conjugation_name).toEqual(
-    'declarative future informal high',
-  );
-  expect(conjugation.pronunciation).toEqual('가실 거예요');
-  expect(conjugation.romanized).toEqual('gah-sheel- -guh-yae-yoh');
-  expect(conjugation.type).toEqual('declarative future');
-  expect(conjugation.tense).toEqual('future');
-  expect(conjugation.speechLevel).toEqual('informal high');
-  expect(conjugation.honorific).toBeTruthy();
-  expect(conjugation.reasons).toEqual([
-    'join (가 + 시 -> 가시)',
-    'borrow padchim (가시 + 을 -> 가실)',
-    'join (가실 +  거예요 -> 가실 거예요)',
-  ]);
+    expect(conjugation.conjugated).toEqual('가실 거예요');
+    expect(conjugation.conjugation_name).toEqual(
+      'declarative future informal high',
+    );
+    expect(conjugation.pronunciation).toEqual('가실 거예요');
+    expect(conjugation.romanized).toEqual('gah-sheel- -guh-yae-yoh');
+    expect(conjugation.type).toEqual('declarative future');
+    expect(conjugation.tense).toEqual('future');
+    expect(conjugation.speechLevel).toEqual('informal high');
+    expect(conjugation.honorific).toBeTruthy();
+    expect(conjugation.reasons).toEqual([
+      'join (가 + 시 -> 가시)',
+      'borrow padchim (가시 + 을 -> 가실)',
+      'join (가실 +  거예요 -> 가실 거예요)',
+    ]);
+  });
 
-  // Determiner past doesn't exist for adjectives
-  conjugation = conjugator.conjugate_one(
-    '춥다',
-    false,
-    true,
-    false,
-    'determiner past',
-  );
+  it('does not conjugate non-existent conjugations', () => {
+    // Determiner past doesn't exist for adjectives
+    const conjugation = conjugator.conjugate_one(
+      '춥다',
+      false,
+      true,
+      false,
+      'determiner past',
+    );
 
-  expect(conjugation).toBeUndefined();
+    expect(conjugation).toBeUndefined();
+  });
+
+  it('always uses honorific conjugations for always honorific verbs/adjectives', () => {
+    const regularConj = conjugator.conjugate_one(
+      '계시다',
+      false,
+      false,
+      false,
+      'declarative present informal high',
+    );
+
+    const honorificConj = conjugator.conjugate_one(
+      '계시다',
+      false,
+      false,
+      true,
+      'declarative present informal high',
+    );
+
+    expect(regularConj).toEqual(honorificConj);
+    expect(regularConj.conjugated).toEqual('계세요');
+    expect(regularConj.conjugation_name).toEqual(
+      'declarative present informal high',
+    );
+    expect(regularConj.pronunciation).toEqual('계세요');
+    expect(regularConj.romanized).toEqual('gyae-sae-yoh');
+    expect(regularConj.type).toEqual('declarative present');
+    expect(regularConj.tense).toEqual('present');
+    expect(regularConj.speechLevel).toEqual('informal high');
+    expect(regularConj.honorific).toBeTruthy();
+    expect(regularConj.reasons).toEqual(['join (계 + 세요 -> 계세요)']);
+  });
 });
 
 test('reasons', () => {
