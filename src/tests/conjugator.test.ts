@@ -1,5 +1,6 @@
 import { equal, deepEqual } from 'assert';
 import conjugator from '../korean/conjugator';
+import { CONJUGATE_SNAPSHOT } from './conjugations_snapshot';
 
 test('utility functions', async () => {
   let rule = conjugator.no_padchim_rule({
@@ -186,6 +187,14 @@ describe('conjugate_one function', () => {
     expect(regularConj.speechLevel).toEqual('informal high');
     expect(regularConj.honorific).toBeTruthy();
     expect(regularConj.reasons).toEqual(['join (계 + 세요 -> 계세요)']);
+  });
+});
+
+describe('conjugate function', () => {
+  it('provides all conjugations for a word', () => {
+    conjugator.conjugate('듣다', false, false, false, (c) =>
+      expect(c).toEqual(CONJUGATE_SNAPSHOT),
+    );
   });
 });
 

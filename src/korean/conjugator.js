@@ -451,7 +451,6 @@ conjugator.is_itda_obda = function(infinitive,regular){
 };
 
 conjugator.each_conjugation = function(infinitive, regular, isAdj, honorific, callback) {
-    infinitive = conjugator.base(infinitive, regular);
     for (conjugation in conjugator) {
         conjugator.reasons.length = 0;
         if (conjugator[conjugation].conjugation && (honorific == conjugator[conjugation].honorific || (!honorific && conjugator[conjugation].honorific == null))) {
@@ -461,7 +460,7 @@ conjugator.each_conjugation = function(infinitive, regular, isAdj, honorific, ca
                 continue;
             }
 
-            r.infinitive = infinitive + '다';
+            r.infinitive = infinitive;
             r.conjugation_name = conjugation.replace(/_/g, ' ').replace(' honorific','');
             r.pronunciation = pronunciation.get_pronunciation(r.conjugated);
             r.romanized = romanization.romanize(r.pronunciation);
