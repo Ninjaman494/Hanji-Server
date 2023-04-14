@@ -1,6 +1,9 @@
 import { equal, deepEqual } from 'assert';
 import conjugator from '../korean/conjugator';
-import { CONJUGATE_SNAPSHOT } from './conjugations_snapshot';
+import {
+  CONJUGATE_ALWAYS_HONORIFIC_SNAPSHOT,
+  CONJUGATE_SNAPSHOT,
+} from './conjugations_snapshot';
 
 test('utility functions', async () => {
   let rule = conjugator.no_padchim_rule({
@@ -194,6 +197,12 @@ describe('conjugate function', () => {
   it('provides all conjugations for a word', () => {
     conjugator.conjugate('듣다', false, false, false, (c) =>
       expect(c).toEqual(CONJUGATE_SNAPSHOT),
+    );
+  });
+
+  it('always uses honorific conjugations for always honorific words', () => {
+    conjugator.conjugate('계시다', false, false, false, (c) =>
+      expect(c).toEqual(CONJUGATE_ALWAYS_HONORIFIC_SNAPSHOT),
     );
   });
 });

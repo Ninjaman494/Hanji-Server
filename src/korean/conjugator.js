@@ -451,6 +451,7 @@ conjugator.is_itda_obda = function(infinitive,regular){
 };
 
 conjugator.each_conjugation = function(infinitive, regular, isAdj, honorific, callback) {
+    honorific = conjugator.isAlwaysHonorific(infinitive, regular) || honorific
     for (conjugation in conjugator) {
         conjugator.reasons.length = 0;
         if (conjugator[conjugation].conjugation && (honorific == conjugator[conjugation].honorific || (!honorific && conjugator[conjugation].honorific == null))) {
