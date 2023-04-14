@@ -16,7 +16,7 @@ conjugations.declarative_present_informal_low.honorific = true;
 conjugations.declarative_present_informal_high = function(infinitive, regular) {
     // if always honorific, drop 시
     if(conjugator.isAlwaysHonorific(infinitive, regular)) {
-        infinitive = infinitive.replace('시', '');
+        infinitive = conjugator.stripHonorific(infinitive, regular);
     }
 
     if (conjugator.is_l_irregular(conjugator.base(infinitive, regular))) {
@@ -45,6 +45,8 @@ conjugations.declarative_present_formal_low.speechLevel = 'formal low';
 conjugations.declarative_present_formal_low.honorific = true;
 
 conjugations.declarative_present_formal_high = function(infinitive, regular) {
+    infinitive = conjugator.stripHonorific(infinitive, regular);
+
     if (conjugator.is_l_irregular(conjugator.base(infinitive, regular))) {
         return conjugator.drop_l(conjugator.base3(infinitive, regular), '십니다');
     }

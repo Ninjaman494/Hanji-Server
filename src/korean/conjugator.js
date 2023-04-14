@@ -309,6 +309,24 @@ conjugator.isAlwaysHonorific = function(infinitive, regular) {
     return conjugator.base(infinitive, regular) in conjugator.always_honorific;
 }
 
+/**
+ * Remove 시 from words like 계시다 and 드시다 that should always be in honorific form.
+ * This is useful for conjugations like declarative present informal high.
+ * 
+ * @param {string} infinitive 
+ * @param {boolean | undefined} regular 
+ * @returns the infinitive with 시 removed
+ */
+conjugator.stripHonorific = function(infinitive, regular) {
+    // Don't strip regular verbs/adj.
+    if(!conjugator.isAlwaysHonorific(infinitive, regular)) return infinitive;
+
+    const oldStem = conjugator.base(infinitive);
+    const newStem = oldStem.replace('시', ''); 
+    conjugator.reasons.push(`honorific verb/adj -> remove 시 (${oldStem} -> ${newStem})`);
+    return newStem;
+}
+
 conjugator.join = function(x, y){
     conjugator.reasons.push(`join (${x} + ${y} -> ${x + y})`);
     return x + y;
