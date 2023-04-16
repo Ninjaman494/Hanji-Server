@@ -31,9 +31,7 @@ conjugations.propositive_formal_low.speechLevel = 'formal low';
 conjugations.propositive_formal_low.honorific = true;
 
 conjugations.propositive_formal_high = function(infinitive, regular) {
-    if(conjugator.isAlwaysHonorific(infinitive)) {
-        infinitive = conjugator.stripHonorific(infinitive, regular);
-    }
+    infinitive = conjugator.maybeStripHonorific(infinitive, regular);
     infinitive = conjugator.base(infinitive);
 
     if (conjugator.is_l_irregular(infinitive, regular)) {

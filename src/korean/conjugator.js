@@ -320,7 +320,7 @@ conjugator.isAlwaysHonorific = function(infinitive, regular) {
  * @param {boolean | undefined} regular 
  * @returns the infinitive with 시 removed
  */
-conjugator.stripHonorific = function(infinitive, regular) {
+conjugator.maybeStripHonorific = function(infinitive, regular) {
     // Don't strip regular verbs/adj.
     if(!conjugator.isAlwaysHonorific(infinitive, regular)) return infinitive;
 
