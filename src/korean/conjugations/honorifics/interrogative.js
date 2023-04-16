@@ -35,6 +35,8 @@ conjugations.interrogative_present_formal_low.speechLevel = 'formal low';
 conjugations.interrogative_present_formal_low.honorific = true;
 
 conjugations.interrogative_present_formal_high = function(infinitive, regular) {
+    infinitive = conjugator.maybeStripHonorific(infinitive, regular);
+
     if (conjugator.is_l_irregular(conjugator.base(infinitive, regular))) {
         return conjugator.drop_l(conjugator.base3(infinitive, regular), '십니까');
     }

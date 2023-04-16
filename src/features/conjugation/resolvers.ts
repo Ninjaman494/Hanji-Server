@@ -17,7 +17,7 @@ const resolveConjugations = (
   stem: string,
   isAdj: boolean,
   honorific: boolean,
-  regular: boolean,
+  regular: boolean | null,
   conjugations?: SpecificConjugation[],
 ) => {
   if (!stem.trim()) return [];
