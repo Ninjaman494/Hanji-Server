@@ -243,7 +243,10 @@ conjugator.not_l_euh_irregular = {'우러르': true, '따르': true, '붙따르'
 
 conjugator.not_l_irregular = {};
 
-conjugator.always_honorific = {'계시': true, '드시': true};
+conjugator.always_honorific = {
+    '계시': true, '드시': true, '돌아가시': true, '모시': true, '시장하시': true, 
+    '잡수시': true, '주무시': true, '편찮으시': true
+};
 
 conjugator.after_last_space = function(infinitive) {
     return infinitive.split(' ').reverse()[0];
@@ -322,7 +325,8 @@ conjugator.stripHonorific = function(infinitive, regular) {
     if(!conjugator.isAlwaysHonorific(infinitive, regular)) return infinitive;
 
     const oldStem = conjugator.base(infinitive);
-    const newStem = oldStem.replace('시', ''); 
+    // Remove 시 at the end of the word, or next to 다 if it exists
+    const newStem = oldStem.replace(/시다?$/, ''); 
     conjugator.reasons.push(`honorific verb/adj -> remove 시 (${oldStem} -> ${newStem})`);
     return newStem;
 }
