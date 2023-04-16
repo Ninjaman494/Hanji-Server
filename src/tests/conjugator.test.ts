@@ -100,7 +100,7 @@ describe('conjugate_one function', () => {
   it('conjugates regular verbs', () => {
     const conjugation = conjugator.conjugate_one(
       '가다',
-      false,
+      null,
       false,
       false,
       'declarative present informal high',
@@ -125,7 +125,7 @@ describe('conjugate_one function', () => {
   it('conjugates honorifics', () => {
     const conjugation = conjugator.conjugate_one(
       '가다',
-      false,
+      null,
       false,
       true,
       'declarative future informal high',
@@ -152,7 +152,7 @@ describe('conjugate_one function', () => {
     // Determiner past doesn't exist for adjectives
     const conjugation = conjugator.conjugate_one(
       '춥다',
-      false,
+      null,
       true,
       false,
       'determiner past',
@@ -164,7 +164,7 @@ describe('conjugate_one function', () => {
   it('always uses honorific conjugations for always honorific verbs/adjectives', () => {
     const regularConj = conjugator.conjugate_one(
       '계시다',
-      false,
+      null,
       false,
       false,
       'declarative present informal high',
@@ -172,7 +172,7 @@ describe('conjugate_one function', () => {
 
     const honorificConj = conjugator.conjugate_one(
       '계시다',
-      false,
+      null,
       false,
       true,
       'declarative present informal high',
@@ -189,19 +189,22 @@ describe('conjugate_one function', () => {
     expect(regularConj.tense).toEqual('present');
     expect(regularConj.speechLevel).toEqual('informal high');
     expect(regularConj.honorific).toBeTruthy();
-    expect(regularConj.reasons).toEqual(['join (계 + 세요 -> 계세요)']);
+    expect(regularConj.reasons).toEqual([
+      'honorific verb/adj -> remove 시 (계시 -> 계)',
+      'join (계 + 세요 -> 계세요)',
+    ]);
   });
 });
 
 describe('conjugate function', () => {
   it('provides all conjugations for a word', () => {
-    conjugator.conjugate('듣다', false, false, false, (c) =>
+    conjugator.conjugate('듣다', null, false, false, (c) =>
       expect(c).toEqual(CONJUGATE_SNAPSHOT),
     );
   });
 
   it('always uses honorific conjugations for always honorific words', () => {
-    conjugator.conjugate('계시다', false, false, false, (c) =>
+    conjugator.conjugate('계시다', null, false, false, (c) =>
       expect(c).toEqual(CONJUGATE_ALWAYS_HONORIFIC_SNAPSHOT),
     );
   });

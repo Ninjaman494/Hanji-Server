@@ -15,14 +15,14 @@ interface conjugator {
   verb_type(infinitive: string, regular?: boolean): string;
   conjugate(
     infinitive: string,
-    regular: boolean,
+    regular: boolean | null,
     isAdj: boolean,
     honorific: boolean,
     callback: (conjugations: Conjugation[]) => void,
   ): void;
   conjugate_one(
     infinitive: string,
-    regular: boolean,
+    regular: boolean | null,
     isAdj: boolean,
     honorific: boolean,
     conjugationName: string,
