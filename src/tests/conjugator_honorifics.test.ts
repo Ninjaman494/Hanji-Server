@@ -104,6 +104,10 @@ test('declarative present', async () => {
     conjugator.declarative_present_informal_high_honorific('드시다'),
     '드세요',
   );
+  equal(
+    conjugator.declarative_present_formal_high_honorific('드시다'),
+    '드십니다',
+  );
 
   equal(
     conjugator.declarative_present_formal_low_honorific('부르다', true, true),
@@ -279,6 +283,7 @@ test('propositive', async () => {
   // Always honorific words. They shouldn't add an extra 시
   equal(conjugator.propositive_informal_high_honorific('계시다'), '계세요');
   equal(conjugator.propositive_informal_high_honorific('드시다'), '드세요');
+  equal(conjugator.propositive_formal_high_honorific('계시다'), '계십시다');
 
   equal(conjugator.propositive_formal_low_honorific('가다'), '가시자');
   equal(conjugator.propositive_formal_low_honorific('듣다'), '들으시자');
