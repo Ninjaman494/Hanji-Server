@@ -243,6 +243,11 @@ conjugator.not_l_euh_irregular = {'우러르': true, '따르': true, '붙따르'
 
 conjugator.not_l_irregular = {};
 
+conjugator.always_honorific = {
+    '계시': true, '드시': true, '돌아가시': true, '모시': true, '시장하시': true, 
+    '잡수시': true, '주무시': true, '편찮으시': true
+};
+
 conjugator.after_last_space = function(infinitive) {
     return infinitive.split(' ').reverse()[0];
 };
@@ -254,7 +259,6 @@ conjugator.is_s_irregular = function(infinitive, regular) {
     return hangeul.match(infinitive.charAt(infinitive.length-1), '*', '*', 'ᆺ') &&
            !(conjugator.after_last_space(infinitive) in conjugator.not_s_irregular);
 };
-
 
 conjugator.is_l_irregular = function(infinitive, regular) {
     if (regular) {
@@ -296,6 +300,36 @@ conjugator.is_d_irregular = function(infinitive, regular) {
     return hangeul.match(infinitive.charAt(infinitive.length-1), '*', '*', 'ᆮ') &&
            !(conjugator.after_last_space(infinitive) in conjugator.not_d_irregular);
 };
+
+/**
+ * Checks if a verb/adj is one that's always in honorific, i.e. 계시다
+ * 
+ * @param {string} infinitive 
+ * @param {boolean | undefined} regular 
+ * @returns {boolean} true if in infinitive should always be honorific, false otherwise
+ */
+conjugator.isAlwaysHonorific = function(infinitive, regular) {
+    return conjugator.base(infinitive, regular) in conjugator.always_honorific;
+}
+
+/**
+ * Remove 시 from words like 계시다 and 드시다 that should always be in honorific form.
+ * This is useful for conjugations like declarative present informal high.
+ * 
+ * @param {string} infinitive 
+ * @param {boolean | undefined} regular 
+ * @returns the infinitive with 시 removed
+ */
+conjugator.maybeStripHonorific = function(infinitive, regular) {
+    // Don't strip regular verbs/adj.
+    if(!conjugator.isAlwaysHonorific(infinitive, regular)) return infinitive;
+
+    const oldStem = conjugator.base(infinitive);
+    // Remove 시 at the end of the word, or next to 다 if it exists
+    const newStem = oldStem.replace(/시다?$/, ''); 
+    conjugator.reasons.push(`honorific verb/adj -> remove 시 (${oldStem} -> ${newStem})`);
+    return newStem;
+}
 
 conjugator.join = function(x, y){
     conjugator.reasons.push(`join (${x} + ${y} -> ${x + y})`);
@@ -423,9 +457,12 @@ conjugator.future_base = function(infinitive, regular) {
 conjugator.future_base.conjugation = false;
 
 conjugator.add_honorific =  function(infinitive,regular){
-    if (conjugator.is_l_irregular(conjugator.base(infinitive, regular))) {
+    // In this case, the infinitive already has an honorific
+    if(conjugator.isAlwaysHonorific(infinitive, regular)) {
+        return conjugator.base(infinitive);
+    } else if (conjugator.is_l_irregular(conjugator.base(infinitive, regular))) {
         return conjugator.drop_l(conjugator.base3(infinitive, regular), '시');
-    }else{
+    } else {
         return conjugator.merge(conjugator.base3(infinitive,regular),'시');
     }
 };
@@ -436,7 +473,7 @@ conjugator.is_itda_obda = function(infinitive,regular){
 };
 
 conjugator.each_conjugation = function(infinitive, regular, isAdj, honorific, callback) {
-    infinitive = conjugator.base(infinitive, regular);
+    honorific = conjugator.isAlwaysHonorific(infinitive, regular) || honorific
     for (conjugation in conjugator) {
         conjugator.reasons.length = 0;
         if (conjugator[conjugation].conjugation && (honorific == conjugator[conjugation].honorific || (!honorific && conjugator[conjugation].honorific == null))) {
@@ -446,7 +483,7 @@ conjugator.each_conjugation = function(infinitive, regular, isAdj, honorific, ca
                 continue;
             }
 
-            r.infinitive = infinitive + '다';
+            r.infinitive = infinitive;
             r.conjugation_name = conjugation.replace(/_/g, ' ').replace(' honorific','');
             r.pronunciation = pronunciation.get_pronunciation(r.conjugated);
             r.romanized = romanization.romanize(r.pronunciation);
@@ -474,10 +511,8 @@ conjugator.conjugate = function(infinitive, regular, isAdj, honorific, callback)
 };
 
 conjugator.conjugate_one = function(infinitive, regular, isAdj, honorific, name) {
-    let conjugation = name.replace(/ /g,'_');
-    if(honorific) {
-        conjugation += '_honorific';
-    }
+    honorific = conjugator.isAlwaysHonorific(infinitive, regular) || honorific
+    const conjugation = name.replace(/ /g,'_') + (honorific ? '_honorific' : '');
 
     conjugator.reasons.length = 0;
 

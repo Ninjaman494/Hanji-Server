@@ -12,17 +12,17 @@ export type Conjugation = {
 };
 
 interface conjugator {
-  verb_type(stem: string, regular?: boolean): string;
+  verb_type(infinitive: string, regular?: boolean): string;
   conjugate(
-    stem: string,
-    regular: boolean,
+    infinitive: string,
+    regular: boolean | null,
     isAdj: boolean,
     honorific: boolean,
     callback: (conjugations: Conjugation[]) => void,
   ): void;
   conjugate_one(
-    stem: string,
-    regular: boolean,
+    infinitive: string,
+    regular: boolean | null,
     isAdj: boolean,
     honorific: boolean,
     conjugationName: string,
