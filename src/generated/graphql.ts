@@ -61,6 +61,7 @@ export type DeviceInfo = {
 
 export type Entry = {
   __typename?: 'Entry';
+  alwaysHonorific: Scalars['Boolean'];
   antonyms?: Maybe<Array<Maybe<Scalars['String']>>>;
   definitions: Array<Maybe<Scalars['String']>>;
   examples?: Maybe<Array<Maybe<Example>>>;
@@ -366,6 +367,7 @@ export type ConjugationResolvers<ContextType = any, ParentType extends Resolvers
 };
 
 export type EntryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Entry'] = ResolversParentTypes['Entry']> = {
+  alwaysHonorific?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   antonyms?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   definitions?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>;
   examples?: Resolver<Maybe<Array<Maybe<ResolversTypes['Example']>>>, ParentType, ContextType>;
