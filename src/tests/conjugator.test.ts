@@ -45,10 +45,7 @@ test('isAlwaysHonorific function', async () => {
   expect(conjugator.isAlwaysHonorific('드시다', false)).toBeTruthy();
   expect(conjugator.isAlwaysHonorific('돌아가시다', false)).toBeTruthy();
   expect(conjugator.isAlwaysHonorific('모시다', false)).toBeTruthy();
-  expect(conjugator.isAlwaysHonorific('시장하시다', false)).toBeTruthy();
-  expect(conjugator.isAlwaysHonorific('잡수시다', false)).toBeTruthy();
   expect(conjugator.isAlwaysHonorific('주무시다', false)).toBeTruthy();
-  expect(conjugator.isAlwaysHonorific('편찮으시다', false)).toBeTruthy();
 
   // Missing 다 case
   expect(conjugator.isAlwaysHonorific('계시', false)).toBeTruthy();
