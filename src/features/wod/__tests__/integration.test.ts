@@ -36,6 +36,7 @@ describe('wod feature', () => {
           }
           regular
           note
+          alwaysHonorific
         }
       }
     `;
