@@ -243,10 +243,7 @@ conjugator.not_l_euh_irregular = {'우러르': true, '따르': true, '붙따르'
 
 conjugator.not_l_irregular = {};
 
-conjugator.always_honorific = {
-    '계시': true, '드시': true, '돌아가시': true, '모시': true, '시장하시': true, 
-    '잡수시': true, '주무시': true, '편찮으시': true
-};
+conjugator.always_honorific = {'계시': true, '드시': true, '돌아가시': true, '모시': true, '주무시': true};
 
 conjugator.after_last_space = function(infinitive) {
     return infinitive.split(' ').reverse()[0];

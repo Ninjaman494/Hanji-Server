@@ -16,6 +16,7 @@ const typeDef = gql`
     examples: [Example]
     regular: Boolean
     note: String
+    alwaysHonorific: Boolean!
   }
 
   type Example {

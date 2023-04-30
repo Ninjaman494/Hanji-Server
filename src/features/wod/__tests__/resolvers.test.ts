@@ -6,6 +6,7 @@ const entry = {
   _id: new ObjectId(),
   term: '가다',
   pos: 'Verb',
+  alwaysHonorific: false,
   definitions: ['to go'],
   antonyms: ['오다'],
   examples: [

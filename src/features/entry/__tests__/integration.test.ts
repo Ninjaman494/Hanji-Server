@@ -35,6 +35,7 @@ describe('entry feature', () => {
           }
           regular
           note
+          alwaysHonorific
         }
       }
     `;
@@ -74,6 +75,7 @@ describe('entry feature', () => {
           }
           regular
           note
+          alwaysHonorific
         }
       }
     `;

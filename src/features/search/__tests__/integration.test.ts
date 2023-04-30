@@ -27,6 +27,7 @@ const query = gql`
         }
         regular
         note
+        alwaysHonorific
       }
     }
   }
