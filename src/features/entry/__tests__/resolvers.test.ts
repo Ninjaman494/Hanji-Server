@@ -15,6 +15,7 @@ const entry = {
       translation: '저는 가요',
     },
   ],
+  alwaysHonorific: false,
 };
 
 const find = jest.fn();

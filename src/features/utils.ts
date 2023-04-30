@@ -9,6 +9,7 @@ export const getSafeID = (id: Id): ObjectId =>
 
 export const entryReducer = ({ _id, ...rest }: EntryDoc): Entry => ({
   id: _id.toString(),
+  alwaysHonorific: false, // default to false
   ...rest,
 });
 

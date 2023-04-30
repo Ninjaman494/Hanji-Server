@@ -14,18 +14,21 @@ export const ENTRIES = [
     term: '김지',
     pos: 'Verb',
     definitions: ['kimchi'],
+    alwaysHonorific: false,
   },
   {
     _id: new ObjectId(),
     term: '가다',
     pos: 'Verb',
     definitions: ['to go'],
+    alwaysHonorific: false,
   },
   {
     _id: new ObjectId(),
     term: '오다',
     pos: 'Verb',
     definitions: ['to come and go'],
+    alwaysHonorific: false,
   },
 ];
 
