@@ -35,9 +35,8 @@ export const deleteJamo = (word: string) => {
       const lead = thirdFirstMap[s[i]] ?? s[i];
 
       const x = hangeul.join(lead, s[i + 1], padchim);
-
-      // TODO: improve behavior here
-      if (hangeul.is_hangeul(x)) deletedWord += x;
+      if (!hangeul.is_hangeul(x)) return;
+      deletedWord += x;
     }
 
     deleteWords.push(deletedWord);
