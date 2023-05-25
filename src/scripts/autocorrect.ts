@@ -10,6 +10,7 @@
  */
 
 import fs from 'fs';
+import * as hangeul from '../korean/hangeul';
 import { dropWhile } from 'lodash';
 
 const alphabet = 'abcdefghijklmnopqrstuvwxyz';
@@ -29,11 +30,40 @@ const vocabSize = Object.values(vocab).reduce((prev, curr) => prev + curr);
 const probs: Record<string, number> = {};
 Object.keys(vocab).forEach((v) => (probs[v] = vocab[v] / vocabSize));
 
+/**
+ * split word into letters
+ * same logic after that
+ * merge letters into words
+ *
+ * @param word
+ * @returns an array of strings, with one letter removed in each word
+ */
 const deleteJamo = (word: string) => {
   const deleteWords: string[] = [];
-  for (let i = 0; i < word.length; i++) {
-    deleteWords.push(word.slice(0, i) + word.slice(i + 1));
+
+  const spread = hangeul.spread(word);
+  if (spread.length <= 2) return [];
+
+  // Delete a letter
+  const deleteSpreads: string[] = [];
+  for (let i = 2; i < spread.length; i++) {
+    deleteSpreads.push(spread.slice(0, i) + spread.slice(i + 1));
   }
+
+  // Join letters back into jamo
+  deleteSpreads.forEach((s) => {
+    for (let i = 0; i < s.length; i += 2) {
+      let padchim = undefined;
+      if (i + 2 < s.length) {
+        padchim = isVowel(s[i + 2]) ? s[i + 2] : undefined;
+      }
+
+      const x = hangeul.join(s[i], s[i + 1], padchim);
+      console.log(x);
+      deleteWords.push(x);
+    }
+  });
+
   return deleteWords;
 };
 
@@ -122,7 +152,33 @@ const getCorrections = (
   return best.slice(0, 3);
 };
 
-const word = 'dys';
-const corrections = getCorrections(word, probs, vocab);
-console.log(corrections);
-console.log(probs[corrections[0]]);
+const word = '갑시';
+const spread = hangeul.spread(word);
+console.log(deleteJamo(word));
+// console.log(hangeul.join('\u1100', '\u3163'));
+// console.log(
+//   string_as_unicode_escape(spread[3]),
+//   string_as_unicode_escape(spread[4]),
+// );
+
+// console.log(isVowel('\u1109'));
+
+function isVowel(jamo: string) {
+  const charCode = jamo.charCodeAt(0);
+  return charCode >= 'ㅏ'.charCodeAt(0) && charCode <= 'ㅣ'.charCodeAt(0);
+}
+
+function string_as_unicode_escape(input) {
+  function pad_four(input) {
+    var l = input.length;
+    if (l == 0) return '0000';
+    if (l == 1) return '000' + input;
+    if (l == 2) return '00' + input;
+    if (l == 3) return '0' + input;
+    return input;
+  }
+  var output = '';
+  for (var i = 0, l = input.length; i < l; i++)
+    output += '\\u' + pad_four(input.charCodeAt(i).toString(16));
+  return output;
+}
