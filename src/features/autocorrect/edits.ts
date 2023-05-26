@@ -2,21 +2,21 @@ const alphabet =
   'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ';
 
 export const deleteJamo = (word: string) => {
-  const deleteWords: string[] = [];
+  const deleteWords = new Set<string>();
 
   for (let i = 0; i < word.length; i++) {
-    deleteWords.push(word.slice(0, i) + word.slice(i + 1));
+    deleteWords.add(word.slice(0, i) + word.slice(i + 1));
   }
 
   return deleteWords;
 };
 
 export const insertJamo = (word: string) => {
-  const insertWords: string[] = [];
+  const insertWords = new Set<string>();
 
   for (let i = 0; i <= word.length; i++) {
     alphabet.split('').forEach((a) => {
-      insertWords.push(word.slice(0, i) + a + word.slice(i));
+      insertWords.add(word.slice(0, i) + a + word.slice(i));
     });
   }
 
@@ -24,11 +24,11 @@ export const insertJamo = (word: string) => {
 };
 
 export const replaceJamo = (word: string) => {
-  const replaceWords: string[] = [];
+  const replaceWords = new Set<string>();
 
   for (let i = 0; i < word.length; i++) {
     alphabet.split('').forEach((a) => {
-      replaceWords.push(word.slice(0, i) + a + word.slice(i + 1));
+      replaceWords.add(word.slice(0, i) + a + word.slice(i + 1));
     });
   }
 
