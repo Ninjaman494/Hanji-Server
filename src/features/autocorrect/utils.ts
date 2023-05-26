@@ -1,5 +1,3 @@
-import { invert } from 'lodash';
-
 export const isVowel = (jamo: string) => {
   const charCode = jamo.charCodeAt(0);
   return charCode >= 'ㅏ'.charCodeAt(0) && charCode <= 'ㅣ'.charCodeAt(0);
@@ -20,10 +18,12 @@ export const stringAsUnicodeEscape = (input) => {
   return output;
 };
 
-export const normalizeJamo = (jamo: string) =>
-  firstThirdMap[jamo] ?? thirdMap[jamo] ?? secondMap[jamo];
+export const normalizeJamo = (jamo: string) => {
+  const compatForm = firstMap[jamo] ?? secondMap[jamo] ?? thirdMap[jamo];
+  return padchimBreakdown[compatForm] ?? compatForm;
+};
 
-const firstThirdMap = {
+const firstMap = {
   ᄀ: 'ㄱ',
   ᄁ: 'ㄲ',
   ᄂ: 'ㄴ',
@@ -97,4 +97,18 @@ const thirdMap = {
   ᇀ: 'ㅌ',
   ᇁ: 'ㅍ',
   ᇂ: 'ㅎ',
+};
+
+const padchimBreakdown = {
+  ㄳ: 'ㄱㅅ',
+  ㄵ: 'ㄴㅈ',
+  ㄶ: 'ㄴㅎ',
+  ㄺ: 'ㄹㄱ',
+  ㄻ: 'ㄹㅁ',
+  ㄼ: 'ㄹㅂ',
+  ㄽ: 'ㄹㅅ',
+  ㄾ: 'ㄹㅌ',
+  ㄿ: 'ㄹㅍ',
+  ㅀ: 'ㄹㅎ',
+  ㅄ: 'ㅂㅅ',
 };
