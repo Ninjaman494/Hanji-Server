@@ -13,7 +13,7 @@ export const editOneLetter = (word: string) => {
   return wordSet;
 };
 
-const editTwoLetter = (word: string) => {
+export const editTwoLetter = (word: string) => {
   const wordSet = new Set<string>();
   const editOneSet = editOneLetter(word);
 
@@ -29,10 +29,9 @@ const editTwoLetter = (word: string) => {
   return wordSet;
 };
 
-const getCorrections = (
+export const getCorrections = (
   word: string,
-  probs: Record<string, number>,
-  vocab: Record<string, number>,
+  vocab: Map<string, [number, string]>,
 ) => {
   if (vocab[word]) return [word];
 
@@ -42,7 +41,7 @@ const getCorrections = (
   }
 
   const suggestionProb: Record<string, number> = {};
-  suggestions.forEach((s) => (suggestionProb[s] = probs[s]));
+  suggestions.forEach((s) => (suggestionProb[s] = vocab[s][0]));
 
   const best = Object.keys(suggestionProb).sort(
     (a, b) => suggestionProb[b] - suggestionProb[a],
