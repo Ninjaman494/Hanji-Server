@@ -10,11 +10,13 @@ describe('generateDict', () => {
     );
 
     const dict = generateDict('fakepath');
-    expect(dict).toEqual({
-      그: 80726,
-      있는: 28946,
-      것이다: 37808,
-    });
+    expect(dict).toEqual(
+      new Map([
+        ['ㄱㅡ', [80726, '그']],
+        ['ㅇㅣㅆㄴㅡㄴ', [28946, '있는']],
+        ['ㄱㅓㅅㅇㅣㄷㅏ', [37808, '것이다']],
+      ]),
+    );
   });
 
   it('trims out punctuation and non-hangul characters', () => {
@@ -26,12 +28,14 @@ describe('generateDict', () => {
     );
 
     const dict = generateDict('fakepath');
-    expect(dict).toEqual({
-      수술하는: 1,
-      것이다: 37808,
-      나태: 1,
-      에서: 2,
-    });
+    expect(dict).toEqual(
+      new Map([
+        ['ㅅㅜㅅㅜㄹㅎㅏㄴㅡㄴ', [1, '수술하는']],
+        ['ㄱㅓㅅㅇㅣㄷㅏ', [37808, '것이다']],
+        ['ㄴㅏㅌㅐ', [1, '나태']],
+        ['ㅇㅔㅅㅓ', [2, '에서']],
+      ]),
+    );
   });
 
   it('combines multiple entries', () => {
@@ -41,6 +45,6 @@ describe('generateDict', () => {
     );
 
     const dict = generateDict('fakepath');
-    expect(dict).toEqual({ 있다: 56743 });
+    expect(dict).toEqual(new Map([['ㅇㅣㅆㄷㅏ', [56743, '있다']]]));
   });
 });

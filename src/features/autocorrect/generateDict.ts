@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+import { normalizeJamo } from './utils';
 
 // match hangul in front of first tab and numbers at end of line
 // skip any non hangul characters in the beginning of the line
@@ -16,7 +17,9 @@ export const generateDict = (filepath: string) => {
     const [word, count] = curr;
     if (!word) return prev;
 
-    prev[word] = parseInt(count) + (prev[word] ?? 0);
+    const key = Array.from(word.normalize('NFD')).map(normalizeJamo).join('');
+    const totalCount = parseInt(count) + (prev.has(key) ? prev.get(key)[0] : 0);
+    prev.set(key, [totalCount, word]);
     return prev;
-  }, {});
+  }, new Map<string, [number, string]>());
 };
