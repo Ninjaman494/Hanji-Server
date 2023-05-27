@@ -1,4 +1,7 @@
 import { deleteJamo, replaceJamo, insertJamo } from './edits';
+import { readDict } from './generateDict';
+
+let vocab: Map<string, [number, string]> | undefined;
 
 export const editOneLetter = (word: string) => {
   const wordSet = new Set<string>();
@@ -29,11 +32,11 @@ export const editTwoLetter = (word: string) => {
   return wordSet;
 };
 
-export const getCorrections = (
+export const findCorrection = (
   word: string,
   vocab: Map<string, [number, string]>,
 ) => {
-  if (vocab[word]) return [word];
+  if (vocab[word]) return word;
 
   let suggestions = Array.from(editOneLetter(word)).filter((w) => vocab[w]);
   if (suggestions.length == 0) {
@@ -47,5 +50,10 @@ export const getCorrections = (
     (a, b) => suggestionProb[b] - suggestionProb[a],
   );
 
-  return best.slice(0, 3);
+  return vocab[best[0]][1];
+};
+
+export const getVocab = () => {
+  if (!vocab) vocab = readDict();
+  return vocab;
 };

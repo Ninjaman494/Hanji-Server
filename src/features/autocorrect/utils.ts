@@ -3,6 +3,9 @@ export const normalizeJamo = (jamo: string) => {
   return padchimBreakdown[compatForm] ?? compatForm;
 };
 
+export const breakDownWord = (word: string) =>
+  Array.from(word.normalize('NFD')).map(normalizeJamo).join('');
+
 const firstMap = {
   ᄀ: 'ㄱ',
   ᄁ: 'ㄲ',

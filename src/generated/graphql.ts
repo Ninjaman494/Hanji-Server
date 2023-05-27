@@ -207,6 +207,7 @@ export type Question = {
 
 export type Result = {
   __typename?: 'Result';
+  autocorrected: Scalars['Boolean'];
   cursor?: Maybe<Scalars['Int']>;
   results: Array<Maybe<Entry>>;
 };
@@ -426,6 +427,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type ResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['Result'] = ResolversParentTypes['Result']> = {
+  autocorrected?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   cursor?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   results?: Resolver<Array<Maybe<ResolversTypes['Entry']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

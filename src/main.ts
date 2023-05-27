@@ -117,8 +117,6 @@ const startServer = async () => {
   httpServer.listen({ port: PORT }, () => {
     console.log(`Server ready on port ${PORT}`);
   });
-
-  console.log(deleteJamo('갑시'));
 };
 
 start();
