@@ -23,3 +23,22 @@ export const generateDict = (filepath: string) => {
     return prev;
   }, new Map<string, [number, string]>());
 };
+
+export const readDict = () => {
+  const fileData = readFileSync('./dict.csv');
+
+  const dictMap = fileData
+    .toString()
+    .split('\n')
+    .reduce((prev, curr) => {
+      if (!curr.trim()) return prev;
+
+      const [key, count, word] = curr.trim().split(',');
+      const totalCount = parseInt(count) + (prev.has(key) ? prev[key][0] : 0);
+      prev[key] = [totalCount, word];
+
+      return prev;
+    }, new Map<string, [number, string]>());
+
+  return dictMap;
+};

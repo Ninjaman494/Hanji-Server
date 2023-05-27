@@ -47,4 +47,13 @@ describe('generateDict', () => {
     const dict = generateDict('fakepath');
     expect(dict).toEqual(new Map([['ㅇㅣㅆㄷㅏ', [56743, '있다']]]));
   });
+
+  it('breaks down double letter padchims', () => {
+    (readFileSync as jest.Mock).mockReturnValue(
+      '없다	없/VX+다/EF+./SF	있/Verb+다/Eomi	30548',
+    );
+
+    const dict = generateDict('fakepath');
+    expect(dict).toEqual(new Map([['ㅇㅓㅂㅅㄷㅏ', [30548, '없다']]]));
+  });
 });
