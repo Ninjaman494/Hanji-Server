@@ -9,7 +9,6 @@ export const editOneLetter = (word: string) => {
   deleteJamo(word).forEach((w) => wordSet.add(w));
   replaceJamo(word).forEach((w) => wordSet.add(w));
   insertJamo(word).forEach((w) => wordSet.add(w));
-  // switchJamo(word).forEach((w) => wordSet.add(w));
 
   wordSet.delete(word);
 
@@ -24,7 +23,6 @@ export const editTwoLetter = (word: string) => {
     deleteJamo(edit).forEach((w) => wordSet.add(w));
     replaceJamo(edit).forEach((w) => wordSet.add(w));
     insertJamo(edit).forEach((w) => wordSet.add(w));
-    // switchJamo(edit).forEach((w) => wordSet.add(w));
   });
 
   wordSet.delete(word);

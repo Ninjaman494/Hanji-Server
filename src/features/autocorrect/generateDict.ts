@@ -11,7 +11,10 @@ export const generateDict = (filepath: string) => {
   const data = fileData
     .toString()
     .split('\n')
-    .map((l) => l.trim().match(re).slice(1, 3));
+    .map((l) => {
+      console.log('Reading line:', l);
+      return l.trim().match(re).slice(1, 3);
+    });
 
   return data.reduce((prev, curr) => {
     const [word, count] = curr;
