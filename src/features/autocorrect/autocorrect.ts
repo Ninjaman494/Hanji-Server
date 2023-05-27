@@ -1,5 +1,5 @@
 import { deleteJamo, replaceJamo, insertJamo } from './edits';
-import { readDict } from './generateDict';
+import { readFileSync } from 'fs';
 
 let vocab: Map<string, [number, string]> | undefined;
 
@@ -30,10 +30,7 @@ export const editTwoLetter = (word: string) => {
   return wordSet;
 };
 
-export const findCorrection = (
-  word: string,
-  vocab: Map<string, [number, string]>,
-) => {
+export const findCorrection = (word: string) => {
   if (vocab[word]) return word;
 
   let suggestions = Array.from(editOneLetter(word)).filter((w) => vocab[w]);
@@ -51,7 +48,25 @@ export const findCorrection = (
   return vocab[best[0]][1];
 };
 
-export const getVocab = () => {
+export const initAutoCorrectVocab = () => {
   if (!vocab) vocab = readDict();
-  return vocab;
+};
+
+const readDict = () => {
+  const fileData = readFileSync('./dict.csv');
+
+  const dictMap = fileData
+    .toString()
+    .split('\n')
+    .reduce((prev, curr) => {
+      if (!curr.trim()) return prev;
+
+      const [key, count, word] = curr.trim().split(',');
+      const totalCount = parseInt(count) + (prev.has(key) ? prev[key][0] : 0);
+      prev[key] = [totalCount, word];
+
+      return prev;
+    }, new Map<string, [number, string]>());
+
+  return dictMap;
 };

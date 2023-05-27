@@ -1,15 +1,15 @@
-import { generateDict } from '../features/autocorrect/generateDict';
-import { writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
+import generateDict from './generateDict';
 
-const writeToFile = (contents: Map<string, [number, string]>) => {
-  let csvContent = '';
-  contents.forEach((val, key) => {
-    console.log('Writing:', key);
-    csvContent += `${key},${val[0]},${val[1]} \r\n`;
-  });
+const fileData = readFileSync(
+  './src/features/autocorrect/tokentable_simple.txt',
+);
+const dictMap = generateDict(fileData.toString());
 
-  writeFileSync('./dict.csv', csvContent);
-};
+let csvContent = '';
+dictMap.forEach((val, key) => {
+  console.log('Writing:', key);
+  csvContent += `${key},${val[0]},${val[1]} \r\n`;
+});
 
-const text = generateDict('./src/features/autocorrect/tokentable_simple.txt');
-writeToFile(text);
+writeFileSync('./dict.csv', csvContent);

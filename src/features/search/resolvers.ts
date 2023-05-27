@@ -1,5 +1,5 @@
 import { wordsCollection } from 'datasources/databaseWrapper';
-import { findCorrection, getVocab } from 'features/autocorrect/autocorrect';
+import { findCorrection } from 'features/autocorrect/autocorrect';
 import { breakDownWord } from 'features/autocorrect/utils';
 import { entryReducer } from 'features/utils';
 import { Entry, Resolvers } from 'generated/graphql';
@@ -17,17 +17,18 @@ const resolvers: Resolvers = {
 
       let results: Entry[];
       if (is_hangeul_string(query)) {
-        results = await searchKorean(query, cursor);
+        results = await searchKorean(query);
 
         // Do it all over again but with autocorrect
         if (!results.length) {
-          const vocab = getVocab();
           const brokenDownQuery = breakDownWord(query);
-          const autocorrect = findCorrection(brokenDownQuery, vocab);
+          const autocorrect = findCorrection(brokenDownQuery);
 
-          results = await searchKorean(autocorrect, cursor);
+          results = await searchKorean(autocorrect);
           autocorrected = true;
         }
+
+        results = results.slice(cursor);
       } else {
         // English search
         results = await wordsCollection()
@@ -44,7 +45,7 @@ const resolvers: Resolvers = {
   },
 };
 
-const searchKorean = async (query: string, cursor?: number) => {
+const searchKorean = async (query: string) => {
   const stems = stem(query).add(query); // in case query is already in infinitive form
   const entriesMap = await Promise.all(
     Array.from(stems).map((stem) =>
@@ -52,7 +53,7 @@ const searchKorean = async (query: string, cursor?: number) => {
     ),
   );
 
-  return entriesMap.reduce((prev, curr) => prev.concat(curr)).slice(cursor);
+  return entriesMap.reduce((prev, curr) => prev.concat(curr));
 };
 
 export default resolvers;

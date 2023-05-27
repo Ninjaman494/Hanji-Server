@@ -37,7 +37,7 @@ import { merge } from 'lodash';
 import bodyParser from 'body-parser';
 import { connectDB } from 'datasources/databaseWrapper';
 import refreshWOD from 'features/wod/refreshWOD';
-import { deleteJamo } from 'features/autocorrect/edits';
+import { initAutoCorrectVocab } from 'features/autocorrect/autocorrect';
 
 // Source: https://github.com/ravangen/graphql-rate-limit/blob/master/examples/context/index.js
 // Creates a unique key based on ip address and endpoint being accessed
@@ -119,5 +119,6 @@ const startServer = async () => {
   });
 };
 
+initAutoCorrectVocab();
 start();
 startServer();
