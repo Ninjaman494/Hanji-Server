@@ -1,6 +1,6 @@
 export const normalizeJamo = (jamo: string) => {
   const compatForm = firstMap[jamo] ?? secondMap[jamo] ?? thirdMap[jamo];
-  return padchimBreakdown[compatForm] ?? compatForm;
+  return padchimBreakdown[compatForm] ?? compatForm ?? jamo;
 };
 
 export const breakDownWord = (word: string) =>

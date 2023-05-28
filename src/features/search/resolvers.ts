@@ -3,7 +3,7 @@ import { findCorrection } from 'features/autocorrect/autocorrect';
 import { breakDownWord } from 'features/autocorrect/utils';
 import { entryReducer } from 'features/utils';
 import { Entry, Resolvers } from 'generated/graphql';
-import { is_hangeul_string } from 'korean/hangeul';
+import { is_hangeul } from 'korean/hangeul';
 import { stem } from 'korean/stemmer';
 
 const resolvers: Resolvers = {
@@ -16,7 +16,7 @@ const resolvers: Resolvers = {
       if (!query) return { cursor, autocorrected, results: [] };
 
       let results: Entry[];
-      if (is_hangeul_string(query)) {
+      if (isKorean(query)) {
         results = await searchKorean(query);
 
         // Do it all over again but with autocorrect
@@ -55,5 +55,19 @@ const searchKorean = async (query: string) => {
 
   return entriesMap.reduce((prev, curr) => prev.concat(curr));
 };
+
+/** Similar to is_hangeul_string but also checks for jamo */
+const isKorean = (query: string) =>
+  query
+    // remove spaces and punctuation
+    .replace(/[!"\?\. ]/g, '')
+    .split('')
+    .every((c) => is_hangeul(c) || isJamo(c));
+
+const isJamo = (word: string) =>
+  (word.charCodeAt(0) >= 'ㄱ'.charCodeAt(0) &&
+    word.charCodeAt(0) <= 'ㆎ'.charCodeAt(0)) ||
+  (word.charCodeAt(0) >= 'ᄀ'.charCodeAt(0) &&
+    word.charCodeAt(0) <= 'ᇿ'.charCodeAt(0));
 
 export default resolvers;

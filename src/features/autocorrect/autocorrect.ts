@@ -30,8 +30,8 @@ export const editTwoLetter = (word: string) => {
   return wordSet;
 };
 
-export const findCorrection = (word: string) => {
-  if (vocab[word]) return word;
+export const findCorrection = (word: string): string => {
+  if (vocab[word]) return vocab[word][1];
 
   let suggestions = Array.from(editOneLetter(word)).filter((w) => vocab[w]);
   if (suggestions.length == 0) {
