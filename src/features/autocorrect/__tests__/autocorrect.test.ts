@@ -1,4 +1,10 @@
-import { editOneLetter, editTwoLetter } from '../autocorrect';
+import {
+  editOneLetter,
+  editTwoLetter,
+  findCorrection,
+  initAutoCorrectVocab,
+} from '../autocorrect';
+import { breakDownWord } from '../utils';
 import { INSERT_KA, REPLACE_KA } from './snapshots';
 
 describe('autocorrect functions', () => {
@@ -19,5 +25,33 @@ describe('autocorrect functions', () => {
     expect(edits.has('ㄱㄱㅣ')).toBeTruthy();
     expect(edits.has('ㄱㅎㅣ')).toBeTruthy();
     expect(edits.has('ㅞㅎ')).toBeTruthy();
+  });
+
+  describe('findCorrection', () => {
+    beforeAll(initAutoCorrectVocab);
+
+    it('autocorrects Korean queries', () => {
+      const query = breakDownWord('갑시디');
+      const correction = findCorrection(query);
+      expect(correction).toEqual('갑시다');
+    });
+
+    it('handles extra jamo', () => {
+      const query = breakDownWord('있어ㅛ');
+      const correction = findCorrection(query);
+      expect(correction).toEqual('있어');
+    });
+
+    it('handles double letter padchims', () => {
+      const query = breakDownWord('읿어요');
+      const correction = findCorrection(query);
+      expect(correction).toEqual('읽어요');
+    });
+
+    it('does not correct valid queries', () => {
+      const query = breakDownWord('드세요');
+      const correction = findCorrection(query);
+      expect(correction).toEqual('드세요');
+    });
   });
 });

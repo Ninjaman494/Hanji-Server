@@ -1,7 +1,10 @@
+jest.mock('features/autocorrect/autocorrect');
+
 import { omit } from 'lodash';
 import { ObjectId } from 'mongodb';
 import { setupMockDB, teardownDB } from 'tests/utils';
 import resolvers from '../resolvers';
+import { findCorrection } from 'features/autocorrect/autocorrect';
 
 const entries = [
   {
@@ -146,6 +149,23 @@ describe('search resolver', () => {
 
       expect(noResults.length).toEqual(0);
       expect(noCursor).toEqual(-1);
+    });
+
+    it('can autocorrect queries', async () => {
+      (findCorrection as jest.Mock).mockReturnValueOnce('가다');
+
+      const { results, cursor } = await (resolvers.Query.search as any)(null, {
+        query: '가디',
+      });
+
+      const { _id, ...rest } = entries[1];
+      expect(findCorrection).toHaveBeenCalledWith('ㄱㅏㄷㅣ');
+      expect(results.length).toEqual(1);
+      expect(cursor).toEqual(1);
+      expect(omit(results[0], ['score'])).toEqual({
+        id: _id.toString(),
+        ...rest,
+      });
     });
   });
 });
