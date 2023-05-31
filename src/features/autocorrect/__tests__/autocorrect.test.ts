@@ -53,5 +53,11 @@ describe('autocorrect functions', () => {
       const correction = findCorrection(query);
       expect(correction).toEqual('드세요');
     });
+
+    it('returns null when there is no correction', () => {
+      const query = breakDownWord('갈 거시다');
+      const correction = findCorrection(query);
+      expect(correction).toBeNull();
+    });
   });
 });

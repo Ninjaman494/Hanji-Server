@@ -30,7 +30,7 @@ export const editTwoLetter = (word: string) => {
   return wordSet;
 };
 
-export const findCorrection = (word: string): string => {
+export const findCorrection = (word: string): string | null => {
   if (vocab[word]) return vocab[word][1];
 
   let suggestions = Array.from(editOneLetter(word)).filter((w) => vocab[w]);
@@ -45,7 +45,7 @@ export const findCorrection = (word: string): string => {
     (a, b) => suggestionProb[b] - suggestionProb[a],
   );
 
-  return vocab[best[0]][1];
+  return vocab[best[0]]?.[1] ?? null;
 };
 
 export const initAutoCorrectVocab = () => {

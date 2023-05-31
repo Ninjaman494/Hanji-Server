@@ -24,8 +24,10 @@ const resolvers: Resolvers = {
           const brokenDownQuery = breakDownWord(query);
           const autocorrect = findCorrection(brokenDownQuery);
 
-          results = await searchKorean(autocorrect);
-          autocorrected = true;
+          if (autocorrect) {
+            results = await searchKorean(autocorrect);
+            autocorrected = true;
+          }
         }
 
         results = results.slice(cursor);
