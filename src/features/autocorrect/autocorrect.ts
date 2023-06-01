@@ -1,3 +1,4 @@
+import breakDownWord from './breakDownWord';
 import { deleteJamo, replaceJamo, insertJamo } from './edits';
 import { readFileSync } from 'fs';
 
@@ -31,11 +32,17 @@ export const editTwoLetter = (word: string) => {
 };
 
 export const findCorrection = (word: string): string | null => {
-  if (vocab[word]) return vocab[word][1];
+  const brokenDownWord = breakDownWord(word);
 
-  let suggestions = Array.from(editOneLetter(word)).filter((w) => vocab[w]);
+  if (vocab[brokenDownWord]) return vocab[brokenDownWord][1];
+
+  let suggestions = Array.from(editOneLetter(brokenDownWord)).filter(
+    (w) => vocab[w],
+  );
   if (suggestions.length == 0) {
-    suggestions = Array.from(editTwoLetter(word)).filter((w) => vocab[w]);
+    suggestions = Array.from(editTwoLetter(brokenDownWord)).filter(
+      (w) => vocab[w],
+    );
   }
 
   const suggestionProb: Record<string, number> = {};

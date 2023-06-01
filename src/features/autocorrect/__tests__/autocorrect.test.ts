@@ -4,7 +4,6 @@ import {
   findCorrection,
   initAutoCorrectVocab,
 } from '../autocorrect';
-import breakDownWord from '../breakDownWord';
 import { INSERT_KA, REPLACE_KA } from './snapshots';
 
 describe('autocorrect functions', () => {
@@ -31,32 +30,27 @@ describe('autocorrect functions', () => {
     beforeAll(initAutoCorrectVocab);
 
     it('autocorrects Korean queries', () => {
-      const query = breakDownWord('갑시디');
-      const correction = findCorrection(query);
+      const correction = findCorrection('갑시디');
       expect(correction).toEqual('갑시다');
     });
 
     it('handles extra jamo', () => {
-      const query = breakDownWord('있어ㅛ');
-      const correction = findCorrection(query);
+      const correction = findCorrection('있어ㅛ');
       expect(correction).toEqual('있어');
     });
 
     it('handles double letter padchims', () => {
-      const query = breakDownWord('읿어요');
-      const correction = findCorrection(query);
+      const correction = findCorrection('읿어요');
       expect(correction).toEqual('읽어요');
     });
 
     it('does not correct valid queries', () => {
-      const query = breakDownWord('드세요');
-      const correction = findCorrection(query);
+      const correction = findCorrection('드세요');
       expect(correction).toEqual('드세요');
     });
 
     it('returns null when there is no correction', () => {
-      const query = breakDownWord('갈 거시다');
-      const correction = findCorrection(query);
+      const correction = findCorrection('갈 거시다');
       expect(correction).toBeNull();
     });
   });
