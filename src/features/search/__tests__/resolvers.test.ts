@@ -159,7 +159,7 @@ describe('search resolver', () => {
       });
 
       const { _id, ...rest } = entries[1];
-      expect(findCorrection).toHaveBeenCalledWith('ㄱㅏㄷㅣ');
+      expect(findCorrection).toHaveBeenCalledWith('가디');
       expect(results.length).toEqual(1);
       expect(cursor).toEqual(1);
       expect(omit(results[0], ['score'])).toEqual({
