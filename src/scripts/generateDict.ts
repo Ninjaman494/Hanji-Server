@@ -1,4 +1,4 @@
-import { breakDownWord } from '../features/autocorrect/utils';
+import breakDownWord from '../features/autocorrect/breakDownWord';
 
 const generateDict = (fileData: string) => {
   // match hangul in front of first tab and numbers at end of line

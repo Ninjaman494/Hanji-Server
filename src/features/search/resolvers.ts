@@ -1,6 +1,6 @@
 import { wordsCollection } from 'datasources/databaseWrapper';
 import { findCorrection } from 'features/autocorrect/autocorrect';
-import { breakDownWord } from 'features/autocorrect/utils';
+import breakDownWord from 'features/autocorrect/breakDownWord';
 import { entryReducer } from 'features/utils';
 import { Entry, Resolvers } from 'generated/graphql';
 import { is_hangeul } from 'korean/hangeul';

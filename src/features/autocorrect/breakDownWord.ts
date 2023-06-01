@@ -1,10 +1,10 @@
-export const normalizeJamo = (jamo: string) => {
+const breakDownWord = (word: string) =>
+  Array.from(word.normalize('NFD')).map(normalizeJamo).join('');
+
+const normalizeJamo = (jamo: string) => {
   const compatForm = firstMap[jamo] ?? secondMap[jamo] ?? thirdMap[jamo];
   return padchimBreakdown[compatForm] ?? compatForm ?? jamo;
 };
-
-export const breakDownWord = (word: string) =>
-  Array.from(word.normalize('NFD')).map(normalizeJamo).join('');
 
 const firstMap = {
   ᄀ: 'ㄱ',
@@ -95,3 +95,5 @@ const padchimBreakdown = {
   ㅀ: 'ㄹㅎ',
   ㅄ: 'ㅂㅅ',
 };
+
+export default breakDownWord;

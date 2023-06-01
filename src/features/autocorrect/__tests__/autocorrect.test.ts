@@ -4,7 +4,7 @@ import {
   findCorrection,
   initAutoCorrectVocab,
 } from '../autocorrect';
-import { breakDownWord } from '../utils';
+import breakDownWord from '../breakDownWord';
 import { INSERT_KA, REPLACE_KA } from './snapshots';
 
 describe('autocorrect functions', () => {
