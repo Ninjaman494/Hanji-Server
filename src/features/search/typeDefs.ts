@@ -7,6 +7,7 @@ const typeDef = gql`
 
   type Result {
     cursor: Int
+    autocorrected: Boolean!
     results: [Entry]!
   }
 `;
