@@ -51,6 +51,8 @@ const keyGenerator = (directiveArgs, obj, args, context, info) =>
   )}`;
 
 const startServer = async () => {
+  await initAutoCorrectVocab();
+
   const expressApp = express();
   const httpServer = createServer(expressApp);
 
@@ -119,6 +121,5 @@ const startServer = async () => {
   });
 };
 
-initAutoCorrectVocab();
 start();
 startServer();

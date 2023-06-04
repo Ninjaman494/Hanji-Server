@@ -8,6 +8,8 @@ const dictMap = generateDict(fileData.toString());
 
 let csvContent = '';
 dictMap.forEach((val, key) => {
+  if (val[0] === 1) return; // drop words that only appear once
+
   console.log('Writing:', key);
   csvContent += `${key},${val[0]},${val[1]} \r\n`;
 });
