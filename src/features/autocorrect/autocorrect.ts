@@ -1,6 +1,6 @@
 import breakDownWord from './breakDownWord';
 import { deleteJamo, replaceJamo, insertJamo } from './edits';
-import { readFileSync } from 'fs';
+import { createReadStream } from 'fs';
 
 let vocab: Map<string, [number, string]> | undefined;
 
@@ -55,25 +55,29 @@ export const findCorrection = (word: string): string | null => {
   return vocab[best[0]]?.[1] ?? null;
 };
 
-export const initAutoCorrectVocab = () => {
-  if (!vocab) vocab = readDict();
+export const initAutoCorrectVocab = async () => {
+  if (!vocab) vocab = await readDict();
 };
 
-const readDict = () => {
-  const fileData = readFileSync('./dict.csv');
+const readDict = async () => {
+  const stream = createReadStream('./dict.csv');
 
-  const dictMap = fileData
-    .toString()
-    .split('\n')
-    .reduce((prev, curr) => {
-      if (!curr.trim()) return prev;
+  const dictMap = new Map<string, [number, string]>();
+  for await (const data of stream) {
+    (data as string)
+      .toString()
+      .split('\n')
+      .reduce((prev, curr) => {
+        if (!curr.trim()) return prev;
 
-      const [key, count, word] = curr.trim().split(',');
-      const totalCount = parseInt(count) + (prev.has(key) ? prev[key][0] : 0);
-      prev[key] = [totalCount, word];
+        const [key, count, word] = curr.trim().split(',');
+        const totalCount = parseInt(count) + (prev.has(key) ? prev[key][0] : 0);
+        prev[key] = [totalCount, word];
 
-      return prev;
-    }, new Map<string, [number, string]>());
+        return prev;
+      }, dictMap);
+  }
+  stream.destroy();
 
   return dictMap;
 };
