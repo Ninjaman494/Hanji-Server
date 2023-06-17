@@ -9,22 +9,21 @@ const resolvers: Resolvers = {
   Query: {
     search: async (_, { query, cursor }) => {
       query = query.trim();
-      let autocorrected = false;
 
       if (!cursor || cursor < 0) cursor = 0;
-      if (!query) return { cursor, autocorrected, results: [] };
+      if (!query) return { cursor, results: [] };
 
+      let autocorrected: undefined | string;
       let results: Entry[];
       if (isKorean(query)) {
         results = await searchKorean(query);
 
         // Do it all over again but with autocorrect
         if (!results.length) {
-          const autocorrect = findCorrection(query);
-
-          if (autocorrect) {
-            results = await searchKorean(autocorrect);
-            autocorrected = true;
+          const possibleCorrection = findCorrection(query);
+          if (possibleCorrection) {
+            results = await searchKorean(possibleCorrection);
+            autocorrected = possibleCorrection;
           }
         }
 
