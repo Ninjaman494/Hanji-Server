@@ -151,20 +151,55 @@ describe('search resolver', () => {
       expect(noCursor).toEqual(-1);
     });
 
-    it('can autocorrect queries', async () => {
-      (findCorrection as jest.Mock).mockReturnValueOnce('가다');
+    describe('autocorrect', () => {
+      it('can autocorrect queries', async () => {
+        (findCorrection as jest.Mock).mockReturnValueOnce('가다');
 
-      const { results, cursor } = await (resolvers.Query.search as any)(null, {
-        query: '가디',
+        const { results, cursor, autocorrected } = await (
+          resolvers.Query.search as any
+        )(null, {
+          query: '가디',
+        });
+
+        const { _id, ...rest } = entries[1];
+        expect(findCorrection).toHaveBeenCalledWith('가디');
+        expect(results.length).toEqual(1);
+        expect(cursor).toEqual(1);
+        expect(autocorrected).toEqual('가다');
+        expect(omit(results[0], ['score'])).toEqual({
+          id: _id.toString(),
+          ...rest,
+        });
       });
 
-      const { _id, ...rest } = entries[1];
-      expect(findCorrection).toHaveBeenCalledWith('가디');
-      expect(results.length).toEqual(1);
-      expect(cursor).toEqual(1);
-      expect(omit(results[0], ['score'])).toEqual({
-        id: _id.toString(),
-        ...rest,
+      it('handles no autocorrection found', async () => {
+        (findCorrection as jest.Mock).mockReturnValueOnce(null);
+
+        const { results, cursor, autocorrected } = await (
+          resolvers.Query.search as any
+        )(null, {
+          query: '가디',
+        });
+
+        expect(findCorrection).toHaveBeenCalledWith('가디');
+        expect(results.length).toEqual(0);
+        expect(cursor).toEqual(-1);
+        expect(autocorrected).toEqual(undefined);
+      });
+
+      it('handles no results found', async () => {
+        (findCorrection as jest.Mock).mockReturnValueOnce('no result');
+
+        const { results, cursor, autocorrected } = await (
+          resolvers.Query.search as any
+        )(null, {
+          query: '가디',
+        });
+
+        expect(findCorrection).toHaveBeenCalledWith('가디');
+        expect(results.length).toEqual(0);
+        expect(cursor).toEqual(-1);
+        expect(autocorrected).toEqual('no result');
       });
     });
   });
