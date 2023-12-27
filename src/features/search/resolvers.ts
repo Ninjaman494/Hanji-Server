@@ -31,9 +31,19 @@ const resolvers: Resolvers = {
       } else {
         // English search
         results = await wordsCollection()
-          .find({ $text: { $search: query } }, { limit: 20, skip: cursor })
-          .project({ score: { $meta: 'textScore' } })
-          .sort({ score: { $meta: 'textScore' } })
+          .aggregate([
+            {
+              $search: {
+                index: 'default',
+                text: {
+                  query,
+                  path: 'definitions',
+                },
+              },
+            },
+            { $skip: cursor },
+            { $limit: 20 },
+          ])
           .map(entryReducer)
           .toArray();
       }
