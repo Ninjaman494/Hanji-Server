@@ -19,7 +19,7 @@ jobs:
           node-version: 14.x
       - run: npm ci
       - name: Create env file
-        uses: SpicyPizza/create-envfile@v1
+        uses: SpicyPizza/create-envfile@v2
         with:
           envkey_MONGO_URL: ${{ secrets.MONGO_URL }}
           envkey_SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
