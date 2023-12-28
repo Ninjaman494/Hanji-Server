@@ -90,7 +90,7 @@ describe('search resolver', () => {
       });
 
       verifySearchQuery(query);
-      expect(results).toEqual(entries[0]);
+      expect(results).toEqual([entries[0]]);
       expect(cursor).toEqual(1);
     });
 
