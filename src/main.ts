@@ -1,7 +1,6 @@
 // Env has to be imported this way to work in other files
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
-import { start } from '@google-cloud/debug-agent';
 import express from 'express';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
@@ -121,5 +120,4 @@ const startServer = async () => {
   });
 };
 
-start();
 startServer();
