@@ -28,7 +28,7 @@ jobs:
         env:
           FIREBASE_JSON: ${{ secrets.FIREBASE_JSON }}
       - name: Authenticate with Google Cloud
-        uses: google-github-actions/auth@v1
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.GCP_SECRET }}'
       - name: Deploy to Google App Engine
