@@ -1,6 +1,7 @@
 import { globalCollection, wordsCollection } from 'datasources/databaseWrapper';
 import { EntryDoc } from 'datasources/types';
 import { getMessaging, Message } from 'firebase-admin/messaging';
+import { ObjectId } from 'mongodb';
 
 const refreshWOD = async () => {
   const result = await wordsCollection()
@@ -9,7 +10,7 @@ const refreshWOD = async () => {
   const newWOD = result[0];
 
   await globalCollection().updateOne(
-    { _id: 'wod' },
+    { _id: 'wod' as unknown as ObjectId },
     {
       $set: {
         entryID: newWOD._id,
