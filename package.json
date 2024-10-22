@@ -41,9 +41,9 @@
     "tsconfig-paths": "^4.1.0"
   },
   "devDependencies": {
-    "@babel/core": "7.23.7",
-    "@babel/preset-env": "7.23.8",
-    "@babel/preset-typescript": "7.23.3",
+    "@babel/core": "7.25.9",
+    "@babel/preset-env": "7.25.9",
+    "@babel/preset-typescript": "7.25.9",
     "@graphql-codegen/cli": "2.16.5",
     "@graphql-codegen/typescript": "2.8.8",
     "@graphql-codegen/typescript-resolvers": "2.7.13",
@@ -52,16 +52,16 @@
     "@types/graphql-upload": "^8.0.12",
     "@types/jest": "^29.1.1",
     "@types/lodash": "^4.14.184",
-    "@types/mongodb": "4.0.6",
+    "@types/mongodb": "4.0.7",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
     "babel-jest": "^29.1.2",
     "babel-plugin-transform-es2015-modules-commonjs": "6.26.2",
     "casual": "1.6.2",
-    "eslint": "8.56.0",
+    "eslint": "8.57.1",
     "jest": "^29.1.2",
     "ts-node": "^10.9.1",
     "ts-node-dev": "2.0.0",
-    "typescript": "5.3.3"
+    "typescript": "5.6.3"
   }
 }
